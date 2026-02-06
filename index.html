@@ -51,6 +51,22 @@ body {
   margin-bottom: 64px;
 }
 
+.header-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--c-text-4);
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: color 0.2s;
+}
+
+.header-back:hover {
+  color: var(--c-accent);
+}
+
 .header-label {
   font-family: var(--f-mono);
   font-size: 12px;
@@ -279,6 +295,7 @@ body {
 <div class="page">
 
   <header class="header">
+    <a href="https://edsonroteia.github.io" class="header-back">&larr; edsonroteia.github.io</a>
     <div class="header-label">Edson Araujo</div>
     <h1>Slides</h1>
     <p>Research presentations and talks.</p>
