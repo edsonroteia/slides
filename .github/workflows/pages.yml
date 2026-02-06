@@ -23,12 +23,40 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install StatiCrypt
+        run: npm install -g staticrypt
+
+      - name: Encrypt spatial_audio_visual
+        env:
+          PASSWORD: ${{ secrets.SPATIAL_AUDIO_VISUAL_PASSWORD }}
+        run: |
+          staticrypt spatial_audio_visual/index.html \
+            -p "$PASSWORD" \
+            --template password_template.html \
+            --template-title "Protected Slides" \
+            --template-instructions "Enter the password to view this presentation." \
+            --template-button "Unlock" \
+            --template-error "Incorrect password" \
+            --remember 7 \
+            --template-remember "Remember for 7 days" \
+            --short \
+            -d spatial_audio_visual \
+            --config .staticrypt.json
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
