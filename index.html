@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slides — Edson Araujo</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --c-bg: #f6f4f0;
+  --c-surface: #ffffff;
+  --c-surface-dim: #edeae4;
+  --c-text: #1a1a1e;
+  --c-text-2: #4a4a52;
+  --c-text-3: #7a7a84;
+  --c-text-4: #a5a5ad;
+  --c-border: #d8d5ce;
+  --c-border-light: #e8e5de;
+  --c-accent: #c44b28;
+  --c-accent-light: #fdf0ec;
+  --c-blue: #2663b0;
+  --c-blue-light: #eaf0fa;
+  --c-green: #1a7a4a;
+  --c-green-light: #e8f5ee;
+  --c-purple: #6b42b8;
+  --c-purple-light: #f2edfa;
+  --f-head: 'Newsreader', 'Georgia', serif;
+  --f-body: 'Outfit', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', 'Menlo', monospace;
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--c-bg);
+  font-family: var(--f-body);
+  color: var(--c-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 80px 32px 120px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 64px;
+}
+
+.header-label {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c-accent);
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  font-family: var(--f-head);
+  font-size: 48px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--c-text);
+  margin-bottom: 12px;
+}
+
+.header p {
+  font-size: 18px;
+  color: var(--c-text-2);
+  line-height: 1.5;
+  max-width: 540px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--c-border);
+  margin-bottom: 48px;
+}
+
+/* Deck grid */
+.deck-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+/* Deck card */
+.deck-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border-light);
+  border-radius: 12px;
+  padding: 32px;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  position: relative;
+}
+
+.deck-card:hover {
+  border-color: var(--c-border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
+}
+
+.deck-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.deck-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.deck-tag {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.deck-tag.orange {
+  background: var(--c-accent-light);
+  color: var(--c-accent);
+}
+
+.deck-tag.blue {
+  background: var(--c-blue-light);
+  color: var(--c-blue);
+}
+
+.deck-tag.green {
+  background: var(--c-green-light);
+  color: var(--c-green);
+}
+
+.deck-tag.purple {
+  background: var(--c-purple-light);
+  color: var(--c-purple);
+}
+
+.deck-date {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--c-text-4);
+  white-space: nowrap;
+}
+
+.deck-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--c-surface-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.deck-card:hover .deck-arrow {
+  background: var(--c-accent);
+  color: white;
+}
+
+.deck-arrow svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.deck-card h2 {
+  font-family: var(--f-head);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.deck-card p {
+  font-size: 15px;
+  color: var(--c-text-2);
+  line-height: 1.55;
+  max-width: 600px;
+}
+
+.deck-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--c-border-light);
+}
+
+.deck-stat {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--c-text-3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.deck-stat svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Footer */
+.page-footer {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--c-border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-footer span {
+  font-size: 13px;
+  color: var(--c-text-4);
+}
+
+.page-footer a {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--c-text-3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.page-footer a:hover {
+  color: var(--c-accent);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .page { padding: 48px 20px 80px; }
+  .header h1 { font-size: 36px; }
+  .header { margin-bottom: 48px; }
+  .deck-card { padding: 24px; }
+  .deck-card h2 { font-size: 22px; }
+  .deck-card-top { flex-direction: column; gap: 12px; }
+  .deck-arrow { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="header">
+    <div class="header-label">Edson Araujo</div>
+    <h1>Slides</h1>
+    <p>Research presentations and talks.</p>
+  </header>
+
+  <div class="divider"></div>
+
+  <div class="deck-grid">
+
+    <a href="spatial_audio_visual/" class="deck-card">
+      <div class="deck-card-top">
+        <div class="deck-card-meta">
+          <span class="deck-tag orange">NeurIPS 2025</span>
+          <span class="deck-tag blue">CVPR</span>
+          <span class="deck-date">Feb 2025</span>
+        </div>
+        <div class="deck-arrow">
+          <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+      </div>
+      <h2>Spatial Understanding with Audio-Visual LLMs</h2>
+      <p>An analysis of the SAVVY pipeline and VSI-Bench for spatial reasoning, including a failure mode study of Qwen3-Omni on egocentric direction, distance estimation, and audio modality gaps.</p>
+      <div class="deck-card-footer">
+        <span class="deck-stat">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          18 slides
+        </span>
+        <span class="deck-stat">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          SAVVY &middot; VSI-Bench &middot; Qwen3-Omni
+        </span>
+      </div>
+    </a>
+
+  </div>
+
+  <footer class="page-footer">
+    <span>&copy; 2025 Edson Araujo</span>
+    <a href="https://github.com/edsonroteia/slides">GitHub</a>
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1272 @@
+\documentclass{article}
+\usepackage[preprint]{neurips_2025}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{pifont}
+\newcommand{\xmark}{\ding{55}}
+\usepackage{multirow}       % for multirow tables
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{tikz}          % Required by pgfplots
+\usepackage{pgfplots}      % The main plotting package
+\usepgfplotslibrary{polar} % Necessary for radar charts (polar coordinates)
+\usepackage{xspace}
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{amsmath}        % for \text and other math features
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{makecell}
+\usepackage{amssymb} 
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{enumitem} % For margin
+\usepackage{listings}
+
+\usepackage[most]{tcolorbox}    % draws the frame and title bar
+\definecolor{myred}{RGB}{255,153,153}
+\definecolor{darkred}{RGB}{165,42,42}
+\tcbset{
+  myprompt/.style={
+    enhanced,
+    colframe=gray!50,        % frame colour
+    colback=white,        % white background inside the box
+    colbacktitle=gray!20,    % title‑bar background (same as frame)
+    coltitle=black,       % title text colour
+    fonttitle=\bfseries,  % bold title text
+    fontupper=\normalsize,
+    boxrule=0.4pt,
+    left=2mm, right=2mm,
+    top=1mm, bottom=1mm,
+    arc=2pt               % squared corners; change for rounded
+  }
+}
+
+\tcbset{
+  mytemplate/.style={
+    enhanced,
+    colframe=myred,
+    colback=white,
+    colbacktitle=myred,
+    coltitle=white,
+    fonttitle=\bfseries,
+    fontupper=\normalsize,
+    boxrule=0.4pt,
+    left=2mm, right=2mm,
+    top=1mm, bottom=1mm,
+    arc=2pt
+  }
+}
+
+\lstdefinestyle{jsonstyle}{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    showstringspaces=false,
+    columns=fullflexible
+}
+
+\usepackage{courier} % for monospaced font
+\usepackage[T1]{fontenc}
+
+\newcommand{\template}[1]{\textcolor{darkred}{\texttt{\{#1\}}}}
+
+\def\ourpipeline{\textsc{SAVVY}\xspace} %FluxMap
+\def\ourbench{{SAVVY-Bench}\xspace} 
+
+\title{SAVVY: Spatial Awareness via Audio-Visual LLMs through Seeing and Hearing}
+
+\author{Mingfei Chen \thanks{These authors contributed equally.}  \thanks{Department of Electrical \& Computer Engineering, University of Washington, Seattle, USA.}\\
+\And
+Zijun Cui \footnotemark[1]  \footnotemark[2]\\
+\And
+Xiulong Liu \footnotemark[1]  \footnotemark[2]\\
+\AND
+Jinlin Xiang \footnotemark[2]\\
+\And
+Yang Zheng \footnotemark[2]\\
+\And
+Jingyuan Li \footnotemark[2]\\
+\And
+Eli Shlizerman \thanks{Department of Applied Mathematics, University of Washington, Seattle, USA}  
+\footnotemark[2] \thanks{Corresponding author: shlizee@uw.edu}
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\begin{abstract}
+3D spatial reasoning in dynamic, audio-visual environments is a cornerstone of human cognition yet remains largely unexplored by existing Audio-Visual Large Language Models (AV-LLMs) and benchmarks, which predominantly focus on static or 2D scenes. We introduce \ourbench, the first benchmark for 3D spatial reasoning in dynamic scenes with synchronized spatial audio. \ourbench is comprised of thousands of carefully curated question–answer pairs probing both directional and distance relationships involving static and moving objects, and requires fine-grained temporal grounding, consistent 3D localization, and multi-modal annotation. To tackle this challenge, we propose \ourpipeline, a novel training-free reasoning pipeline that consists of two stages: (i) Egocentric Spatial Tracks Estimation, which leverages AV-LLMs as well as other audio-visual methods to track the trajectories of key objects related to the query using both visual and spatial audio cues, and (ii) Dynamic Global Map Construction, which aggregates multi-modal queried object trajectories and converts them into a unified global dynamic map. Using the constructed map, a final QA answer is obtained through a coordinate transformation that aligns the global map with the queried viewpoint. Empirical evaluation demonstrates that \ourpipeline substantially enhances performance of state-of-the-art AV-LLMs, setting a new standard and stage for approaching dynamic 3D spatial reasoning in AV-LLMs. The project website is available at: \url{https://zijuncui02.github.io/SAVVY/}.
+\end{abstract}
+
+\vspace{-4mm}
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.83\linewidth]{figures/sketch/teaser_5_15.pdf}
+    \vspace{-1mm}
+    \caption{3D spatial reasoning in dynamic audio-visual environments. The task requires fine-grained 3D question answering across egocentric and allocentric frames in dynamic scenes.}
+    \label{fig:teaser}
+    \vspace{-5mm}
+\end{figure}
+
+
+\section{Introduction}
+\vspace{-2mm}
+
+3D spatial reasoning in dynamic scenes is a core aspect of human intelligence, allowing us to navigate and understand changing environments. Imagine watching an egocentric video where a person wearing a head-mounted camera guides someone through a multi-room apartment. A question arises as shown in ``Allocentric QA'' denoted in Figure \ref{fig:teaser}. To answer such a question, a human would engage in several mental processes: (i) identify the moments when the referenced speech event occurs and locate the relevant objects (China Cabinet, TV, and the speaker) in space; (ii) convert egocentric observations into an allocentric map anchored at the China Cabinet and oriented toward the TV; and (iii) mentally compute the speaker’s position within this allocentric map. While humans perform these steps naturally, they are cognitively demanding, especially under dynamic, shifting viewpoints, as demonstrated in early human cognitive study~\cite{shelton2001systems}.  This raises a key question: can existing foundation models such as Multi-Modal LLMs (MLLMs), reason about dynamic 3D scenes with spatial intelligence?
+
+Despite growing interest in grounding foundation models in 3D environments, most existing works remain limited to static scenes. Previous spatial reasoning benchmarks~\cite{spatialvlm,yang2024think} mostly target on static visual environments with no moving objects. However, real-world scenarios are usually dynamic and involve diverse moving objects and sounds. Existing foundation models that support spatial reasoning in 3D such as ~\cite{conceptfusion,spatialvlm,zhu2024llava3d} assume a static world, and thus cannot generalize to dynamic scenarios. Moreover, they rely exclusively on visual input, neglecting the critical role of spatial audio in capturing semantics and spatial cues beyond the visual field. These limitations highlight the need for benchmarks and models capable of dynamic 3D spatial reasoning across both audio and visual modalities. We refer to such models as Audio-Visual LLMs (AV-LLMs), MLLMs that jointly reason over audio and visual inputs.
+
+To fill such gaps, we introduce \ourbench, a first-of-its-kind benchmark designed for 3D spatial reasoning in dynamic scenes for AV-LLMs. A key feature of \ourbench is its coverage of both egocentric and allocentric question types: some questions require reasoning from the camera wearer’s viewpoint (egocentric), while others rely on fixed external references (allocentric), as depicted in Figure \ref{fig:teaser}. \ourbench comprises thousands of QA pairs that probe spatial relationships involving both static and dynamic objects, focusing on distance and directional aspects. In terms of modalities, \ourbench targets audio-visual question answering with a strong emphasis on moving objects. To support fine-grained spatial reasoning, we incorporate multi-channel audio that captures directional information beyond what is visible in the video. 
+
+Beyond benchmark construction, enabling effective spatial reasoning in 3D dynamic scenes remains challenging. We propose that an effective AV-LLM for reasoning in such environments must (i) achieve robust temporal grounding to locate keyframes and detect relevant objects, (ii) develop spatial perception in both visual and auditory (spatial audio) to track locations of objects from egocentric views, and (iii) transform egocentric observations into a consistent global coordinate frame to accurately reason about spatial relationships. Existing video-language models still struggle with spatial reasoning and egocentric-allocentric perspective transformation even in static visual scenes \cite{yang2024think}, while dynamic 3D environments add further complexity, which requires tracking the state of moving objects. Moreover, existing AV-LLMs typically rely on monaural audio input, which limits access to spatial audio cues and restricts the model’s ability to support human-like spatial understanding.
+
+To support these capabilities, we introduce \ourpipeline, a training-free pipeline that augments AV-LLMs with structured spatial reasoning, integrating spatial audio cues and egocentric-to-global mapping. It operates in two stages: (i) Extracting sparse ``snapshot” descriptions of key events and objects via an AV-LLM, and constructing egocentric tracks by estimating object direction and distance relative to the camera from video and spatial audio; these tracks align auditory and visual signals at key timestamps relevant to the query. (ii) Aggregating these tracks into a dynamic global map for accurate reasoning over both egocentric and allocentric queries. We perform experiments with the proposed pipeline on \ourbench. Extensive experiments demonstrate that \ourpipeline performs best in comparison to existing state-of-the-art AV-LLMs.
+
+To summarize our contributions:
+\textbf{(i)} We introduce \ourbench, the first spatial reasoning benchmark for dynamic 3D scenes, with an integration of both (spatial) audio and visual modality.
+\textbf{(ii)} We propose a training-free pipeline that augments existing AV-LLMs with strong spatial reasoning capabilities.
+\textbf{(iii)} Experiments on \ourbench show that \ourpipeline significantly outperforms existing AV-LLMs on dynamic spatial QA task, with a significant improvement of \textbf{+7.1\%} on overall QA accuracy against even the best performing AV-LLMs (Gemini-2.5 Pro).
+
+
+\begin{table}[tb]
+\centering
+\resizebox{.95\columnwidth}{!}{%
+\renewcommand{\arraystretch}{1.1} % increase row height
+\small % reduce font size inside table
+
+\begin{tabular}{@{}c c c c c c c c c c c @{}}
+\toprule
+\multirow{2}{*}{Dataset}
+  & \multirow{2}{*}{Modality}
+  & \multicolumn{1}{c}{Dynamic}
+  & \multicolumn{1}{c}{Cross-Room}
+  & \multirow{2}{*}{Allocentric}
+  & \multirow{2}{*}{Direction}
+  & \multirow{2}{*}{Distance}
+  \\
+ & & Scene & Spatial QA &\\
+
+\midrule
+EgoSchema~\cite{mangalam2023egoschema} & V  & \xmark & \xmark & \xmark & \xmark & \xmark\\
+
+OpenEQA~\cite{majumdar2024openeqa}      & V & \xmark & \xmark & \xmark & \checkmark & \xmark\\
+
+MUSIC-AVQA~\cite{li2022Learning}       & A+V & \xmark & \xmark & \xmark & \checkmark & \xmark\\
+
+VSI-Bench~\cite{yang2024think}         & V & \xmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+
+Ego4D-AVD~\cite{grauman2022ego4d} &  A+V & \checkmark & \xmark & \xmark & \checkmark & \xmark\\
+
+\textbf{\ourbench (Ours)}                       & A+V & \checkmark  & \checkmark & \checkmark & \checkmark & \checkmark\\
+
+\bottomrule
+\end{tabular}
+}
+\vspace{5pt}
+    \caption{\textbf{Comparison of \ourbench with other Visual and Audio-Visual Benchmarks.} \ourbench focuses on spatial relations (distance and direction) among objects to evaluate 3D spatial reasoning in large and dynamic audio-visual scenes.}
+\label{tab:comparison-video-qa}
+
+\end{table}
+\section{Related Works}
+\subsection{Multi-modal Large Language Models for Spatial Reasoning}
+
+Recent advances in Multi-modal Large Language Models (MLLMs) have extended language models to process visual~\cite{liu2023visual,yang2023dawn,li2024llava,li2023videochat,zhang2023video,lin2023video,li2024llavaone} and audio~\cite{gong2023listen,Qwen-Audio,ding2025kimi,xie2025audioreasonerimprovingreasoningcapability} modalities, giving rise to Audio-Visual LLMs (AV-LLMs) ~\cite{damonlpsg2024videollama2,geng2024longvale,yang2025egolifeegocentriclifeassistant,liu2025ola,yao2024minicpm,sun2024videosalmonn,han2023onellm,panagopoulou2023xinstructblip}. However, most MLLMs and AV-LLMs remain limited in spatial reasoning capabilities. While some models incorporate basic 2D localization~\cite{peng2023kosmos,you2023ferret,zhang2024ferret}, spatial reasoning remains largely unaddressed due to reliance on 2D training data and the lack of large-scale 3D annotations. Recent efforts incorporate 3D information via point clouds~\cite{spatialvlm,garg2024robohop}, or spatial scene representations such as graphs~\cite{conceptfusion,gu2024conceptgraphs,yang20243dmem3dscenememory}, voxel grids~\cite{deng20253dllava, zhu2024llava3d,zheng2024video3dllm,wang2023gridmm}, maps~\cite{huang23vlmaps,yang2024think}, and neural fields~\cite{chen2024chatsplat,shi2024language3dgs}. However, these models are limited to static environments, without supporting dynamic scenes. 
+
+Moreover, spatial reasoning requires more than visual cues. In dynamic scenes where objects leave the visual field, spatial audio provides critical cues for localization. However, existing AV-LLMs~\cite{team2024gemini} downmix multi-channel audio to mono, discarding spatial information. Extracting spatial cues from audio remains challenging due to the complexity of real-world soundscapes and the lack of high-quality, localized annotations. While learning-based spatial audio localization methods~\cite{adavanne2018seldnet,diaz2020robust,zheng2024bat} exist, they are trained on synthetic data with specific receiver configurations, and fail to generalize to real-world environments, many of which are known to be noisy and reverberant.
+
+\subsection{Benchmarks for Multi-Modal Understanding and Reasoning}
+
+Existing benchmarks for evaluating MLLMs primarily focus on semantic understanding from either images~\cite{yu2023mm,yue2024mmmu,liu2024mmbench} or video inputs~\cite{ning2023video,li2024mvbench,fu2024video,jia2022egotaskqa,mangalam2023egoschema}. For image inputs, benchmarks such as MMBench~\cite{liu2024mmbench}, MMMU~\cite{yue2024mmmu}, and MM-Vet~\cite{yu2023mm} assess reasoning across diverse domains but do not address temporal aspects. Video-based benchmarks like MVBench~\cite{li2024mvbench}, EgoTaskQA~\cite{jia2022egotaskqa}, EgoSchema~\cite{mangalam2023egoschema} and additional works ~\cite{li2024vitatecs,liu2024tempcompass,plizzari2025omniaegotempo,yang2025egolifeegocentriclifeassistant} focus on event-based or temporal concept understanding in either exocentric or egocentric views, while they do not address 3D spatial relationships in dynamic scenes. When the modality extends to both visual and audio, benchmarks such as MUSIC-AVQA~\cite{li2022Learning,liu2024tackling}, Ego4D AV Diarization~\cite{grauman2022ego4d} and others~\cite{yang2022avqa,yun2021pano,huang2023egocentric,geng2024longvale} address sounding events as well as spatial relationships between sounding objects in 2D image plane, without addressing 3D relations. Benchmarks such as ScanQA~\cite{azuma2022scanqa} and OpenEQA~\cite{majumdar2024openeqa} introduce spatial reasoning in 3D environments, yet focus solely on static layouts and coarse spatial relations. The closest benchmark to \ourbench is VSI-Bench~\cite{yang2024think}, which leverages 3D information for fine-grained visual spatial reasoning but restricts itself to static scenes only. In contrast, \textbf{\ourbench} is the first benchmark for \textit{audio-visual} spatial reasoning in \textit{dynamic} scenes. Table~\ref{tab:comparison-video-qa} illustrates a detailed comparison with related benchmarks. 
+
+
+\section{\ourbench}
+
+\subsection{Overview} \label{sec:benchoverview}
+
+\ourbench is the first benchmark for evaluating 3D spatial reasoning of AV-LLMs in dynamic, multi-room scenes. It builds on the egocentric Aria-Everyday Activities (AEA) dataset~\cite{lv2024aria}, which includes over 600 sound events across 58 daily-life scenarios. Each scenario provides synchronized visual input and spatial audio captured by 7-microphone array on Aria glasses. \ourbench poses queries spatial relations among moving and static entities in 3D space.
+
+\textbf{Task Taxonomy.}  
+\ourbench defines 4 spatial-relational QA tasks across two reference frames: \textbf{egocentric} (camera-centered) and \textbf{allocentric} (object-centered) (examples shown in Figure~\ref{fig:teaser}). Each question is anchored to a sound event and requires reasoning about the relative direction and absolute distance between a sounding object and a reference point. In egocentric tasks, the reference is the camera wearer; in allocentric tasks, it is a hypothetical robot positioned beside one static object and facing another. Directional reasoning is posed as a multiple-choice question, offering 3 options (left, right, back) for simpler layouts and 4 options (front-left, front-right, back-left, back-right) for more complex ones. Distance reasoning requires providing a numeric estimate of the distance in meters. 
+
+\textbf{Statistics.}  
+Figure~\ref{fig:pies}(a) shows the distribution of QA tasks: Egocentric Direction (30.4\%), Egocentric Distance (11.6\%), Allocentric Distance (18.4\%), and Allocentric Direction (39.6\%). Relative direction questions cover the full 360° azimuth (Figure~\ref{fig:pies}(b)), including rear angles (90–270°) in challenging Egocentric QA, where the target sounding object is out of the camera view. Distance values range from <0.5 to 9 meters (Figure~\ref{fig:pies}(c)). Video durations span from 30 to 300s (Figure~\ref{fig:pies}(d)).
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.999\linewidth]{figures/pies.pdf}
+    \caption{\textbf{Benchmark Statistics. }(a) Task distribution by type. (b) Angle distribution of queries over 360°. (c) Distribution of query distances. (d) Video duration distribution.}
+    \label{fig:pies}
+    \vspace{-3mm}
+\end{figure}
+
+
+\subsection{Benchmark Construction}
+
+We develop a systematic data pipeline to generate high-quality question–answer pairs for \ourbench. The pipeline includes four stages: \textbf{Data Preprocessing}, \textbf{Annotation}, \textbf{QA Synthesis}, and \textbf{Quality Review}. In \textbf{Data Preprocessing}, fisheye videos from the AEA dataset are undistorted to a rectilinear format for compatibility with AV-LLM inputs. Multiview videos are temporally aligned into a unified timeline, and audio is extracted into seven-channel wav file. In \textbf{Annotation}, we utilize proprietary AV-LLMs~\cite{team2024gemini} to extract word-level transcriptions, speech topics, and sound events. Object locations are detected in 3D using EFM3D~\cite{straub2024efm3d} and manually refined in a point-cloud interface. Human trajectories are extracted from aligned camera data, recovering both location and orientation for all speakers. All annotations are manually calibrated to align spatial and event data. In \textbf{QA Synthesis}, structured QA pairs are generated using templates applied to the annotated metadata. The \textbf{Quality Review} stage involves human verification to ensure each QA pair is clear, grounded, and unambiguous. Further details are provided in the supplementary materials.
+
+
+\section{SAVVY}
+\subsection{Formulation and Overview}
+
+Given a video with $N_C$ spatial audio channels and a natural language question $\mathcal{Q}$, the goal is to predict the relative direction or absolute distance of a dynamic \textit{target object} (i.e., a sounding object) during an audio event. Each question is framed from either an \textbf{egocentric} (camera-centered) or \textbf{allocentric} (object-centered) perspective (Section~\ref{sec:benchoverview}).
+To bridge multimodal input and spatial reasoning, we introduce \textbf{SAVVY}, a training-free plugin pipeline that augments AV-LLMs by extracting structured spatial information from visual, audio, and language inputs in two stages (Figure~\ref{fig:main}):
+
+
+\textbf{Stage 1: Egocentric Spatial Track Construction.}  
+We estimate a per-frame egocentric trajectory for each object referenced by $\mathcal{Q}$, using cues from vision, language, and spatial audio. Each trajectory is defined as $\{(t, \theta, r)\}$, where $t$ is the timestamp, $\theta \in [-180^\circ, 180^\circ]$ is the azimuth (0° front, -90° left, 90° right), and $r$ is the distance in meters from the camera location.
+
+
+\textbf{Stage 2: Dynamic Global Map Construction.}  
+Egocentric tracks are projected onto a 2D \(xy\)-plane using the SLAM-derived~\cite{huang2024photo} camera trajectory \(\mathbf{L}(t) \in \mathbb{R}^2\): $\mathbf{p}(t) = \mathbf{L}(t) + \left[ \begin{smallmatrix} r \cdot \cos(\theta) \\ r \cdot \sin(\theta) \end{smallmatrix} \right]$.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/sketch/main_v3.pdf}
+       
+\caption{\textbf{\ourpipeline} consists of two stages: Given a query and video with spatial audio, stage 1 extracts Egocentric Spatial Tracks with (a) “Snapshot” Descriptors via AV-LLMs, (b) Text-Guided Snapshot Segmentation, and (c) Spatial Audio Cues. Stage 2 constructs a dynamic Global Map by converting egocentric tracks to global coordinates, clustering static objects, and smoothing dynamic trajectories.}
+    \label{fig:main}
+\end{figure}
+
+The target forms a global trajectory $\{\mathbf{p}_{\text{sound}}(t) \mid t \in \mathcal{T}_q\}$, while the reference and facing objects are treated as static, with global positions $\mathbf{p}_{\text{ref}}$ and $\mathbf{p}_{\text{face}}$ computed by averaging their tracks.
+These define the \textbf{dynamic global map}:
+$
+\mathcal{M}_q = 
+\left\{
+\mathbf{p}_{\text{sound}}(t) \mid t \in \mathcal{T}_q
+\right\}
+\cup
+\left\{
+\mathbf{p}_{\text{ref}}, \mathbf{p}_{\text{face}}
+\right\}.
+$
+To answer $\mathcal{Q}$, SAVVY uses $\mathcal{M}_q$ to compute the target’s direction and distance relative to the camera (egocentric) or in an object-centered frame.
+
+
+\subsection{Stage 1: Egocentric Spatial Tracks Estimation}
+
+We estimate egocentric spatial tracks with three components (Figure~\ref{fig:main}(a), (b) and (c)):
+
+\textbf{Snapshot Descriptor.}  ~\label{sec: SD}
+Given $\mathcal{Q}$ and video, we prompt the AV-LLM once to generate a structured \textit{snapshot description}. The model first determines the relevant time span $\mathcal{T}_q$ (temporal grounding) corresponding to the query-referenced event, as well as whether the question is framed egocentrically or allocentrically. It then identifies up to three object roles: the \textit{target} object (sound source), the \textit{reference} object (anchor for allocentric frame), and the \textit{facing} object (defines orientation). 
+Egocentric queries require the target object only, while allocentric queries require all three to define a third-party coordinate frame. Each object is represented by a descriptive textual phrase and an egocentric trajectory, given as a sequence of $(t, \theta, r)$ tuples—timestamp, direction, and distance (Figure~\ref{fig:main}(a)).
+
+\textbf{Text-Guided Snapshot Segmentation.}  
+Snapshot descriptors provide sparse spatial cues and often omit intermediate frames, resulting in incomplete trajectories—particularly for dynamic objects or static ones visible only briefly. To address this, we use visual foundation models to recover missing egocentric trajectory segments (Figure~\ref{fig:main}(b)). We uniformly sample $N$ frames from the video and use the textual descriptions generated by the Snapshot Descriptor module as queries for text-guided segmentation.
+For each sampled frame, we segment the \textit{target}, \textit{reference}, or \textit{facing} object using foundation models such as CLIPSeg~\cite{luddecke2022image} and SAM2~\cite{ravi2024sam2}, following prior work~\cite{spatialvlm}. From each object mask, we compute the centroid relative to the image center to estimate the azimuth angle $\theta$ with respect to the camera orientation. In parallel, we apply a monocular metric depth estimator~\cite{bhat2023zoedepth} to predict object distance $r$ in meters. This yields an egocentric trajectory of up to $N$ points per object.
+
+\textbf{Spatial Audio Cues.} 
+Spatial audio provides spatial cues that complement visual input for robust tracking. We estimate both the direction and the distance of sound sources using multi-channel audio recorded by wearable microphone arrays. The method supports training-free, geometry-aware tracking in complex acoustic environments.
+Specifically, to estimate direction-of-arrival (DoA), we adopt the SRP-PHAT algorithm~\cite{dibiase2000high}. Let $M$ microphones at positions $\mathbf{p}_m=(x_m, y_m, z_m)^\top$ record audio sampled at $f_s$ Hz, we compute time-domain cross-correlation $R_{mn}$ for each microphone pair $(m,n)$.
+For each candidate azimuth $\phi$ with unit direction vector $\mathbf{u}(\phi) = [\cos\phi, \sin\phi, 0]^\top$, the inter-channel delay $\tau_{mn}(\phi) = \frac{(\mathbf{p}_m - \mathbf{p}_n)^\top \mathbf{u}(\phi)}{c}$ is quantized into an integer lag $\ell_{mn}(\phi) = \mathrm{round}(\tau_{mn}(\phi) f_s)$. DoA is estimated by maximizing the steered response power: $\hat{\phi} = \arg\max_{\phi} P(\phi), \quad \text{where } P(\phi) = \sum_{m=1}^{M-1} \sum_{n=m+1}^{M} R_{mn}\left[\ell_{mn}(\phi)\right]$.
+
+To estimate distance, we adopt the coherent-to-diffuse ratio (CDR) approach~\cite{schwarz2015coherent}. We compute CDR at each time frame and use distance estimates from the visual-guided modules (Snapshot Descriptor and text-guided snapshot segmentation) to exploit the acoustic property that $D_t^2 \cdot \mathrm{CDR}_t$ remains approximately constant in a given environment. We estimate this constant $K$ by computing $D_t^2 \cdot \mathrm{CDR}_t$ per frame $t$, applying DBSCAN~\cite{dbscan} to filter outliers, and minimizing the squared error over remaining frames: $\hat{d}_t = \sqrt{ \frac{K}{\mathrm{CDR}_t} }, \quad \text{where } K = \arg\min_K \sum_t \left(D_t^2 \cdot \widehat{\mathrm{CDR}}_t - K\right)^2$.
+
+To reduce interference from the camera wearer’s voice or front-facing background noise, we discard detections within a narrow $[-5^\circ, 5^\circ]$ range around the forward axis. This filtering improves reliability in egocentric direction estimation.
+Together, these direction and distance estimates from spatial audio yield per-frame egocentric trajectories as spatial audio cues.
+
+\subsection{Stage 2: Dynamic Global Map Construction}
+To reason about spatial relationships, SAVVY aggregates the three egocentric trajectories from Stage 1 into a unified global map. Each per-frame track is transformed to global coordinates, yielding a 2D spatial map representation suitable for downstream spatial reasoning. 
+ % with Equation~\ref{eq: toglobalmap}
+
+The track aggregation process is illustrated in Figure~\ref{fig:main}(c). For static objects (e.g., \textit{reference} or \textit{facing}), globalized positions are clustered using DBSCAN to suppress outliers, and the centroid of the dominant cluster is used as the final location. For dynamic \textit{target} objects, a time-varying trajectory $\mathbf{p}(t)$ is constructed by filtering temporally aligned outputs from the three egocentric tracks in Stage 1 and mapping them to global coordinates. A Kalman filter~\cite{kalman1960} is applied to interpolate and smooth $\mathbf{p}(t)$, producing a continuous and robust path.
+
+
+The final map $\mathcal{M}_q$ contains a continuous trajectory for the \textit{target} object and static positions for the \textit{reference} and \textit{facing} objects. SAVVY then resolves the target’s location based on the predicted query type from the Snapshot Descriptor: either egocentric (relative to the camera) or allocentric. In the allocentric case, the reference-to-facing vector is aligned with the positive $y$-axis, and the map is rotated accordingly before computing the target's relative position.
+\section{Experiments}
+\subsection{Metrics}
+\textbf{SAVVY-Bench.}  
+SAVVY-Bench includes relative direction and absolute distance questions for both egocentric and allocentric categories (Section~\ref{sec:benchoverview}). Direction questions (\textit{dir}) are multiple choice, and we report \textbf{accuracy} based on exact or fuzzy matching~\cite{yang2024think}. For distance (\textit{dist}), which ranges from less than 1~m to more than 8~m, we avoid target-scaling~\cite{yang2024think}. Instead, we compute the \textbf{average relative accuracy} across absolute error thresholds from 0.1~m to 1.0~m (step size 0.1~m), allowing fair comparison across varying distances.
+
+\textbf{Snapshot Descriptor Evaluation.}  
+To better understand the capabilities of AV-LLMs on SAVVY-Bench, we evaluate two tasks aligned with the Snapshot Descriptor (Section~\ref{sec: SD}), reported under ``SD Eval'' in Table~\ref{tab:sdeval}.
+(i) \textit{Temporal grounding task} measures how accurately a model localizes the queried sound event in time. We use {Intersection over Union (IoU)}~\cite{voc} between the predicted and groundtruth time intervals. Performance is reported as Recall@1, averaged over IoU thresholds from 0.05 to 0.5 (step size 0.05), and summarized as mean IoU (\textbf{t-mIoU}).
+(ii) \textit{Object referral task} tests whether the model correctly describes objects given the question and video. Egocentric questions involve only the \textit{target} sounding object; allocentric ones require further identifying \textit{reference} and \textit{facing} objects. We compute accuracy for (\textbf{referral}) via string matching and LLM-based judging~\cite{team2024gemini}, with all required objects needing to match.
+
+\textbf{Localization Accuracy.}   \label{sec: metrics}
+We assess localization by comparing predicted and groundtruth positions. We propose a new metric, \textbf{localization accuracy} (\textit{loc\_acc}, in Tables~\ref{tab:audio-ablations}, \ref{tab:referral-results} and \ref{tab:ablations}): a predicted location is correct if the direction angular error \textit{$\theta$\_err} is below 45$^\circ$ and the distance error \textit{$r$\_err} is below 1~m.
+
+\begin{figure}[tb]
+\centering
+\begin{tabular}{cc}
+\begin{minipage}{0.6\textwidth}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|l|cc|cc|c|}
+\toprule
+  & \multicolumn{2}{c}{Egocentric} & \multicolumn{2}{c}{Allocentric} &\\
+{Method} &  Dir & Dist & Dir & Dist & {overall}\\
+\midrule
+Chance-Level (Freq) & 30.2 & - & 32.1 & - & - \\
+Human-Level  &93.5 &71.2 &94.0 &56.3 &78.7 \\
+\midrule
+LongVALE~\cite{geng2024longvale}    & 41.9 & 12.8 & 26.7 & 19.5 & 25.2  \\
+video-SALMONN~\cite{sun2024videosalmonn} & 36.9 & 45.8 & 26.4 & 16.0 & 31.3  \\
+Ola~\cite{liu2025ola}  & 41.9 & 33.0 & 27.9 & 25.9 & 32.2  \\
+VideoLLaMA2-7B~\cite{damonlpsg2024videollama2}   & 45.8 & 36.3 & 25.9 & 20.4 & 32.1  \\
+MiniCPM-o 2.6~\cite{yao2024minicpm}   & 46.0 & 45.0 & 25.4 & 14.9 & 32.8  \\
+EgoGPT~\cite{yang2025egolifeegocentriclifeassistant}    & 40.2 & 50.6 & 26.4 & 20.2 & 34.4   \\
+\midrule
+Gemini-2.5-flash  & 74.2 & 49.7 & 29.8 & 29.0 & 45.7 \\
+Gemini-2.5-pro  & 75.2 & 59.6 & 31.7 & 37.0 & 50.9 \\
+SAVVY   & \bf 84.7 & \bf 62.9 &\bf 44.0 & \bf 40.2 & \bf 58.0 \\
+\bottomrule
+\end{tabular}
+ 
+
+\end{minipage}
+&
+\begin{minipage}{0.36\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/radar.pdf}
+\label{fig:global_map}
+\end{minipage}
+\end{tabular}
+\captionof{table}{Evaluation on SAVVY-Bench. Left: accuracy on egocentric and allocentric QAs. Right: radar plot showing QA and SD-Eval accuracy comparison, including top-3 open-source AV-LLMs.}
+\label{tab:performance-comparison}
+\end{figure}
+
+
+\subsection{Main Results}
+\textbf{Benchmark Models.} 
+We evaluate 8 AV-LLMs as listed in Table~\ref{tab:performance-comparison}. 6 are open models designed for joint audio and video understanding. These include models that add an audio branch to a video-language model: VideoLLaMA2~\cite{damonlpsg2024videollama2}, LongVALE~\cite{geng2024longvale}, and EgoGPT~\cite{yang2025egolifeegocentriclifeassistant}, with EgoGPT fine-tuned on egocentric data. Video-SALMONN~\cite{sun2024videosalmonn} adds a visual encoder to an audio-language model. Ola~\cite{liu2025ola} and MiniCPM-o-2.6~\cite{yao2024minicpm} are trained as omni-modal models. Most models have around 7B parameters; MiniCPM-o-2.6 has 8B and Video-SALMONN has 13B. We also evaluate 2 proprietary AV-LLMs: Gemini-2.5-pro and Gemini-2.5-flash. All open-source AV-LLMs are evaluated using 32 sampled video frames and mono-channel compressed audio input. We include one chance-level baseline based on \textit{Frequency}—for multiple-choice direction tasks, and the human-level baseline by aggregating independent responses of 6 annotators. For prompts, inference settings of all AV-LLMs, and human evaluation guidelines, please refer to the supplementary materials.
+
+\textbf{Human-level Performance.} 
+Humans achieve 78.7\% accuracy on \ourbench, outperforming \ourpipeline (ours), the best method, by 20.7\%. Directional tasks yield near-perfect human performance (93.5–94.0\%), underscoring strong intuitive spatial reasoning. The performance gap narrows for distance estimation, particularly in egocentric settings, where humans score 71.2\% compared to 62.9\% for the best model. Notably, human accuracy drops for allocentric distance (56.3\% vs. 71.2\% in egocentric), reflecting the added difficulty of measuring distance after coordinate transformation involving various \textit{reference} / \textit{facing} objects.
+
+\textbf{AV-LLMs Results.} All AV-LLMs perform better on egocentric QA than on allocentric QA. Most models perform at or below chance on the allocentric relative direction task. In contrast, performance on the egocentric version is higher; Gemini-2.5 models reach up to 75\% accuracy.  
+For absolute distance estimation, proprietary models outperform open-source ones on egocentric tasks. Some open-source models, e.g. Ego-GPT, show accuracy gaps up to 30\% between egocentric and allocentric distance tasks. Compared with egocentric questions, allocentric ones require more complex spatial transformation and reasoning about static \textit{reference}/ \textit{facing} objects that appear briefly in the video. 
+
+To better assess AV-LLM capabilities on SAVVY-Bench, we evaluate 2 additional tasks, temporal grounding and object referral, as detailed in \textit{SD-Eval} (\ref{sec: metrics}). Table~\ref{tab:sdeval} shows most open-source models achieve under 5\% temporal mIoU, indicating poor event-time alignment. Synchronizing complex events like speech remains challenging for models at 7B-parameter scale. In object referral, fewer than 35\% of responses are correctly grounded. These limitations may stem from AV-LLM training objectives that prioritize caption-level alignment and visual grounding, rather than learning to synchronize event timelines and spatial object tracks across audio and visual streams, a key requirement for complex spatial reasoning. Gemini-2.5-pro improves referral accuracy by 10.0\% and temporal grounding by 24.8\% over Gemini-2.5-flash, suggesting the benefits of more advanced temporal-spatial reasoning capabilities.
+
+\textbf{SAVVY.}  
+As shown in Table~\ref{tab:performance-comparison}, adding \ourpipeline as a plugin to Gemini-2.5-pro—without additional training or multi-turn AV-LLM inference—substantially improves relative direction accuracy: +9.5\% for egocentric and +12.3\% for allocentric QA. Distance accuracy also improves in both settings. \ourpipeline integrates Snapshot Descriptor, text-guided snapshot segmentation, spatial audio cues, and explicit spatial transformations to ground reasoning in a global map. These components collectively demonstrate a modular path toward enhancing spatial reasoning for AV-LLMs, and motivate future work on training LLMs to internalize such structured spatial reasoning abilities. 
+
+\subsection{Ablations and Analysis}
+We analyze how each egocentric track component—Snapshot Descriptor (\textit{SD}), text-guided snapshot segmentation (\textit{Seg}), and spatial audio-based tracks (\textit{Audio})—contributes to spatial reasoning individually and comprehensively. 
+
+\begin{figure}[tb]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{|l|cc|}
+\toprule
+{Method} & referral & t-mIoU \\
+\midrule
+LongVALE~\cite{geng2024longvale} & 33.7  & 0.7 \\
+VideoLLaMA2-7B~\cite{damonlpsg2024videollama2}& 20.0  & 3.5\\
+MiniCPM-o 2.6~\cite{yao2024minicpm} & 23.2  & 2.3\\
+EgoGPT~\cite{yang2025egolifeegocentriclifeassistant} & 14.9  & 2.8\\
+Ola~\cite{liu2025ola} & 21.2  & 3.0\\
+\midrule
+Gemini-2.5-flash & 66.2 & 42.6\\
+Gemini-2.5-pro & \bf 76.2 & \bf 67.4\\
+\bottomrule
+\end{tabular}
+\captionsetup{width=0.9\linewidth}
+\captionof{table}{SD-Eval accuracy on temporal grounding~(\textit{t-mIoU}) and object \textit{referral}.}
+\label{tab:sdeval}
+
+\end{minipage}
+\hfill
+\begin{minipage}{0.54\textwidth}
+\centering
+\small
+
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{|c|ccc|cc|}
+\toprule
+& \multicolumn{3}{c|}{{Localization}} & \multicolumn{2}{c|}{{DoA}} \\
+{Mic} & {loc\_acc}$\uparrow$ & {$\theta$\_err}$\downarrow$ & {$r$\_err}$\downarrow$ & {l/r}$\uparrow$ & {f/b}$\uparrow$ \\
+\midrule
+02    &19.5 &104.8° &1.86m &76.2 &\bf 55.8\\
+34    &18.6 & 112.1° &\bf 1.33m & \bf {82.3} & 54.5\\
+56    &\bf 23.6 &\bf 100.7° &2.11m &81.6 &55.5\\
+\midrule
+0234  &15.5 &116.4° &1.54m &78.4 &52.6\\
+0256  &44.2 &\bf 39.2° &1.25m &79.8 &69.8  \\
+3456  &\bf 44.3 &45.6° &\bf 1.11m &\bf 81.8 &\bf 75.0 \\
+\bottomrule
+\end{tabular}
+\captionsetup{width=0.9\linewidth}
+\captionof{table}{Sounding object localization and Direction of Arrival (DoA) accuracy on left/right (l/r) and front/back (f/b) across different microphones.}
+
+
+\label{tab:audio-ablations}
+\end{minipage}
+\end{figure}
+
+
+\begin{figure}[tb]
+\centering
+\small
+\begin{minipage}{0.39\textwidth}
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{|l|ccc|}
+\toprule
+Type & loc\_acc$\uparrow$ & $\theta$\_err$\downarrow$ & $r$\_err$\downarrow$ \\
+\midrule
+\multicolumn{4}{|l|}{\textit{Target Sounding Object:}} \\
+SD     & 50.0 & 43.0° & \textbf{0.84m} \\
+Seg    & \textbf{72.4} & \textbf{25.6°} & 0.85m \\
+Audio & 44.3 & 45.6° & 1.11m \\
+\midrule
+\multicolumn{4}{|l|}{\textit{Reference/Facing Object:}} \\
+SD     & 33.8 & 58.6° & \textbf{1.10m} \\
+Seg    & \textbf{38.3} & \textbf{57.7°} & 1.29m \\
+\bottomrule
+\end{tabular}
+\captionsetup{width=0.9\linewidth}
+\captionof{table}{{Object localization results of various egocentric track types}.}
+\label{tab:referral-results}
+
+\small
+
+
+\end{minipage}
+\hfill
+\begin{minipage}{0.6\textwidth}
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{|ccc|c|cc|cc|}
+\toprule
+\multicolumn{3}{|c|}{Track Type} & \multicolumn{1}{c|}{Sound} & \multicolumn{2}{c|}{Egocentric} & \multicolumn{2}{c|}{Allocentric} \\
+SD & Audio & Seg & loc\_acc & dir & dist & dir & dist \\
+\midrule
+
+
+\checkmark&& &55.7 &68.3  &47.9 &42.4 &38.9 \\
+
+&\checkmark & &59.0 &73.9 &48.1 &- &- \\
+
+&& \checkmark &\underline{72.5} &\underline{81.2} &52.0 &34.2 &23.1 \\
+
+\checkmark&\checkmark& &66.8 &74.5 &\underline{54.6} &\bf 44.4 &\bf 41.0 \\
+
+
+\checkmark&\checkmark&\checkmark &\bf 78.6 &\bf 84.7 & \bf 62.9 &\underline{44.0} &\underline{40.2}\\
+
+\bottomrule
+\end{tabular}
+\captionsetup{width=0.9\linewidth}
+\captionof{table}{Egocentric track aggregation ablations on sounding object localization and SAVVY-Bench QA.}
+\label{tab:ablations}
+
+\end{minipage}
+\end{figure}
+
+\textbf{Egocentric Tracks.}  
+Table~\ref{tab:referral-results} reports object localization performance for each egocentric track type (Stage 1 before aggregation), using the metrics from Section~\ref{sec: metrics}. Given a single image, \textbf{\textit{Seg}} achieves the highest localization accuracy (\textit{loc\_acc}) and the lowest relative angle error (\textit{$\theta\_err$}) for all objects type. For distance estimation, \textbf{\textit{SD}} yields the lowest distance error (\textit{$d\_err$}), benefiting from temporal context and the advanced reasoning capabilities of AV-LLMs, as illustrated in the allocentric distance example in Figure~\ref{fig:visualize_reasoning}.  \textbf{\textit{Audio}} tracks perform competitively for sounding object localization, comparable to \textit{SD}, using spatial audio cues alone. Table~\ref{tab:audio-ablations} studies the impact of different microphone channel combinations (more details in the supplementary materials) on localization and DoA accuracy. Microphone combinations that include both front and rear positions (e.g., 0256, 3456) significantly improve front/back (\textit{f/b}) DoA accuracy, while all configurations yield strong left/right (\textit{l/r}) performance due to symmetric mic placement. Our \ourpipeline uses setup 3456, which achieves 81.8\% (\textit{l/r}), 75.0\% (\textit{f/b}) on DoA, and the highest localization accuracy (44.3\%).
+
+\textbf{Track Aggregation for Global Map Construction.}  
+Table~\ref{tab:ablations} examines how different combinations of egocentric track sources (\textit{SD}, \textit{Audio}, and \textit{Seg}) in Stage 2 of global map construction affect spatial QA accuracy and sounding object localization (\textit{loc\_acc}) at the query moment. \textbf{SD} alone yields strong performance on allocentric QA, improving direction accuracy by 10.7\% over Gemini-2.5-pro due to more precise static object localization. However, without audio, \textit{SD} underperforms on egocentric QA due to limited tracking capability for dynamic sounding objects. \textbf{Audio-only} tracking achieves comparable egocentric direction accuracy to Gemini-2.5-pro. \textbf{SD+Audio}  combines the strengths of both components, improving localization accuracy by +7.8\% over Audio-only and boosting allocentric direction and distance QA by +12.7\% and +4.0\% over Gemini-2.5-pro respectively. \textbf{Seg}-based tracks achieve the highest standalone localization accuracy (72.5\%). It also achieves very high egocentric direction accuracy due to precise localization of sound sources. However, it shows clear weaknesses in allocentric QA compared to \textit{SD}, likely due to weaker static reference grounding from uniformly sampled frames. In contrast, \textit{SD} leverages Gemini’s stronger reasoning ability to more reliably identify static \textit{reference} / \textit{facing} objects. Finally, \textbf{\ourpipeline} integrates all track types, achieving the highest localization accuracy (78.6\%) and the best egocentric QA performance—outperforming \textit{Seg} by +3.5\% on direction and \textit{SD+Audio} by +8.3\% on distance, its closest competitors in each task. A slight drop in allocentric QA is observed relative to \textit{SD+Audio} due to noise introduced by \textit{Seg}’s static estimates, but overall \ourpipeline delivers the most balanced and accurate spatial reasoning across tasks.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.92\linewidth]{figures/case_example.pdf}
+    \caption{\textbf{Example reasoning process of AV-LLMs.} \textbf{Top (Egocentric direction);} \textbf{Bottom (Allocentric distance).} \textbf{Middle (SAVVY):} SAVVY successfully fixes the spatial relation errors.}
+    \label{fig:visualize_reasoning}
+\end{figure}
+
+\subsection{Qualitative Analysis}
+Figure~\ref{fig:visualize_reasoning} presents two example cases from Gemini-2.5-pro, the strongest AV-LLM model: the top shows egocentric direction reasoning, and the bottom shows allocentric distance reasoning. These illustrate the model’s step-by-step reasoning and how \ourpipeline addresses its errors.
+
+\textbf{How do AV-LLMs perform spatial reasoning using video and monoaural audio?}  
+AV-LLMs process video with compressed monoaural audio, while SAVVY-Bench tasks require spatial sound localization—a task humans perform via binaural hearing. In the egocentric direction task (Figure~\ref{fig:visualize_reasoning}, top), Gemini-2.5-pro links sound to visible objects—in this case, identifying "the other person" as the sound source—grounds the event time (0:39–0:41), tracks the sound source and camera wearer's trajectory, and infers direction.  
+For distance measurement (Figure~\ref{fig:visualize_reasoning}, bottom), the model further relies on visual cues and commonsense priors.
+
+\textbf{What errors do AV-LLMs make in spatial reasoning?}  
+Common errors of AV-LLMs on SAVVY-Bench often root in temporal grounding, object referral, and spatial relations (direction and distance). While Table~\ref{tab:sdeval} reports accuracy on the first two, the examples in Figure~\ref{fig:visualize_reasoning} highlight spatial relation errors. In the queried event, the sound source (``the other person") disappears from view for tens of seconds. Gemini-2.5-pro infers its trajectory based only on its last visible location, leading to incorrect sound source location estimation.  
+Because the model underutilizes spatial audio—despite its key role in human egocentric perception—it performs modestly when the object appears briefly but fails when it is absent for longer durations.
+
+\textbf{How does SAVVY address these errors?}  
+In Figure~\ref{fig:visualize_reasoning}, SAVVY uses spatial audio cues to correctly localize the sound source at approximately 130° (back-right). The \textit{SD} and \textit{Seg} modules lack egocentric tracks in the visual context, but audio enables correct tracking of the dynamic sound source, yielding accurate back-right direction inference.  
+In the allocentric distance case, \textit{SD} and \textit{Seg} help localize the egocentric track of the reference object—a two-seater coffee table—reasonably well. Combined with the accurate track of the sounding object, SAVVY produces a correct distance estimate. By combining snapshot descriptors, segmentation, spatial audio cues, and explicit coordinate mapping, SAVVY offers a proof of concept for potential solutions of improving AV-LLM spatial reasoning.
+
+\section{Conclusion}
+We introduce \ourbench and \ourpipeline, the first benchmark and training-free pipeline for 3D spatial reasoning in dynamic audio-visual environments. \ourbench features thousands of spatial questions grounded in egocentric videos and multi-channel audio, spanning both egocentric and allocentric perspectives. \ourpipeline significantly improves spatial reasoning performance over standard AV-LLMs by integrating snapshot-based perception, audio-visual tracking, and dynamic global mapping. Together, they provide a foundation for advancing spatial intelligence in multi-modal AI systems. Future work includes adapting our pipeline to generate spatial reasoning traces for AV-LLM fine-tuning and enhancing spatial audio understanding through real-world audio-visual pretraining.
+
+\appendix
+\clearpage
+\section{Summary of Supplementary Materials}
+\noindent In this supplementary materials, we provide:
+\begin{enumerate}
+
+  \item A video demonstrating the case examples detailed in Figure~4 of the main paper is available at \href{https://zijuncui02.github.io/SAVVY/#demo}{our webpage here}. For the best viewing experience, \textbf{we recommend watching the video with headphone or a device that supports spatial audio playback.} See Section~\ref{sec:case_video} for details.
+    \item Details of benchmark construction pipeline, including data processing, annotations, QA synthesis and quality review, see Section \ref{sec:bench_construction}.
+    \item Evaluation details of \ourbench, including open-source AV-LLMs, proprietary AV-LLMs and human evaluations, see Section \ref{sec:eval_all}.
+    \item Details of input data to the pipeline, including video input settings, multi-channel audio settings (microphone configurations), as well as camera trajectory, see Section \ref{sec:input_settings}.
+    \item Additional implementation details of all stages in \ourpipeline, see Section \ref{sec:impl_details}.
+    \item Additional ablation studies of \ourbench, e.g., input modalities and temporal grounding, see Section ~\ref{sec:more_ablation}.
+    \item Limitations of \ourpipeline, see Section \ref{sec:limitations}.
+    \item Broader impacts of the work with safeguards, see Section \ref{sec:broader_impacts}.
+    \item Additional qualitative results which showcase the reasoning process of \ourpipeline as well as the error types analysis, see Section ~\ref{sec:additional_qual}.
+  
+\end{enumerate}
+
+
+\section{Video Examples}
+\label{sec:case_video}
+
+The \href{https://zijuncui02.github.io/SAVVY/#demo}{demo videos} contain two case examples—one egocentric direction task and one allocentric distance task—captured in a single video clip featuring two people conversing in an indoor setting. \textbf{We recommend watching the video with headphones or a device that supports spatial audio playback.}
+
+These examples correspond to the qualitative results presented in the main paper. In both cases, the queried event is: \textit{confirming they have La Croix drinks}, corresponding to the spoken sentence, ``Yeah, let’s see ... grab some La Croix for us,” from a guest (a male wearing a blue shirt) speaking to the camera wearer.
+
+\textbf{Egocentric Direction Example.}  
+The question asks for the relative direction of the other person, with options: \textit{front-left, front-right, back-left}, or \textit{back-right}. In this clip, the other person is not visible at any timestamp during the event, as he is located in the \textit{back-right} quadrant relative to the camera wearer. While the direction must be inferred from spatial audio cues, a human viewer can clearly perceive the sound as coming from the back-right when watching the video with spatial audio. SAVVY correctly predicts this as \textit{back-right}, whereas Gemini-2.5-pro incorrectly classifies it as \textit{front-left}.
+
+\textbf{Allocentric Distance Example.}  
+This question asks for the distance between the two-seater dining table and the speech sound source (the male guest in the blue shirt). The table is clearly visible in several frames throughout the video. SAVVY localizes both the table and the sound source using a combination of egocentric tracks via Snapshot Descriptor, text-guided snapshot segmentation and spatial audio cues. SAVVY estimates the distance as \textit{3.49 meters}, which is close to the ground truth of \textit{3.82 meters}. In contrast, Gemini-2.5-pro predicts a significantly incorrect distance of \textit{2.30 meters}.
+
+These examples illustrate SAVVY's robustness in both directional and quantitative spatial reasoning, especially in challenging, partially observed scenarios.
+
+
+
+\section{Benchmark Construction}
+\label{sec:bench_construction}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/human-in-the-loop.pdf}
+    \caption{{Human-in-the-Loop Dataset Curation and Benchmark Construction Workflow for SAVVY-Bench. }}
+    \label{fig:human-in-the-loop}
+\end{figure}
+
+\noindent We implement a four‑stage pipeline to construct \ourbench. The stages are \textbf{Data Preprocessing}, \textbf{Annotation}, \textbf{QA Synthesis}, and \textbf{Quality Review}. Each stage combines automated tools with human checks to ensure that every Question–Answer (QA) pair is precise.
+
+\subsection{Data Preprocessing} \label{sec:preprocess}
+We preprocess the video data from the Aria Everyday Activities (AEA) Dataset~\cite{lv2024aria} and integrate raw annotations—such as word-level transcriptions, camera-wearer trajectories, and other sensor signal records—into a unified metadata schema, as illustrated in Figure~\ref{fig:human-in-the-loop}.
+
+For video preprocessing, the original fisheye recordings are undistorted into rectilinear frames to ensure compatibility with AV-LLMs. In scenarios with two wearer-mounted camera streams, the videos are temporally aligned to form a unified timeline. This alignment supports consistent segmentation of speech into sentences and facilitates accurate speech topic extraction.
+
+
+
+
+\subsection{Annotation and Ground Truth Generation} \label{sec:annotation}
+
+Our annotation focuses primarily on objects and events.
+
+\textbf{Static Object Annotation.}  
+Static objects are automatically detected using EFM3D~\cite{straub2024efm3d} based on a predefined list of object categories (e.g., couch, fireplace). We use Vision-LLM~\cite{team2024gemini} to generate a informative description phrase for each detected object. Annotators then inspect the 3D coordinates and descriptions in a point-cloud viewer, correcting any errors in location, category, or description as needed.
+
+\textbf{Sounding Event Annotation.}  
+For each sound event, we annotate the event description or transcription, its start and end times, and the identity and 3D location of the sound source—if the source is tied to a physical object (e.g., running water with a faucet, a thud with a door). Human annotators adjust the event time span and label the source object and its position accordingly.
+Specifically for speech events, we first cluster raw word-level transcripts into complete sentences. Annotators then label speech events on a sentence-by-sentence basis. A prompted, rule-based agent~\cite{team2024gemini} converts these validated sentences into concise speech topics that describe individual conversational moments. The prompt design used for this process is shown in Figure~\ref{transcript-prompt}.
+
+\begin{figure}[htb]
+\centering
+\begin{tcolorbox}[myprompt, title={Prompt: Word-Level Transcriptions to Speech Topic}]
+\textbf{[Task]} \\
+You are an agent to annotate conversation data:
+
+\vspace{0.6em}
+\textbf{[Rule]} \\
+1.~Create concise speech topics for each sentence that summarize what was said.
+
+2.~Use verb+ing format for all speech topics (e.g., \verb|"Hello, how's it going."| → \verb|"initiating conversation"|).
+
+3.~Ensure each speech topic is unique, using differentiating language for similar sentences.
+
+4.~Make topics concrete and specific enough that someone could identify the original sentence when hearing it.
+
+5.~Only reference what can be heard in audio (avoid visual elements like \verb|"pointing"|).
+
+6.~Avoid abstract descriptions (e.g., use \verb|"eating directly from bowl"| not \verb|"announcing eating method"|).
+
+7.~Maintain the entire original CSV structure with all timestamps and durations.
+
+
+\vspace{0.6em}
+\textbf{[Output]} \\
+1.~Add a \verb|"speech_topic"| column right after the \verb|"sentence"| column in the CSV.
+
+2.~Output Format: \verb|rec_id,sentence,speech_topic,rec1_startTime,...etc.|
+\end{tcolorbox}
+\vspace{-3mm}
+\caption{Prompt used to generate speech topics from word-level transcripts.}
+\label{transcript-prompt}
+\end{figure}
+
+
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/anno-UI.png}
+    \vspace{-2mm}
+    \caption{\textbf{Interface for sound event annotation.} The tool displays dual-camera videos with synchronized playback and saves annotations locally.}
+    \label{fig:anno-UI}
+\vspace{-6mm}
+\end{figure}
+
+\textbf{Sound Event Annotation System and UI.}
+To streamline the annotation process and reduce errors, we developed a desktop annotation tool using PyQt5. This system integrates video playback, speech and non-speech event labeling, and timestamp editing in a single interface (see Figure~\ref{fig:anno-UI}). It supports dual-camera views with synchronized playback and saves annotations locally. The tool is self-contained, works offline, and requires no server backend.
+
+
+\textbf{Human Annotation Guideline for Sound Events.} Annotators follow five key principles:
+
+1) \emph{Accuracy:} For speech events, correct the original word-level transcription to ensure that every spoken word and audible event is captured exactly as heard. Remove filler words and non-informative tokens, retaining only meaningful content.
+
+2) \emph{Completeness:} Label the full audible span of each event, setting start and end times as close as possible to the actual boundaries to avoid clipping or omission.
+
+3) \emph{Synchronization:} For speech events involving two participants, maintain the temporal alignment between the recordings from both devices throughout the annotation process.
+
+4) \emph{Label Uniformity:} For non-speech sound events, ensure that each description is unique, unambiguous, and consistent across the entire video.
+
+5) \emph{Language and Mechanics:} Use standard spelling, punctuation, and capitalization. Maintain consistent formatting across all annotations.
+
+
+
+\vspace{0.5em}
+\subsection{QA Synthesis}
+We use template scripts to generate QA pairs for \ourbench. These scripts integrate the unified metadata (described in Section~\ref{sec:preprocess}) with the new annotations and ground truth data (from Section~\ref{sec:annotation}) using well-defined question schemas, resulting in unambiguous and structured QA pairs.
+
+\ourbench includes six templates covering four task types: egocentric direction, egocentric distance, allocentric direction, and allocentric distance. For both egocentric and allocentric direction tasks, we design two levels of difficulty: a simple template with three options (left, right, back) and a hard template with four options (front-left, front-right, back-left, back-right).
+
+We provide the complete set of templates for all six QA types, each specified for both speech and non-speech sound events as follows:
+
+\begin{tcolorbox}[mytemplate, title={Egocentric Direction - Simple}]
+
+\vspace{0.6em}
+
+1. Imagine you are the camera wearer, when the \template{non-speech sound event} sound comes up, relative to where you are facing, where is the sound source: left, right, or back? If the object is generally to your left and facing it requires turning less than 120 degrees left, choose 'left'. If the object is generally to your right and facing it requires turning less than 120 degrees right, choose 'right'. If the object is generally behind you and facing it requires turning 120 degrees or more, choose 'back'.
+
+\vspace{0.6em}
+
+2. Imagine you are the camera wearer, when the speech topic \template{speech topic} comes up, relative to where you are facing, where is the other person : left, right, or back? If the object is generally to your left and facing it requires turning less than 120 degrees left, choose 'left'. If the object is generally to your right and facing it requires turning less than 120 degrees right, choose 'right'. If the object is generally behind you and facing it requires turning 120 degrees or more, choose 'back'.
+\end{tcolorbox}
+
+\begin{tcolorbox}[mytemplate, title={Egocentric Direction - Hard}]
+
+\vspace{0.6em}
+
+1. Imagine you are the camera wearer, when the \template{non-speech sound event} sound comes up, relative to where you are facing, where is the sound source: front-left, front-right, back-left, or back-right? The directions refer to the quadrants of a Cartesian plane (if you are standing at the origin and facing along the positive y-axis). Consider the center point location of the object as the its location.
+
+\vspace{0.6em}
+
+2. Imagine you are the camera wearer, when the speech topic \template{speech topic} comes up, relative to where you are facing, where is the other person: front-left, front-right, back-left, or back-right? The directions refer to the quadrants of a Cartesian plane (if you are standing at the origin and facing along the positive y-axis). Consider the center point location of the object as the its location.
+\end{tcolorbox}
+
+\begin{tcolorbox}[mytemplate, title={Egocentric Distance}]
+
+\vspace{0.6em}
+1. Imagine you are the camera wearer, when the \template{non-speech sound event} sound comes up, relative to where you are standing, what is the distance between you and the sound source in meters? Consider the center point location of the object as the its location. Calculate the Euclidean distance between the two points in the horizontal plane. Answer in numeric format.
+
+\vspace{0.6em}
+2. Imagine you are the camera wearer, when the speech topic: \template{speech topic} comes up, relative to where you are standing, what is the distance between you and the other person in meters? Consider the center point location of the object as the its location. Calculate the Euclidean distance between the two points in the horizontal plane. Answer in numeric format.
+\end{tcolorbox}
+
+\begin{tcolorbox}[mytemplate, title={Allocentric Direction - Simple}]
+
+\vspace{0.6em}
+1. Imagine you are a robot standing by the \template{reference object} white recessed fireplace and facing \template{facing object}, when the \template{non-speech sound event} sound comes up, relative to where you are facing, where is the sounding object: left, right, or back? If the object is generally to your left and facing it requires turning less than 120 degrees left, choose 'left'. If the object is generally to your right and facing it requires turning less than 120 degrees right, choose 'right'. If the object is generally behind you and facing it requires turning 120 degrees or more, choose 'back'.
+
+\vspace{0.6em}
+2. Imagine you are a robot standing by the \template{reference object} and facing the \template{facing object}, when the speech topic: \template{speech topic} comes up, relative to where you are facing, where is the speaker: left, right, or back? If the object is generally to your left and facing it requires turning less than 120 degrees left, choose 'left'. If the object is generally to your right and facing it requires turning less than 120 degrees right, choose 'right'. If the object is generally behind you and facing it requires turning 120 degrees or more, choose 'back'.
+\end{tcolorbox}
+
+\begin{tcolorbox}[mytemplate, title={Allocentric Direction - Hard}]
+
+1. Imagine you are a robot standing by the \template{reference object} and facing the \template{facing object}, when the \template{non-speech sound event} sound comes up, relative to where you are facing, where is the sounding object: front-left, front-right, back-left, or back-right? The directions refer to the quadrants of a Cartesian plane (if you are standing at the origin and facing along the positive y-axis). Consider the center point location of the object as the its location.
+
+\vspace{0.6em}
+
+2. Imagine you are a robot standing by the \template{reference object} and facing the \template{facing object}, when the speech topic: \template{speech topic} comes up, relative to where you are facing, where is the speaker: front-left, front-right, back-left, or back-right? The directions refer to the quadrants of a Cartesian plane (if you are standing at the origin and facing along the positive y-axis). Consider the center point location of the object as the its location.
+\end{tcolorbox}
+
+\begin{tcolorbox}[mytemplate, title={Allocentric Distance}]
+
+\vspace{0.6em}
+1. When the \template{non-speech sound event} sound is happening, what is the distance between the \template{reference object} and the sounding object in meters? Consider the center point location of the object as the its location. Calculate the Euclidean distance between the two points in the horizontal plane. Answer in numeric format.
+
+\vspace{0.6em}
+2. When the speech topic: \template{speech topic} is mentioned, what is the distance between the \template{reference object} and the speech sound source in meters? Consider the center point location of the object as the its location. Calculate the Euclidean distance between the two points in the horizontal plane. Answer in numeric format.
+\end{tcolorbox}
+
+\vspace{0.5em}
+\subsection{Quality Review}
+We combine automated QA generation with manual review to ensure both scalability and quality. This hybrid pipeline enables efficient creation of large-scale QA pairs while preserving high annotation accuracy. The resulting dataset offers a reliable benchmark for evaluating 3D spatial reasoning in AV-LLMs. In this section, we detail the human quality review process that supports this workflow.
+
+ 
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/quality-UI.png}
+    \vspace{-3mm}
+\caption{\textbf{Review interface for QA pair quality review.} The tool displays each video clip alongside its associated question and predicted answer, allowing reviewers to efficiently assess correctness, clarity, and formatting, and make a decision on whether the QA pair is a good QA that should be retained.}
+
+    \label{fig:quality-UI}
+\vspace{-6mm}
+\end{figure}
+
+\textbf{Review Interface.} To secure the final data quality, we construct a review system with PyQt 5. The system presents each video clip together with its question and answer and offers a simple interface for reviewers to validate or revise the pair efficiently, as illustrated in Figure \ref{fig:quality-UI}.
+
+\textbf{Review Guideline.} Reviewers follow five principles:\\
+1) \emph{Correctness:} The stored answer must be fully supported by what is visible and audible in the clip.
+
+2) \emph{Clarity:} The question text must be clear and free of ambiguity.
+
+3) \emph{Relevance:} A question must refer only to content that is explicitly present in the clip or its metadata. It should not rely on commonsense inference or assumptions beyond what is observable.
+
+4) \emph{Consistency:} Answers must respect the predefined format, units, and option labels.
+
+5) \emph{Traceability:} Each reviewed QA pair is labeled as accepted or rejected based on whether it qualifies as a ``good” question. All edits are logged to support future auditing and reproducibility.
+
+
+\section{SAVVY-Bench Evaluation Details}
+\label{sec:eval_all}
+\subsection{Open-Source AV-LLMs}
+All experiments are run in inference mode without model training. For open-source AV-LLMs at around 7B scale, we use a single A100 GPU (40GB). For 13B scale AV-LLM, we use a single 80GB VRAM A100 GPU. Evaluation follows the LMMs-Eval module~\cite{zhang2024lmms}. We use greedy decoding with temperature set to 0, and both top-p and top-k set to 1. Following~\cite{zhang2024lmms}, we sample 32 video frames uniformly across the entire video duration.  For audio, we average multiple channels to produce a compressed monaural input, with a sampling rate of 16kHz.
+
+The input for the models is formatted as  \textbf{[Video Frames], [Audio Content] and [Prompt]}
+
+Prompt details:
+
+\begin{tcolorbox}[myprompt, title={Relative Direction Questions - simple}]
+\textbf{[Question]}
+
+Options: A: left B: right C: back. 
+
+Answer in single letter or numeric format.
+\end{tcolorbox}
+
+\begin{tcolorbox}[myprompt, title={Relative Direction Questions - hard}]
+\textbf{[Question]}
+
+Options: A: front-left B: front-right C: back-left D: back-right. 
+
+Answer in single letter or numeric format.
+\end{tcolorbox}
+
+\begin{tcolorbox}[myprompt, title={Relative Distance Questions}]
+\textbf{[Question]}
+
+Answer in single letter or numeric format.
+\end{tcolorbox}
+
+
+\subsection{Proprietary Models}
+For Gemini-2.5-flash and Gemini-2.5-pro, we use Google Cloud Platform’s API. We upload and feed the full video with audio to the model, following API guidelines.
+
+Prompt details:
+\begin{tcolorbox}[myprompt, title={Prompt: Proprietary Models on SAVVY-Bench}]
+\label{video-mcq-prompt}
+
+
+Given the Video: \textbf{[Video Frames]}, \\
+Question: \textbf{[Question]}, \\
+Options: \textbf{[Options]}\\
+
+
+
+\textbf{[Prompt]}
+
+Answer the question.
+
+\vspace{0.6em}
+\textbf{[Format Instructions]}
+\begin{enumerate}
+    \item Your output \textbf{must} be a single, valid JSON object conforming to the schema defined below.
+    \item \textbf{Do NOT} output any thinking steps or reasoning steps.
+\end{enumerate}
+
+\vspace{0.6em}
+\textbf{[JSON Schema]}
+\begin{lstlisting}[style=jsonstyle]
+{
+    "prediction": "Your final answer (A, B, C, or A, B, C, D, or numeric value). If you can't decide, please output a JSON with the "prediction" key's value being null."
+}
+\end{lstlisting}
+\end{tcolorbox}
+
+
+\subsection{Human Evaluation Guidelines}
+\label{sec:human_eval}
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/human_eval.pdf}
+    \vspace{-3mm}
+\caption{Direction quadrant guide for human evaluation. Egocentric directions are relative to the camera wearer's facing direction, while allocentric directions use a fixed world frame.}
+
+    \label{fig:human_eval_dir}
+\end{figure}
+
+\textbf{Evaluation Setup.}  
+We recruited six independent evaluators to participate in the human evaluation. The question set was shuffled and evenly divided among the evaluators. Each evaluator was allowed to pause, replay, or scrub through the video clip as many times as needed before submitting their answer.
+For direction-based tasks, evaluators followed the quadrant chart shown in Figure~\ref{fig:human_eval_dir}.
+For distance-based tasks, the correct response corresponds to the Euclidean distance between the two referenced points projected onto the horizontal plane.
+
+\textbf{Evaluation Rules.} Evaluators followed four key rules:
+\begin{enumerate}
+    \item \emph{Perspective:} Identify whether the question requires egocentric or allocentric reasoning, and apply the appropriate frame of reference.
+    \item \emph{Exactness:} Select the most accurate answer supported by visual and audio evidence, avoiding reliance on commonsense inference.
+    \item \emph{Consistency:} Use the labels and answer formats provided (e.g., A, B, C or numerical values in the specified format).
+    \item \emph{Independence:} Do not use any external tools such as object trackers or scene maps; rely solely on the provided video clip.
+\end{enumerate}
+
+\vspace{0.3em}
+\noindent\textbf{Ethical Statement.}  
+Participation was voluntary, involved no known physical or psychological risks, and did not collect any personal data beyond the evaluators’ responses.
+
+
+
+\section{Input Data Details}
+\label{sec:input_settings}
+
+\subsection{Visual Input Settings} Original fisheye videos from the Aria‑Everyday Activities (AEA) dataset~\cite{lv2024aria} were undistorted to a standard rectilinear format for compatibility with common AV‑LLM inputs. We also manually aligned the two camera‑wearer videos for each conversation, creating a unified timeline to facilitate consistent speech sentence segmentation and speech topic generation. For all open-source AV-LLMs, we evaluated using 32 sampled video frames via uniform sampling.
+
+\subsection{Microphone Configuration}
+We detail the microphone geometric configuration used in the AEA dataset. The data is collected using Meta’s Aria Glasses, which are equipped with a 7-channel 48kHz microphone array distributed around the frame. Specifically, five microphones are positioned along the front frame, and two are mounted near the rear temple arms. This configuration enables rich spatial audio capture from both forward- and backward-facing directions.
+
+The specific microphone locations (in meters, relative to the center of the glasses) are as follows:
+\begin{itemize}
+    \item \textbf{Mic 0}: right-front-bottom corner \((0.05,\ -0.04,\ 0.00)\)
+    \item \textbf{Mic 1}: centered at the bridge of the nose \((-0.005,\ 0.00,\ 0.00)\)
+    \item \textbf{Mic 2}: left-front-bottom corner \((-0.05,\ -0.04,\ 0.00)\)
+    \item \textbf{Mic 3}: far-left-up along the front frame \((-0.07,\ 0.00,\ 0.00)\)
+    \item \textbf{Mic 4}: far-right-up along the front frame \((0.07,\ 0.00,\ 0.00)\)
+    \item \textbf{Mic 5}: rear left leg \((-0.07,\ 0.00,\ -0.10)\)
+    \item \textbf{Mic 6}: rear right leg \((0.07,\ 0.00,\ -0.10)\)
+\end{itemize}
+
+A visualization of this microphone configuration is available on the Project Aria Hardware Specifications GitHub page.
+
+
+\subsection{Camera Trajectory}
+SAVVY uses 6DoF camera trajectories at 1kHz. These trajectories approximate the continuous motion of the egocentric observer and are computed using the foundational visual-inertial odometry (VIO) and simultaneous localization and mapping (SLAM) systems onboard the Project Aria device. In our work, we use the calibrated closed-loop trajectories, represented by 3D position and orientation in quaternion form. 
+
+
+\section{SAVVY Details}
+\label{sec:impl_details}
+\subsection{Snapshot Descriptor}  
+As described in the main paper, the Snapshot Descriptor aims to: (1) identify the start and end times of the event; (2) determine whether the question requires an egocentric or allocentric view; (3) identify the \textit{target sounding object}, \textit{reference object}, and \textit{facing object}, along with their text descriptions; and (4) track the egocentric direction and distance of each object at key frames.
+
+To distinguish between views:  
+\begin{itemize}
+    \item \textbf{Egocentric view} refers to the camera wearer’s perspective. In this case, the reference object is the camera, and no facing object is needed. Since the camera trajectory is known, only the target sounding object needs to be identified and tracked.
+    \item \textbf{Allocentric view} requires a perspective other than the camera’s. A new coordinate frame is built using the reference object (as the origin) and the facing object (defining the positive y-axis from the reference). In this case, all three objects must be identified and accurately tracked.
+\end{itemize}
+
+Open-source AV-LLMs, typically at the 7B or 13B scale, often struggle to track all objects through prompt guidance. Therefore, we request these AV-LLMs to perform only the first three objectives: identifying the event time span, determining the view mode, and generating accurate object descriptions in correct object categories (target sounding / reference / facing object). For all models, we use greedy decoding with temperature set to 0, and both top-p and top-k set to 1.
+
+Detailed prompts used for both open-source AV-LLMs and proprietary models to generate Snapshot Descriptor are provided in Figure \ref{fig:video-audio-prompt} and \ref{fig:proprietary-models-prompt} respectively.
+
+\begin{figure}
+\centering
+    
+\begin{tcolorbox}[myprompt, title={Prompt: Open-Source AV-LLMs}, breakable]
+\textbf{[Task]} \\
+Analyze the given video based on the question: "question". The total video length is duration seconds. Identify the \textbf{Sounding Object} (source of sound). Identify the \textbf{start\_time} and \textbf{end\_time} of the event mentioned in the question. Determine the mode:
+
+\begin{itemize}
+    \item If I’m in the \textbf{camera wearer’s view} (egocentric), set mode to \texttt{egocentric}.
+    \item If I’m in a \textbf{different perspective} rather than the camera’s view (allocentric), set mode to \texttt{allocentric}.
+\end{itemize}
+
+\textbf{[Output]} \\
+Return a single JSON object with the following structure:
+\begin{lstlisting}[style=jsonstyle]
+{
+    "start_time": //start time of the event asked in the question
+    "end_time": //end time
+    "mode": egocentric/allocentric,
+    "sounding_object": {
+        "description": "A detailed description of the sounding object (source of sound). Include physical characteristics like type, color, material, and approximate size/shape.",
+        "is_static": true/false // True if the object is generally non-moving, false if it typically moves location
+    },
+    "stand_by_object": {
+        "object_name": "Name", //set to camera if requires_allocentric is false
+        "description": "Description"
+    },
+    "facing_direction": {
+        "object_name": "Name",
+        "description": "Description"
+    }
+}
+\end{lstlisting}
+\end{tcolorbox}
+\vspace{-3mm}
+\caption{Prompt for Open-Source AV-LLMs on SAVVY-Bench.}
+\label{fig:video-audio-prompt}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\linespread{0.95}\selectfont
+\begin{tcolorbox}[
+  myprompt, 
+  title={Prompt: Proprietary Models}, 
+  breakable,
+  boxsep=1pt, 
+  left=1pt, 
+  right=1pt, 
+  top=1pt, 
+  bottom=1pt
+]
+\textbf{[Task]} \\
+Analyze the video at \texttt{{uploaded\_obj}} based on the question: \texttt{{question}}.
+
+Identify the \textbf{Sounding Object}, the \textbf{Reference Object}, and the \textbf{Facing Object} (stand by the \textbf{Reference Object} and face the \textbf{Facing Object}).
+
+Identify the \textbf{start\_time} and \textbf{end\_time} of the event mentioned in the question.
+
+Determine the mode:
+\begin{itemize}
+    \item If I am in the \textbf{camera's view} (egocentric), set \texttt{mode} to \texttt{egocentric}.
+    \item If I am in a \textbf{different perspective} rather than the camera's view (allocentric), set \texttt{mode} to \texttt{allocentric}.
+\end{itemize}
+
+Perform \textbf{audio-visual tracking} for these objects throughout the \textit{entire duration} of the video.
+
+\vspace{0.5em}
+\textbf{[Tracking Data]}
+\begin{itemize}
+    \item For each object, provide its estimated position over time.
+    \item Record positions at key moments across the \textit{full video timeline} when the object is clearly visible in the frame.
+    \item Estimate distance in meters from the camera to the object center.
+    \item Estimate direction in degrees (\texttt{-90} left to \texttt{90} right, \texttt{0} forward) from the camera.
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{[Output]} \\
+Your complete and sole output must be a single JSON object with the following structure:
+\begin{lstlisting}[style=jsonstyle]
+{
+    "event": "Brief description of the event from the question",
+    "start_time": "minutes:seconds",  
+    "end_time": "minutes:seconds", 
+    "mode": egocentric/allocentric,
+    "sounding_object": { 
+        "description": "A detailed description of the sounding object. Include physical characteristics like type, color, material, and approximate size/shape.",
+        "is_static": true/false, // Set to true if the object is generally non-moving (like furniture, walls) and false if it typically moves location (like a person, animal, vehicle).
+        "key_frames": { //*entire video* key visible frames
+            "minutes:seconds": {"distance": "meters", "direction": "degrees"}
+        }
+    },
+    "reference_object": { // Stand by Reference Object or camera
+        "object_name": "Name", 
+        "description": "Description",
+        "key_frames": { //*entire video* key visible frames
+            "minutes:seconds": {"distance": "meters", "direction": "degrees"}
+        }
+    },
+    "facing_object": { // Facing the facing_object, empty for camera
+        "object_name": "Name", 
+        "description": "Description",
+        "key_frames": { // *entire video* key visible frames
+            "minutes:seconds": {"distance": "meters", "direction": "degrees"}
+        }
+    }
+}
+\end{lstlisting}
+\end{tcolorbox}
+\caption{Prompt for Proprietary AV-LLMs (Gemini 2.5 models) on SAVVY-Bench.}
+\label{fig:proprietary-models-prompt}
+\end{figure}
+
+\subsection{Text-Guided Snapshot Segmentation}
+
+We uniformly sample $128$ frames from each video. For each object, we use its descriptive phrase, extracted from the Snapshot Descriptor, as input to ClipSeg~\cite{luddecke2022image} to generate a segmentation mask. Within the segmented region, we sample $10$ keypoints and compute the average ClipSeg confidence. A detection is considered valid if the average score exceeds a threshold: $0.5$ for dynamic sounding objects and $0.6$ for reference and facing objects. We then use the selected keypoints and object descriptions to prompt the SAM model~\cite{ravi2024sam2}, obtaining refined segmentation masks.
+
+To evaluate the robustness of SAVVY with the text-guided segmentation module (\textit{Seg}), we conduct ablation studies on the ClipSeg confidence threshold (\textit{Seg thr}) and the number of sampled frames (\textit{N\_frame}). We report sounding object localization accuracy (\textit{loc\_acc}) and QA accuracy on both egocentric and allocentric tasks from SAVVY-Bench. See the Experiments section of the main paper for detailed metric definitions.
+
+For \textit{Seg\ thr}, we test values $0.3$, $0.5$, $0.7$, and $0.9$, using the average ClipSeg score across keypoints, with all valid detections required to have at least one keypoint above $0.5$. Results in Table~\ref{tab:seg_thr} show stable performance across thresholds $0.3$ to $0.7$, with less than $3\%$ variation. Lowering the threshold increases object recall, which improves sounding object localization accuracy (\textit{loc\_acc}), as SAVVY's egotrack-based outlier filtering and aggregation can effectively leverage the additional recalled samples. For QA tasks, a $0.5$ threshold yields the highest overall accuracy, while $0.3$ improves distance-related QA but reduces directional accuracy.
+
+For \textit{N\_frame}, we evaluate $8$, $16$, $32$, $64$, and $128$ frames (Table~\ref{tab:seg_framenum}). Higher sampling rates lead to more valid detections from \textit{Seg}, boosting sounding object \textit{loc\_acc} by $6.6\%$ from $8$ to $128$ frames and improving egocentric QA accuracy. However, for allocentric QA, segmentation on static objects may introduce noise. As a result, lower frame counts like $32$ or even $8$ can perform comparably to $128$ frames. These findings suggest a hybrid strategy: use \textit{Seg} for sounding objects and rely more on other egotrack types such as the Snapshot Descriptor for static objects.
+
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|cc|cc|}
+\toprule
+Seg&  {Sound Loc} & \multicolumn{2}{c|}{Egocentric QA} & \multicolumn{2}{c|}{Allocentric QA} \\
+thr & {loc\_acc}& direction & distance & direction & distance \\
+\midrule
+0.3 &79.2 &83.8 &64.1 &43.9 &41.0 \\
+0.5 &78.6 &84.7 &62.9 &44.0 &40.2 \\
+0.7 &77.1 &81.4 &61.2 &43.4 &39.9 \\
+0.9 &69.8 &77.3 &59.2 &43.5 &40.9\\
+
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+\caption{Ablation results on the average snapshot segmentation confidence threshold (\textit{Seg\ thr}). We report sounding object localization accuracy (\textit{loc\_acc}) and accuracy on egocentric and allocentric QA tasks. Lower thresholds generally yield higher sounding object recall, improving localization and distance-related QA accuracy with SAVVY, while moderate thresholds provide balanced performance.}
+
+\label{tab:seg_thr}
+\end{table}
+
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|cc|cc|}
+\toprule
+Seg& Sound Loc & \multicolumn{2}{c|}{Egocentric QA} & \multicolumn{2}{c|}{Allocentric QA} \\
+N\_frame & {loc\_acc} & direction & distance & direction & distance \\
+\midrule
+128 &78.6 &84.7 &62.9 &44.0 &40.2 \\
+64 &76.7 &82.7 &61.6 &43.0 &40.2 \\
+32 &74.8 &81.9 &61.1 &43.7 &41.4 \\
+16 &73.8 &81.9 &59.8 &43.2 &40.5 \\
+8 &72.0 &80.1 &59.4 &44.7 &39.9 \\
+
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+\caption{Ablation results on the number of sampled frames (\textit{N\_frame}) used in text-guided snapshot segmentation. Increasing the number of frames improves sounding object localization and egocentric QA accuracy. However, allocentric QA performance is less sensitive and can degrade at high frame counts due to noise in static object segmentation.}
+\label{tab:seg_framenum}
+\end{table}
+
+
+
+\subsection{Spatial Audio Cues}
+We process spatial audio signals at 0.25s per segment, with a sampling rate of 48\,kHz. For each segment, we estimate the direction of arrival (DoA) by evaluating candidate angles over the full azimuthal range from $-180^\circ$ to $180^\circ$, sampled at $1^\circ$ resolution. For each candidate angle, we apply the Generalized Cross-Correlation with Phase Transform (GCC-PHAT) method on each microphone pair to compute time-difference-of-arrival (TDOA) estimates. The angle $\hat{\phi}$ that maximizes the summed GCC-PHAT responses across all pairs is selected as the most likely direction of the source.
+
+To assess the spatial diffuseness of the sound field for the sound source distance estimation, we compute the Coherent-to-Diffuse Ratio (CDR) from the multi-channel microphone signals. The input to this process includes the raw microphone waveforms, the sampling frequency \(fs\), microphone positions, and the estimated TDOAs for each pair. The analysis is constrained to the 500--2000\,Hz frequency band for speech-related audio cues.
+
+We estimate the power spectral densities (PSDs) and cross-spectral densities (CSDs) using Welch’s method, with a segment length of 1536 samples (around 32ms) and 50\% overlap. 
+We clip negative values to zero and compute the mean CDR over the selected frequency band. The final CDR is averaged across all microphone pairs and serves as a global indicator of the ratio between coherent (direct-path) and diffuse (reverberant) components in the scene.
+
+
+
+\subsection{Egocentric Track Aggregation}
+In the second stage of SAVVY, we aggregate three egocentric object tracks—produced by the Snapshot Descriptor, text-guided snapshot segmentation, and spatial cues—into a unified global map. Each per-frame trajectory is transformed into global coordinates, forming a global spatial map for downstream reasoning. The target object forms a time-varying global trajectory $\{\mathbf{p}_{\text{sound}}(t) \mid t \in \mathcal{T}_q\}$, while reference and facing objects are treated as static, with global positions $\mathbf{p}_{\text{ref}}$ and $\mathbf{p}_{\text{face}}$ computed by averaging their per-frame locations. These together define the \textbf{dynamic global map}:
+\[
+\mathcal{M}_q = 
+\left\{
+\mathbf{p}_{\text{sound}}(t) \mid t \in \mathcal{T}_q
+\right\}
+\cup
+\left\{
+\mathbf{p}_{\text{ref}}, \mathbf{p}_{\text{face}}
+\right\}.
+\]
+We describe the aggregation strategies for static and dynamic objects below.
+
+
+\textbf{Static objects.} Since the Snapshot Descriptor (SD) are better at localizing static objects (reference/facing) after track aggregation based on our ablation results (see main paper ablations), we prioritize the SD track. If the SD captures the object, we apply DBSCAN clustering (maximum distance of 1\,m) on the SD track to determine a stable location. If the SD fails to detect the object, we fall back to the text-guided segmentation-based track (Seg), and apply DBSCAN with the same clustering threshold.
+
+\textbf{Dynamic sounding object.} The Seg method is more accurate for tracking sounding objects (see main paper ablations), so we prioritize its trajectory when aggregating dynamic sound source tracks. We log Seg-tracked positions at each timestamp. For timestamps not covered by Seg, we query the SD track and filter outliers based on spatial consistency with the existing Seg trajectory. The resulting track is then extended by spatially fitting a smooth trajectory and removing outliers through the Seg-tracked points.
+ 
+We then incorporate spatial audio cues to refine this trajectory. Specifically, we define a frustum-based search region for audio tracks around the target direction and distance, spanning a distance range of $\pm1$ meter and an angular span of 45 degrees. We sample candidate points at the centers of 10 angular bins and 5 distance bins within this region. If the audio indicates that the object is located behind the camera (i.e., absolute angle $\theta > 90^\circ$), or provides positional information for timestamps not covered by Seg or SD, we refine the track by comparing with audio-based predictions. Inconsistent points are filtered based on spatial agreement with nearby audio-informed estimates, and the trajectory is extended accordingly to produce the final track.
+
+The aggregation process can be summarized as Algorithm \ref{algo:globalmap}.
+\begin{algorithm}[htb]
+\caption{Track Aggregation Algorithm for Global Map Construction}
+\label{algo:globalmap}
+\begin{algorithmic}[1]
+\small
+\State \textbf{Input:} $\mathcal{S}, \mathcal{D}, \mathcal{A}$ (dense segmentation, SD, audio tracks); $o$ (object type); $\mathbf{L}(t)$ (camera trajectory); $\mathcal{T}_q$ (query time range)
+\State \textbf{Define:} $\texttt{MapToGlobal}(\boldsymbol{\tau}, \mathbf{L}(t)) := \mathbf{L}(t) + 
+\left[
+\begin{smallmatrix}
+r \cdot \cos(\theta) \\
+r \cdot \sin(\theta)
+\end{smallmatrix}
+\right]$, where $\boldsymbol{\tau} = (t, \theta, r)$
+\State Initialize map $\mathcal{M}_q \gets \varnothing$
+\If{$o$ is static}
+    \For{each $\boldsymbol{\tau} \in \mathcal{D}, \mathcal{S}$}
+        \State $\mathbf{p}(t) \gets \texttt{MapToGlobal}(\boldsymbol{\tau}, \mathbf{L}(t))$
+        \State \textbf{break}
+    \EndFor
+    \State $\bar{\mathbf{p}} \gets$ centroid of clustered $\mathbf{p}(t)$
+    \State $\mathcal{M}_q \gets \mathcal{M}_q \cup \{\bar{\mathbf{p}}\}$
+\Else 
+
+    \State Initialize trajectory $\mathbf{p}(t) \gets \varnothing$
+    \For{each $t \in \mathcal{T}_q$}
+        \For{each $\boldsymbol{\tau}$ in $\{\mathcal{S}, \mathcal{D}, \mathcal{A}\}$ if $t \in \boldsymbol{\tau}$}
+            \State Filter outliers near $\mathbf{p}(t')$
+            \State $\mathbf{p}(t) \gets \texttt{MapToGlobal}(\boldsymbol{\tau}, \mathbf{L}(t))$
+        \EndFor
+    \EndFor
+    \State Interpolate and smooth $\mathbf{p}(t)$ over $\mathcal{T}_q$
+    \State $\mathcal{M}_q \gets \mathcal{M}_q \cup \{\mathbf{p}(t)\}$
+\EndIf
+\State \Return $\mathcal{M}_q$
+\end{algorithmic}
+\end{algorithm}
+
+\textbf{Discussion: What roles does the global mapping play in SAVVY?}
+
+Camera trajectory serves as the bridge between Stage 1 egocentric tracks and the Stage 2 dynamic global map. It can be obtained using real-time SLAM technologies~\cite{huang2024photo, lv2024aria} with devices such as AR glasses or robotic sensors. Given camera pose (location and orientation), egocentric direction $\theta$ and distance $r$ can be transformed into global 3D coordinates.
+This transformation allows tracks from multiple modalities—Snapshot Descriptor (\textit{SD}), text-guided snapshot segmentation (\textit{Seg}), and spatial audio cues (\textit{Audio})—to be aligned in a shared 3D coordinate system (global mapping). Different modalities may capture object trajectories at different timestamps; by mapping them to a global frame, these partial observations can complement each other. Through outlier filtering and temporal smoothing, we obtain reliable tracks for dynamic objects and stable positions for static ones.
+
+Table~\ref{tab:trajablations} compares performance with and without global mapping in terms of sounding object localization accuracy (\textit{loc\_acc}) and egocentric QA accuracy (\textit{direction} and \textit{distance}) on SAVVY-Bench. In the \textit{w/o Global Mapping} setting, we directly take egocentric tracks from SD, Seg, and Audio based on the Snapshot Descriptor’s grounded time span, then vote on direction and take the median angle and distance at the queried time.
+Global mapping improves single-modality performance, especially for dense tracks like Seg and Audio, which see localization accuracy (\textit{loc\_acc}) gains of about 10\%. SD, being sparse, is less sensitive to global mapping and may perform better without it. For combined modalities, global mapping not only supports self-correction within each modality but also enables cross-modality completion, yielding even greater improvements—up to 11.5\% on egocentric distance accuracy and \textit{loc\_acc}. Full SAVVY with all three tracks shows the strongest gains: +11.9\% in \textit{loc\_acc}, +14.3\% in egocentric distance accuracy, and +4.1\% in direction estimation.
+
+
+\begin{table}[htb]
+\centering
+
+\begin{tabular}{|ccc|ccc|ccc|}
+\toprule
+\multicolumn{3}{|c|}{Track Type}  & \multicolumn{3}{c|}{w/ Global Mapping (SAVVY)}   & \multicolumn{3}{c|}{w/o Global Mapping} \\
+SD & Audio & Seg &loc\_acc & direction & distance &loc\_acc & direction & distance \\
+\midrule
+\checkmark&& &55.7 &68.3  &47.9 &56.3 &71.1 &52.6 \\
+&\checkmark & &59.0 &73.9 &48.1 &49.7 &75.6 &40.1 \\
+&& \checkmark &72.5 &81.2 &52.0 &62.3 &75.8 &43.7 \\
+\checkmark&\checkmark& &66.8  &74.5 &54.6 &55.3 &73.0 &43.3 \\
+\checkmark&\checkmark&\checkmark &78.6 &84.7 & 62.9 &66.7 &80.6 &48.6\\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+\caption{Ablation study on the impact of global mapping. We evaluate combinations of egocentric track modalities—Snapshot Descriptor (\textit{SD}), Spatial Audio (\textit{Audio}), and Segmentation (\textit{Seg})—with and without global coordinate transformation. Metrics include sounding object localization accuracy (\textit{loc\_acc}) and egocentric QA accuracy on SAVVY-Bench (\textit{direction} and \textit{distance}). Global mapping consistently enhances performance, particularly when aggregating dense tracks (\textit{Seg} and \textit{Audio}) and integrating multiple modalities.}
+
+
+\label{tab:trajablations}
+\end{table}
+
+
+
+
+\section{More Ablations}
+\label{sec:more_ablation}
+\subsection{Blind Testing}
+
+We conduct blind testing to evaluate the contribution of the visual modality in audio-visual spatial reasoning on SAVVY-Bench, using AV-LLM baseline models. Specifically, we compare performance between two settings: \textit{Audio Only} (removing visual frames, using only audio and the text query as input) and \textit{Audio + Visual} (using both modalities). We evaluate on egocentric QA tasks to assess how models infer the direction and distance of sound sources relative to the camera.
+
+We test the top five open-source 7B models and the strongest proprietary model, Gemini-2.5-pro. As shown in Table~\ref{tab:audio-only}, Gemini demonstrates strong grounding capabilities (67.4\% t-mIoU, as reported in the main paper), and its performance shows a clear dependence on visual input. Under \textit{Audio Only}, Gemini’s direction accuracy drops sharply by 32.4\%, while distance accuracy decreases by only 2.8\%. This aligns with observations from our reasoning process visualizations: Gemini relies heavily on visual input for spatial direction reasoning, whereas distance estimation is less affected—likely due to the role of commonsense priors from audio and language.
+
+Other AV-LLMs exhibit similar trends: direction accuracy degrades more under \textit{Audio Only}, while distance accuracy remains relatively stable or even improves slightly. However, the performance gap is smaller than with Gemini, likely because these models fail to reliably ground events in time—achieving less than 5\% t-mIoU—regardless of the input modality. As a result, even with visual input, their spatial reasoning remains limited.
+\begin{table}[htb]
+\centering
+\begin{tabular}{|l|cc|cc|}
+\toprule
+ & \multicolumn{2}{c|}{Audio Only} & \multicolumn{2}{c|}{Audio + Visual}\\
+{Method} &  Direction & Distance & Direction & Distance \\
+\midrule
+Ola~\cite{liu2025ola} &40.8 &47.7 &41.9 &33.0\\
+VideoLLaMA2-7B~\cite{damonlpsg2024videollama2} &39.1 &40.7  & 45.8 & 36.3\\
+MiniCPM-o 2.6~\cite{yao2024minicpm}  &41.9 &50.7 & 46.0 & 45.0 \\
+EgoGPT~\cite{yang2025egolifeegocentriclifeassistant}  &39.3 &37.0  & 40.2 & 50.6\\
+Gemini-2.5-pro &42.8 &56.8 & 75.2 & 59.6\\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+\caption{Blind testing on SAVVY-Bench: comparison between \textit{Audio Only} and \textit{Audio + Visual} input settings. Reported metrics are egocentric QA accuracy for direction and absolute distance. Gemini-2.5-pro shows the largest gap, indicating strong reliance on visual input for accurate direction estimation.}
+\label{tab:audio-only}
+\end{table}
+
+
+
+\subsection{Temporal Grounding}
+
+We investigate the impact of temporal grounding on the performance of 7B-scale AV-LLMs on SAVVY-Bench. Specifically, we extract the ground-truth video segment (\textit{Target Clip}) containing the queried event, thereby removing temporal ambiguity and aligning the query precisely with relevant visual and audio cues.
+
+Table~\ref{tab:targetclip} compares two settings: (1) \textit{Target Clip}, which includes only the relevant event segment; and (2) \textit{Full Video}, which includes the entire sequence and may introduce grounding errors. Results show that providing the temporally aligned target clip consistently improves direction accuracy across all models compared to the \textit{Full Video}. For example, EgoGPT and Ola achieve notable gains of +17.7\% and +13.8\% in direction accuracy, respectively. Distance accuracy also improves in most models—up to +15.6\% for VideoLLaMA2—except for MiniCPM-o, which shows reduced distance accuracy when using only the target clip. This suggests that MiniCPM-o may rely more on extended temporal context for estimating distance. These results highlight the importance of precise temporal alignment for accurate spatial reasoning. 
+
+\begin{table}[htb]
+\centering
+
+\begin{tabular}{|l|cc|cc|}
+\toprule
+ & \multicolumn{2}{c|}{Target Clip}  & \multicolumn{2}{c|}{Full Video}\\
+{Method} &  Direction & Distance & Direction & Distance \\
+\midrule
+Ola~\cite{liu2025ola} &55.7 &36.6 &41.9 &33.0\\
+VideoLLaMA2-7B~\cite{damonlpsg2024videollama2} &48.8 &51.9 & 45.8 & 36.3\\
+MiniCPM-o 2.6~\cite{yao2024minicpm}  &53.8 &39.4 & 46.0 & 45.0 \\
+EgoGPT~\cite{yang2025egolifeegocentriclifeassistant}  &57.9 &54.6 & 40.2 & 50.6\\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+\caption{Ablation on temporal grounding in SAVVY-Bench egocentric QA. We compare two input settings for each AV-LLM: (1) \textit{Target Clip}, only input the queried event video clip; (2) \textit{Full Video}, which includes the entire sequence. Accurate temporal grounding improves direction accuracy across most models.}
+
+
+\label{tab:targetclip}
+\end{table}
+
+\section{Limitations}
+\label{sec:limitations}
+One limitation of \ourpipeline is that it currently relies on a strong foundational AV-LLM—specifically Gemini—and inherits its capabilities in temporal grounding and object referral. The pipeline may underperform if the base model lacks these abilities in the initial stage. Additionally, the spatial audio tracking module uses rule-based signal processing: while effective for direction estimation, distance estimation remains challenging, particularly given the wide variance of near- and far-field cases in the current dataset. Future work could improve audio-visual track aggregation by enhancing this module through large-scale training on realistic spatial audio data.
+
+\section{Broader Impacts}
+\label{sec:broader_impacts}
+
+This work contributes to the development of AV-LLMs capable of fine-grained spatial reasoning in dynamic 3D environments. By introducing a benchmark and training-free pipeline that enables structured spatial understanding across audio and visual modalities, our work opens new avenues for intelligent multi-modal systems in domains such as assistive robotics, AR/VR, human-computer interaction, and audio-visual navigation~\cite{Liu_Paul_Chatterjee_Cherian_2024}. These capabilities have the potential to significantly enhance accessibility tools (e.g., guiding visually impaired users through complex spaces), improve AR/VR user experiences, and support more context-aware AI agents in embodied environments.
+
+However, alongside these benefits, the increasing power of AV-LLMs introduces potential risks. Models capable of interpreting spatial relationships from audio-visual input could be misused in surveillance applications, unauthorized tracking, or context inference without user consent. Moreover, as our method builds on these foundation models, it inherits their limitations and biases, which can propagate through the pipeline and affect real-world deployments. There is also the risk that such models may make confident but incorrect spatial inferences in safety-critical settings. To mitigate these concerns, we recommend that future systems incorporating AV-LLMs for spatial reasoning include safeguards such as: (1) explicit transparency about model uncertainty and failure modes; (2) data collection and evaluation guidelines that prioritize privacy and ethical use of human-centered audio-visual data; and (3) usage restrictions for sensitive applications, especially those involving biometric data or real-time environmental monitoring. Furthermore, research into interpretability and robustness of spatial reasoning components will be critical for safe deployment.
+
+
+\section{Additional Qualitative results: Reasoning Error Analysis}
+\label{sec:additional_qual}
+In this section, we show additional reasoning examples of Gemini-2.5-pro and conclude four major types of errors in the visualization:
+
+1) \emph{Referral Error:} This error occurs when the model fails to correctly identify, locate, or interpret the properties of specific objects, persons, or abstract reference points mentioned in the question. It is particularly common when the referenced object descriptions are complex, rely on relative positioning (e.g., ``the armchair further from the wall painting"), or refer to abstract sound events (e.g., ``a thud sound") that are not tied to a clearly visible object and must be inferred from broader video context. The model may select an incorrect referent or misinterpret its attributes, leading to a flawed premise for subsequent spatial reasoning. An example is shown in Figure~\ref{fig:visualize_reasoning_referral}, where the model incorrectly identifies the queried armchair (the facing object) as the one at the arched opening.
+
+2) \emph{Temporal Localization Error:} This error occurs when the model fails to accurately identify the correct time span of the queried sound event in the question. As a result, the model analyzes the spatial context at an incorrect point in time, leading to flawed reasoning about object locations or spatial relationships. Figure~\ref{fig:visualize_reasoning_temporal} shows an example where the model confuses the speech event ``suggesting trying the coffee” with another semantically similar topic, ``complimenting the coffee taste,” leading to an error in egocentric direction prediction.
+
+3) \emph{Spatial Relationship Error:} This error occurs when the model misinterprets or misapplies fundamental spatial relationships (e.g., left/right, front/back, in front of/behind, next to, between) between correctly identified entities, even within a correct frame of reference.
+In Figure~\ref{fig:visualize_reasoning_trans}, the model successfully identifies the correct event time span, detects all relevant objects as well as their locations. However, it fails to interpret the relative direction correctly, placing the object on the right side of the robot's view instead of the left, resulting in an incorrect prediction of ``front-right” rather than the correct ``front-left.”
+
+4) \emph{Spatial Measurement Error:} This error arises in tasks that require quantitative responses—such as estimating distances or making precise angular judgments (e.g., in Snapshot Descriptor-based tasks). Even when the model correctly identifies the relevant objects and understands their qualitative spatial relationships, it may still make significant errors in geometric reasoning (e.g., applying Pythagorean theorem incorrectly, flawed calculation logic), scale estimation, or numerical calculations.
+Figure~\ref{fig:visualize_reasoning_distance_1} presents an example where the model correctly identifies both the sound source and the queried reference object, and even retrieves a relevant navigation path between them. However, it fails to calculate the distance accurately. This case also reveals a typical reasoning pattern in AV-LLMs for distance estimation: the model anchors the sound source and reference object to static landmarks in the scene, recalls the relevant navigation routes observed in the video, and then estimates the distance according to the routes. 
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/case_referral.pdf}
+    
+    \caption{\textbf{Example of Referral Error.} The model incorrectly selects the armchair (facing object) at the arched opening, failing to identify the correct object description queried in the question. This misinterpretation further causes error for the spatial relationship.}
+    \label{fig:visualize_reasoning_referral}
+
+\end{figure}
+
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/case_temporal.pdf}
+    
+    \caption{\textbf{Example of Temporal Localization Error.} The model incorrectly grounds the speech event ``suggesting trying the coffee,” confusing it with a similar topic. This mismatch causes incorrect egocentric direction prediction.}
+    \label{fig:visualize_reasoning_temporal}
+
+\end{figure}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/case_relationship.pdf}
+    
+    \caption{\textbf{Example of Spatial Relationship Error.} The model correctly identifies the queried time span, relevant objects, and their locations, but fails to determine the correct relative direction of the sounding object with respect to the robot’s view. It incorrectly predicts the object as being on the right side instead of the left, leading to a misclassification of ``front-right” instead of the correct ``front-left.”}
+    
+    \label{fig:visualize_reasoning_trans}
+
+\end{figure}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/case_measure.pdf}
+ 
+    \caption{\textbf{Example of Spatial Measurement Error.} The model correctly identifies the sound source and reference objects, but fails to compute the distance accurately along with the navigation route from the reference object to the sound source.}
+    \label{fig:visualize_reasoning_distance_1}
+
+\end{figure}
+
+
+
+
+
+\clearpage
+
+
+\bibliography{reference}
+\bibliographystyle{unsrt}
+
+
+
+
+
+\end{document}
