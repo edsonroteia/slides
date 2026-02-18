@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spatial Understanding with AV-LLMs — Edson Araujo</title>
+<title>Spatial Understanding with AV-LLMs - Edson Araujo</title>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -658,6 +658,29 @@ body {
 .json-preview .js { color: #a6e3a1; }
 .json-preview .jn { color: #fab387; }
 .json-preview .jp { color: #9399b2; }
+
+/* ═══ TASK CARD HIGHLIGHTING ═══ */
+.task-cards, .task-videos { transition: opacity 0.35s ease, transform 0.35s ease; }
+.task-cards .card { transition: opacity 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease; }
+.task-cards.highlighting .card { opacity: 0.20; transform: scale(0.97); }
+.task-cards.highlighting .card.task-lit { opacity: 1; transform: scale(1.01); box-shadow: 0 2px 12px rgba(0,0,0,0.08); z-index: 2; position: relative; }
+
+/* ═══ CSS CONFUSION MATRICES ═══ */
+.cm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 40px; }
+.cm-col-header { font-size: 15px; font-weight: 700; font-family: var(--f-mono); letter-spacing: 0.04em; text-align: center; grid-column: span 1; padding-bottom: 4px; }
+.cm-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cm-label { font-family: var(--f-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-text-3); }
+.cm-model-label { font-size: 13px; font-weight: 600; color: var(--c-blue); font-family: var(--f-mono); letter-spacing: 0.04em; }
+.cm-table { border-collapse: collapse; }
+.cm-table th { font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--c-text-3); padding: 6px 10px; text-align: center; }
+.cm-table td { font-family: var(--f-mono); font-size: 15px; font-weight: 500; padding: 10px 18px; text-align: center; color: var(--c-text); border: 1px solid var(--c-border-light); min-width: 56px; }
+.cm-table .cm-rh { font-weight: 600; color: var(--c-text-3); background: transparent; border: none; font-size: 13px; padding: 6px 8px; }
+.cm-axis { font-family: var(--f-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-text-4); }
+.cm-axis-bottom { text-align: center; margin-top: 3px; }
+.cm-tbl-wrap { display: flex; align-items: center; gap: 4px; }
+.cm-axis-left { writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; }
+.cm-table td { transition: opacity 0.35s ease, filter 0.35s ease; }
+.cm-table td.cm-dim { opacity: 0.12; filter: grayscale(1); }
 </style>
 </head>
 <body>
@@ -670,7 +693,7 @@ body {
     <div class="sh sh-xl" style="font-size:48px; max-width:900px;">
       Spatial Understanding<br>with <em>Audio-Visual LLMs</em>
     </div>
-    <div class="title-sub">Failure Mode Analysis &amp; Research Directions for Spatial Reasoning</div>
+    <div class="title-sub">Research Directions for Spatial Reasoning</div>
     <div class="title-rule"></div>
     <div class="title-author">Edson Araujo & Prof. Hilde Kuehne</div>
 
@@ -767,7 +790,7 @@ body {
     <div class="sh sh-xl">Problem &amp; Context</div>
     <p class="sp" style="max-width:560px;">Spatial reasoning in dynamic audio-visual environments</p>
   </div>
-  <div class="slide-footer"><span>01 — Context</span><span></span></div>
+  <div class="slide-footer"><span>01 · Context</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -776,7 +799,7 @@ body {
   <div class="slide-inner">
     <div class="stag orange">The Benchmark</div>
     <div class="sh sh-lg">SAVVY-Bench <em>(NeurIPS 2025 - Oral)</em></div>
-    <p class="sp" style="margin-bottom:16px;">Spatial Audio-Visual Question Answering — 4 tasks testing whether models can localize sounds and objects in 3D space from egocentric video with audio.</p>
+    <p class="sp" style="margin-bottom:16px;">Spatial Audio-Visual Question Answering: 4 tasks testing whether models can localize sounds and objects in 3D space from egocentric video with audio.</p>
 
     <div style="flex:1; display:flex; align-items:center; justify-content:center; min-height:0;">
       <div class="chart-frame" style="padding:2px; display:inline-block; line-height:0;">
@@ -784,20 +807,20 @@ body {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>01 — Context</span><span></span></div>
+  <div class="slide-footer"><span>01 · Context</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
 <!-- ════════════════════ SLIDE 3b: TASK TYPES + DATA SOURCE ════════════════════ -->
-<div class="slide" data-section="Context" data-steps="1">
+<div class="slide" data-section="Context" data-steps="5" id="slide-tasks">
   <div class="slide-inner">
     <div class="stag orange">Task Breakdown</div>
     <div class="sh sh-lg">4 Spatial QA Tasks</div>
 
     <div class="col gap-8 flex-1" style="margin-top:8px;">
       <!-- 4 Task Types — horizontal row -->
-      <div data-step="0" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;">
-        <div class="card accent" style="padding:16px 18px;">
+      <div class="task-cards" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;">
+        <div class="card accent" data-task="ego-dir" style="padding:16px 18px;">
           <div style="display:flex; align-items:center; gap:7px; margin-bottom:8px;">
             <span class="tag orange" style="font-size:9.5px;">Egocentric</span>
             <span style="font-size:15px; font-weight:600; color:var(--c-text);">Direction</span>
@@ -805,7 +828,7 @@ body {
           <p style="font-size:13.5px; line-height:1.55; color:var(--c-text-2);">"Relative to where you are facing, where is the other person?"</p>
           <p style="font-size:12.5px; margin-top:6px; color:var(--c-text-3); font-weight:600;">→ front-left / front-right / back-left / back-right</p>
         </div>
-        <div class="card accent" style="padding:16px 18px;">
+        <div class="card accent" data-task="ego-dist" style="padding:16px 18px;">
           <div style="display:flex; align-items:center; gap:7px; margin-bottom:8px;">
             <span class="tag orange" style="font-size:9.5px;">Egocentric</span>
             <span style="font-size:15px; font-weight:600; color:var(--c-text);">Distance</span>
@@ -813,7 +836,7 @@ body {
           <p style="font-size:13.5px; line-height:1.55; color:var(--c-text-2);">"What is the distance between you and the other person?"</p>
           <p style="font-size:12.5px; margin-top:6px; color:var(--c-text-3); font-weight:600;">→ meters (continuous)</p>
         </div>
-        <div class="card cblue" style="padding:16px 18px;">
+        <div class="card cblue" data-task="allo-dir" style="padding:16px 18px;">
           <div style="display:flex; align-items:center; gap:7px; margin-bottom:8px;">
             <span class="tag blue" style="font-size:9.5px;">Allocentric</span>
             <span style="font-size:15px; font-weight:600; color:var(--c-text);">Direction</span>
@@ -821,7 +844,7 @@ body {
           <p style="font-size:13.5px; line-height:1.55; color:var(--c-text-2);">"Standing by the cabinet and facing the TV, where is the speaker?"</p>
           <p style="font-size:12.5px; margin-top:6px; color:var(--c-text-3); font-weight:600;">→ left / right / front / back</p>
         </div>
-        <div class="card cblue" style="padding:16px 18px;">
+        <div class="card cblue" data-task="allo-dist" style="padding:16px 18px;">
           <div style="display:flex; align-items:center; gap:7px; margin-bottom:8px;">
             <span class="tag blue" style="font-size:9.5px;">Allocentric</span>
             <span style="font-size:15px; font-weight:600; color:var(--c-text);">Distance</span>
@@ -831,7 +854,7 @@ body {
         </div>
       </div>
       <!-- Video examples -->
-      <div data-step="1" class="col-2" style="gap:24px;">
+      <div class="task-videos col-2" style="gap:24px; opacity:0.30; transform:scale(0.98); pointer-events:none;">
         <div class="col gap-2" style="align-items:center;">
           <div class="chart-frame video-thumb" style="max-height:340px; cursor:pointer;" onclick="openVideoOverlay('assets/savvybench_examples/video_ego_dir.mp4')">
             <video src="assets/savvybench_examples/video_ego_dir.mp4" autoplay muted loop playsinline></video>
@@ -861,11 +884,11 @@ body {
           <div style="text-align:center;"><span style="font-size:18px; font-weight:700; color:var(--c-green); display:block;">7-ch</span><span style="font-size:10px; color:var(--c-text-3);">Spatial Audio</span></div>
         </div>
         <div style="width:1px; height:28px; background:var(--c-border-light); flex-shrink:0;"></div>
-        <div><strong style="color:var(--c-text);">Data source: Aria Everyday Activities (AEA)</strong> — egocentric recordings from Project Aria glasses with 7-channel spatial audio, IMU, eye tracking, and <strong>3D ground-truth trajectories</strong>.</div>
+        <div><strong style="color:var(--c-text);">Data source: Aria Everyday Activities (AEA)</strong>, egocentric recordings from Project Aria glasses with 7-channel spatial audio, IMU, eye tracking, and <strong>3D ground-truth trajectories</strong>.</div>
       </div> -->
     </div> 
   </div>
-  <div class="slide-footer"><span>01 — Context</span><span></span></div>
+  <div class="slide-footer"><span>01 · Context</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -908,7 +931,7 @@ body {
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
           <div class="pstep-num green">3</div>
           <span style="font-size:14px; font-weight:600; color:var(--c-text);">Scene &amp; Object Mapping</span>
-          <span style="font-size:11px; color:var(--c-text-3); margin-left:auto;">Sound source localization, reference frame construction</span>
+          <span style="font-size:11px; color:var(--c-text-3); margin-left:auto;"><strong style="color:var(--c-text);">Sound source localization</strong>, reference frame construction</span>
         </div>
         <div style="background:var(--c-surface-dim); border-radius:5px; padding:10px 14px; font-size:12.5px; line-height:1.6; color:var(--c-text-2);">
           <span style="font-family:var(--f-mono); font-size:10px; font-weight:600; color:var(--c-green); letter-spacing:0.04em;">EXAMPLE</span><br>
@@ -918,7 +941,7 @@ body {
 
     </div>
   </div>
-  <div class="slide-footer"><span>01 — Context</span><span></span></div>
+  <div class="slide-footer"><span>01 · Context</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -933,32 +956,33 @@ body {
         <tr><th>Model</th><th style="text-align:center">Type</th><th>Ego-Dir</th><th>Ego-Dist</th><th>Allo-Dir</th><th>Allo-Dist</th><th>Avg</th></tr>
       </thead>
       <tbody>
-        <tr class="dim"><td>Chance</td><td style="text-align:center; font-size:11px;">—</td><td>30.2</td><td>—</td><td>32.1</td><td>—</td><td>—</td></tr>
-        <tr data-sota="open" class="dim"><td>VideoLLaMA2</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>45.8</td><td>36.3</td><td>25.9</td><td>20.4</td><td>32.1</td></tr>
-        <tr data-sota="open" class="dim"><td>Ola</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>41.9</td><td>33.0</td><td>27.9</td><td>25.9</td><td>32.2</td></tr>
-        <tr data-sota="open" class="dim"><td>MiniCPM</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>46.0</td><td>45.0</td><td>25.4</td><td>14.9</td><td>32.8</td></tr>
-        <tr data-sota="open" class="dim"><td>EgoGPT</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>40.2</td><td>50.6</td><td>26.4</td><td>20.2</td><td>34.4</td></tr>
-        <tr data-sota="open" class="dim"><td>Qwen2.5-Omni</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>55.7</td><td>25.9</td><td>31.0</td><td>5.0</td><td>29.4</td></tr>
+        <tr class="dim"><td>Chance</td><td style="text-align:center; font-size:11px;">&ndash;</td><td>30.2</td><td>&ndash;</td><td>32.1</td><td>&ndash;</td><td>&ndash;</td></tr>
+        <tr data-sota="paper-open" class="dim"><td>VideoLLaMA2</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>45.8</td><td>36.3</td><td>25.9</td><td>20.4</td><td>32.1</td></tr>
+        <tr data-sota="paper-open" class="dim"><td>Ola</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>41.9</td><td>33.0</td><td>27.9</td><td>25.9</td><td>32.2</td></tr>
+        <tr data-sota="paper-open" class="dim"><td>MiniCPM</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>46.0</td><td>45.0</td><td>25.4</td><td>14.9</td><td>32.8</td></tr>
+        <tr data-sota="paper-open" class="dim"><td>EgoGPT</td><td style="text-align:center"><span class="tag" style="font-size:10px;">open</span></td><td>40.2</td><td>50.6</td><td>26.4</td><td>20.2</td><td>34.4</td></tr>
         <tr data-sota="closed"><td>Gemini-2.5-flash</td><td style="text-align:center"><span class="tag purple" style="font-size:10px;">closed</span></td><td>74.2</td><td>49.7</td><td>29.8</td><td>29.0</td><td>45.7</td></tr>
         <tr data-sota="closed"><td>Gemini-2.5-pro</td><td style="text-align:center"><span class="tag purple" style="font-size:10px;">closed</span></td><td>75.2</td><td>59.6</td><td>31.7</td><td>37.0</td><td>50.9</td></tr>
-        <tr data-sota="qwen3" class="hlb"><td><strong>Qwen3-Omni</strong></td><td style="text-align:center"><span class="tag blue" style="font-size:10px;">open</span></td><td>69.5</td><td>64.6</td><td class="bad">27.1</td><td>31.7</td><td>48.2</td></tr>
+        <tr data-sota="ours" class="hlb"><td><strong>Qwen2.5-Omni</strong></td><td style="text-align:center"><span class="tag blue" style="font-size:10px;">open (repr)</span></td><td>55.7</td><td>25.9</td><td>31.0</td><td>5.0</td><td>29.4</td></tr>
+        <tr data-sota="ours" class="hlb"><td><strong>Qwen3-Omni</strong></td><td style="text-align:center"><span class="tag blue" style="font-size:10px;">open (repr)</span></td><td>69.5</td><td>64.6</td><td class="bad">27.1</td><td>31.7</td><td>48.2</td></tr>
+        <tr data-sota="ours" class="hlb"><td><strong>MiniCPM-o-4.5</strong></td><td style="text-align:center"><span class="tag blue" style="font-size:10px;">open (repr)</span></td><td>64.8</td><td>49.7</td><td>26.4</td><td>27.0</td><td>41.1</td></tr>
         <tr data-sota="savvy" class="hl"><td><strong>SAVVY (pipeline)</strong></td><td style="text-align:center"><span class="tag orange" style="font-size:10px;">pipeline</span></td><td class="best">84.7</td><td class="best">62.9</td><td class="best">44.0</td><td class="best">40.2</td><td class="best">58.0</td></tr>
       </tbody>
     </table>
 
     <div class="sota-caption" style="margin-top:16px; max-width:860px; width:100%; min-height:40px;">
       <div data-step="0" class="callout" style="font-size:12.5px; background:var(--c-surface-dim); border-color:var(--c-border);">
-        Open-source AV-LLMs cluster around <strong>29–35% avg</strong>, well below closed-source models at <strong>46–51%</strong>.
+        Paper open-source AV-LLMs cluster around <strong>29-35% avg</strong>, well below closed-source models at <strong>46-51%</strong>.
       </div>
       <div data-step="1" class="callout green" style="font-size:12.5px;">
-        <strong>Gap 1 — Open vs. Closed-source:</strong> Qwen3-Omni (48.2%) bridges this gap as the first open-weight model competitive with Gemini-2.5-pro (50.9%).
+        <strong>Gap 1:</strong> Qwen3-Omni (48.2%) and MiniCPM-o-4.5 (41.1%) bridge the open/closed gap. These are the first open-weight models competitive with Gemini.
       </div>
       <div data-step="2" class="callout orange" style="font-size:12.5px;">
-        <strong>Gap 2 — End-to-End vs. Pipeline:</strong> SAVVY adds +7.1 avg over Gemini-2.5-pro with <em>zero training</em> — structured spatial reasoning still outperforms all end-to-end models.
+        <strong>Gap 2:</strong> SAVVY adds +7.1 avg over Gemini-2.5-pro with <em>zero training</em>. Structured spatial reasoning still outperforms all end-to-end models.
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>01 — Context</span><span></span></div>
+  <div class="slide-footer"><span>01 · Context</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -973,7 +997,7 @@ body {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>02 — SAVVY Pipeline</span><span></span></div>
+  <div class="slide-footer"><span>02 · SAVVY Pipeline</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -981,56 +1005,94 @@ body {
 <div class="slide" data-section="SAVVY Pipeline">
   <div class="slide-inner">
     <div class="stag orange">Architecture</div>
-    <div class="sh sh-lg">Two Stages of <em>Structured Spatial Reasoning</em></div>
+    <div class="sh sh-lg">How <em>SAVVY</em> Reasons About Space</div>
 
-    <div class="col-2" style="flex:1 1 auto;">
+    <!-- High-level pipeline flow -->
+    <div style="display:flex; align-items:center; gap:0; margin-bottom:18px;">
+      <div style="background:var(--c-surface-dim); border-radius:6px; padding:7px 14px; font-size:13px; font-weight:500; color:var(--c-text-3);">Video + Audio + Question</div>
+      <svg width="36" height="20" style="flex-shrink:0;"><path d="M6 10 L28 10 M23 5 L30 10 L23 15" fill="none" stroke="var(--c-text-4)" stroke-width="1.5"/></svg>
+      <div style="background:var(--c-accent-light); border:1px solid rgba(196,75,40,0.15); border-radius:6px; padding:7px 14px; font-size:13px; font-weight:600; color:var(--c-accent);">Stage 1 &middot; Track Objects</div>
+      <svg width="36" height="20" style="flex-shrink:0;"><path d="M6 10 L28 10 M23 5 L30 10 L23 15" fill="none" stroke="var(--c-text-4)" stroke-width="1.5"/></svg>
+      <div style="background:var(--c-blue-light); border:1px solid rgba(38,99,176,0.15); border-radius:6px; padding:7px 14px; font-size:13px; font-weight:600; color:var(--c-blue);">Stage 2 &middot; Build Map</div>
+      <svg width="36" height="20" style="flex-shrink:0;"><path d="M6 10 L28 10 M23 5 L30 10 L23 15" fill="none" stroke="var(--c-text-4)" stroke-width="1.5"/></svg>
+      <div style="background:var(--c-green-light); border:1px solid rgba(26,122,74,0.15); border-radius:6px; padding:7px 14px; font-size:13px; font-weight:600; color:var(--c-green);">Spatial Answer</div>
+    </div>
+
+    <div class="col-2" style="flex:1 1 auto; gap:20px;">
       <!-- Stage 1 -->
-      <div class="card accent col gap-8" style="padding:18px; align-self:start;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span class="tag orange">Stage 1</span>
-          <span style="font-size:13px; font-weight:600; color:var(--c-text);">Egocentric Spatial Track Estimation</span>
+      <div class="card accent col" style="padding:20px;">
+        <div style="font-size:17px; font-weight:600; color:var(--c-text); margin-bottom:4px;">Where is each object?</div>
+        <p style="font-size:13.5px; color:var(--c-text-3); margin-bottom:16px;">Track from the camera's viewpoint using three complementary signals:</p>
+
+        <div class="col" style="gap:14px; flex:1;">
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <div class="pstep-num orange" style="width:24px; height:24px; font-size:11px;">a</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--c-text);">Ask Gemini</div>
+              <p style="font-size:13px; color:var(--c-text-2); line-height:1.5;">One structured prompt identifies object roles (target, reference, facing), grounds the time window, and outputs a sparse trajectory. Good starting point, but misses frames.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <div class="pstep-num blue" style="width:24px; height:24px; font-size:11px;">b</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--c-text);">Segment + Depth</div>
+              <p style="font-size:13px; color:var(--c-text-2); line-height:1.5;">Segment objects across sampled frames (CLIPSeg + SAM2). Angle from mask centroid offset to image center; distance from monocular depth (ZoeDepth). Fills the trajectory gaps.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <div class="pstep-num green" style="width:24px; height:24px; font-size:11px;">c</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--c-text);">Spatial audio</div>
+              <p style="font-size:13px; color:var(--c-text-2); line-height:1.5;">7-mic array on the Aria glasses. Angle from beam-steering across mic pairs; distance from coherent-to-diffuse ratio, calibrated with the visual estimates. <strong>Only signal that works behind the camera.</strong></p>
+            </div>
+          </div>
         </div>
-        <p style="font-size:11.5px; color:var(--c-text-3); line-height:1.5;">Three complementary extractors produce per-frame <strong>(t, θ, r)</strong> tuples — timestamp, azimuth, distance</p>
-        <div class="pstep">
-          <div class="pstep-num orange">a</div>
-          <div class="pstep-body"><h4>Snapshot Descriptor</h4><p>One AV-LLM call grounds the query temporally, identifies object roles (target, reference, facing), and <strong>directly generates</strong> a sparse egocentric trajectory as (t, θ, r) tuples via structured prompting. Handles static objects well but misses intermediate frames.</p></div>
-        </div>
-        <div class="pstep">
-          <div class="pstep-num blue">b</div>
-          <div class="pstep-body"><h4>Text-Guided Segmentation</h4><p>CLIPSeg + SAM2 segment objects across 128 frames using SD text descriptions. θ is computed from the mask centroid's offset relative to image center; r from ZoeDepth monocular depth. Fills trajectory gaps left by the Snapshot Descriptor.</p></div>
-        </div>
-        <div class="pstep">
-          <div class="pstep-num green">c</div>
-          <div class="pstep-body"><h4>Spatial Audio Cues</h4><p>SRP-PHAT on 7-mic array estimates θ (direction-of-arrival). CDR estimates r, calibrated using visual distances from (a)/(b) via a constant D²·CDR relationship. <strong>Only modality that localizes behind-camera targets.</strong></p></div>
+
+        <div style="margin-top:auto; padding-top:10px; font-size:12.5px; color:var(--c-text-3); border-top:1px solid var(--c-border-light);">
+          Each signal outputs <strong style="color:var(--c-text);">(time, angle, distance)</strong> per object per frame
         </div>
       </div>
 
       <!-- Stage 2 -->
-      <div class="card cblue" style="padding:18px; align-self:start;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <span class="tag blue">Stage 2</span>
-          <span style="font-size:13px; font-weight:600; color:var(--c-text);">Dynamic Global Map Construction</span>
+      <div class="card cblue col" style="padding:20px;">
+        <div style="font-size:17px; font-weight:600; color:var(--c-text); margin-bottom:4px;">Build the overhead map</div>
+        <p style="font-size:13.5px; color:var(--c-text-3); margin-bottom:16px;">Merge all camera views into one bird's-eye floor plan:</p>
+
+        <div class="col" style="gap:14px; flex:1;">
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <div class="pstep-num blue" style="width:24px; height:24px; font-size:11px;">1</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--c-text);">Project to global coordinates</div>
+              <p style="font-size:13px; color:var(--c-text-2); line-height:1.5;">Use the camera trajectory to place each observation on a shared 2D map</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <div class="pstep-num blue" style="width:24px; height:24px; font-size:11px;">2</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--c-text);">Clean up the tracks</div>
+              <p style="font-size:13px; color:var(--c-text-2); line-height:1.5;">Pin down static objects by clustering, smooth moving trajectories</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <div class="pstep-num blue" style="width:24px; height:24px; font-size:11px;">3</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--c-text);">Answer the question</div>
+              <p style="font-size:13px; color:var(--c-text-2); line-height:1.5;">Read direction & distance from the map, rotate the frame if allocentric</p>
+            </div>
+          </div>
         </div>
-        <div class="pstep">
-          <div class="pstep-num blue">1</div>
-          <div class="pstep-body"><h4>Ego → Global Projection</h4><p>Each (t, θ, r) track is projected onto a shared 2D map using the SLAM-derived camera pose L(t), converting egocentric observations into global coordinates.</p></div>
-        </div>
-        <div class="pstep">
-          <div class="pstep-num blue">2</div>
-          <div class="pstep-body"><h4>Track Aggregation</h4><p><strong>Static objects:</strong> DBSCAN clusters globalized positions, centroid of dominant cluster → final location. <strong>Dynamic targets:</strong> Kalman filter interpolates and smooths the trajectory across modalities.</p></div>
-        </div>
-        <div class="pstep">
-          <div class="pstep-num blue">3</div>
-          <div class="pstep-body"><h4>Spatial QA Resolution</h4><p><strong>Ego:</strong> compute direction/distance from camera to target. <strong>Allo:</strong> rotate map so reference→facing = +y axis, then read the target's relative position.</p></div>
+
+        <div style="margin-top:auto; padding-top:10px; font-size:12.5px; color:var(--c-text-3); border-top:1px solid var(--c-border-light);">
+          Result: a <strong style="color:var(--c-text);">unified map</strong> with all object positions over time
         </div>
       </div>
     </div>
 
-    <div class="callout green" style="font-size:12px; flex-shrink:0;">
-      <strong>Ablation result:</strong> Global mapping gives <strong>+11.9%</strong> localization, <strong>+14.3%</strong> distance, <strong>+4.1%</strong> direction over raw egocentric tracks.
+    <div class="callout green" style="font-size:13px; flex-shrink:0;">
+      <strong>Key result:</strong> Global mapping gives <strong>+11.9%</strong> localization, <strong>+14.3%</strong> distance, <strong>+4.1%</strong> direction over raw egocentric tracks.
     </div>
   </div>
-  <div class="slide-footer"><span>02 — SAVVY Pipeline</span><span></span></div>
+  <div class="slide-footer"><span>02 · SAVVY Pipeline</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -1038,7 +1100,7 @@ body {
 <div class="slide" data-section="Failure Analysis">
   <div class="divider-layout" style="gap:20px;">
     <div class="divider-num">02</div>
-    <div class="sh sh-xl">Qwen3-Omni<br><em>Failure Mode Analysis</em></div>
+    <div class="sh sh-xl">Qwen3-Omni &amp; MiniCPM-o 4.5<br><em>Failure Mode Analysis</em></div>
     <p class="sp" style="max-width:520px;">What does the model get right, where does it break, and what does each failure pattern tell us about missing capabilities?</p>
 
     <table class="tbl" style="width:100%; max-width:680px; font-size:11.5px; margin-top:4px; opacity:0.92;">
@@ -1046,15 +1108,16 @@ body {
         <tr><th>Model</th><th>Type</th><th>Ego-Dir</th><th>Ego-Dist</th><th>Allo-Dir</th><th>Allo-Dist</th><th>Avg</th></tr>
       </thead>
       <tbody>
-        <tr class="dim"><td>Chance</td><td style="font-size:9px;">—</td><td>30.2</td><td>—</td><td>32.1</td><td>—</td><td>—</td></tr>
+        <tr class="dim"><td>Chance</td><td style="font-size:9px;">&ndash;</td><td>30.2</td><td>&ndash;</td><td>32.1</td><td>&ndash;</td><td>&ndash;</td></tr>
         <tr class="dim"><td>Open-source best (EgoGPT)</td><td><span class="tag" style="font-size:8px;">open</span></td><td>40.2</td><td>50.6</td><td>26.4</td><td>20.2</td><td>34.4</td></tr>
         <tr class="dim"><td>Gemini-2.5-pro</td><td><span class="tag" style="font-size:8px;">closed</span></td><td>75.2</td><td>59.6</td><td>31.7</td><td>37.0</td><td>50.9</td></tr>
+        <tr class="hlb"><td><strong>MiniCPM-o-4.5</strong></td><td><span class="tag blue" style="font-size:8px;">open</span></td><td>64.8</td><td>49.7</td><td>26.4</td><td>27.0</td><td>41.1</td></tr>
         <tr class="hlb"><td><strong>Qwen3-Omni</strong></td><td><span class="tag blue" style="font-size:8px;">open</span></td><td>69.5</td><td>64.6</td><td class="bad">27.1</td><td>31.7</td><td>48.2</td></tr>
         <tr class="dim"><td>SAVVY (pipeline)</td><td><span class="tag" style="font-size:8px;">pipeline</span></td><td>84.7</td><td>62.9</td><td>44.0</td><td>40.2</td><td>58.0</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="slide-footer"><span>03 — Failure Analysis</span><span></span></div>
+  <div class="slide-footer"><span>03 · Failure Analysis</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -1064,78 +1127,154 @@ body {
     <div class="stag red" style="color:var(--c-red);">Failure Mode 1</div>
     <div class="sh sh-lg">Ego Direction: <em>The Front Bias</em></div>
 
-    <div style="display:flex; flex:1; align-items:center; justify-content:center;">
-      <svg viewBox="0 0 340 380" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:'Outfit',system-ui,sans-serif; max-height:420px;">
-        <defs>
-          <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#b83232"/>
-          </marker>
-          <linearGradient id="fovGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#2663b0" stop-opacity="0.10"/>
-            <stop offset="100%" stop-color="#2663b0" stop-opacity="0.02"/>
-          </linearGradient>
-        </defs>
+    <div style="display:flex; flex:1; align-items:center; justify-content:center; gap:32px;">
+      <!-- Qwen3-Omni -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:0;">
+        <span style="font-size:12px; font-weight:600; color:var(--c-blue); font-family:var(--f-mono); letter-spacing:0.04em;">QWEN3-OMNI</span>
+        <svg viewBox="0 0 340 340" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:'Outfit',system-ui,sans-serif; max-height:420px;">
+          <defs>
+            <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#b83232"/>
+            </marker>
+          </defs>
+          <rect x="14" y="14" width="146" height="130" rx="8" fill="#e8f5ee" stroke="#1a7a4a" stroke-width="1.2" stroke-opacity="0.25"/>
+          <rect x="180" y="14" width="146" height="130" rx="8" fill="#e8f5ee" stroke="#1a7a4a" stroke-width="1.2" stroke-opacity="0.25"/>
+          <rect x="14" y="180" width="146" height="130" rx="8" fill="#fceaea" stroke="#b83232" stroke-width="1.2" stroke-opacity="0.25"/>
+          <rect x="180" y="180" width="146" height="130" rx="8" fill="#fceaea" stroke="#b83232" stroke-width="1.2" stroke-opacity="0.25"/>
+          <path d="M 170 155 L 60 18 L 280 18 Z" fill="#2663b0" opacity="0.06"/>
+          <path d="M 170 155 L 60 18 L 280 18 Z" fill="none" stroke="#2663b0" stroke-width="0.75" stroke-opacity="0.2" stroke-dasharray="4 3"/>
+          <text x="87" y="40" text-anchor="middle" font-size="10.5" font-weight="500" fill="#1a7a4a" opacity="0.7">Front-Left</text>
+          <text x="253" y="40" text-anchor="middle" font-size="10.5" font-weight="500" fill="#1a7a4a" opacity="0.7">Front-Right</text>
+          <text x="87" y="206" text-anchor="middle" font-size="10.5" font-weight="500" fill="#b83232" opacity="0.7">Back-Left</text>
+          <text x="253" y="206" text-anchor="middle" font-size="10.5" font-weight="500" fill="#b83232" opacity="0.7">Back-Right</text>
+          <text x="87" y="82" text-anchor="middle" font-size="38" font-weight="700" fill="#1a7a4a" font-family="'IBM Plex Mono',monospace">89%</text>
+          <text x="253" y="82" text-anchor="middle" font-size="38" font-weight="700" fill="#1a7a4a" font-family="'IBM Plex Mono',monospace">74%</text>
+          <text x="87" y="248" text-anchor="middle" font-size="38" font-weight="700" fill="#b83232" font-family="'IBM Plex Mono',monospace">12%</text>
+          <text x="253" y="248" text-anchor="middle" font-size="38" font-weight="700" fill="#b83232" font-family="'IBM Plex Mono',monospace">7%</text>
+          <text x="87" y="102" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=194</text>
+          <text x="253" y="102" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=192</text>
+          <text x="87" y="268" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=49</text>
+          <text x="253" y="268" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=28</text>
+          <ellipse cx="170" cy="160" rx="17" ry="21" fill="#f6f4f0" stroke="#1a1a1e" stroke-width="1.5" stroke-opacity="0.35"/>
+          <path d="M 170 138 L 164 147 L 176 147 Z" fill="#1a1a1e" opacity="0.25"/>
+          <text x="170" y="127" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.14em" fill="#4a4a52">FRONT</text>
+          <text x="170" y="198" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.14em" fill="#4a4a52">BACK</text>
+          <text x="170" y="330" text-anchor="middle" font-size="9.5" fill="#7a7a84">Per-option accuracy (Qwen3-Omni)</text>
+        </svg>
+      </div>
+      <!-- MiniCPM-o-4.5 -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:0;">
+        <span style="font-size:12px; font-weight:600; color:var(--c-blue); font-family:var(--f-mono); letter-spacing:0.04em;">MINICPM-o-4.5</span>
+        <svg viewBox="0 0 340 340" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:'Outfit',system-ui,sans-serif; max-height:420px;">
+          <rect x="14" y="14" width="146" height="130" rx="8" fill="#e8f5ee" stroke="#1a7a4a" stroke-width="1.2" stroke-opacity="0.25"/>
+          <rect x="180" y="14" width="146" height="130" rx="8" fill="#e8f5ee" stroke="#1a7a4a" stroke-width="1.2" stroke-opacity="0.25"/>
+          <rect x="14" y="180" width="146" height="130" rx="8" fill="#fceaea" stroke="#b83232" stroke-width="1.2" stroke-opacity="0.25"/>
+          <rect x="180" y="180" width="146" height="130" rx="8" fill="#fceaea" stroke="#b83232" stroke-width="1.2" stroke-opacity="0.25"/>
+          <path d="M 170 155 L 60 18 L 280 18 Z" fill="#2663b0" opacity="0.06"/>
+          <path d="M 170 155 L 60 18 L 280 18 Z" fill="none" stroke="#2663b0" stroke-width="0.75" stroke-opacity="0.2" stroke-dasharray="4 3"/>
+          <text x="87" y="40" text-anchor="middle" font-size="10.5" font-weight="500" fill="#1a7a4a" opacity="0.7">Front-Left</text>
+          <text x="253" y="40" text-anchor="middle" font-size="10.5" font-weight="500" fill="#1a7a4a" opacity="0.7">Front-Right</text>
+          <text x="87" y="206" text-anchor="middle" font-size="10.5" font-weight="500" fill="#b83232" opacity="0.7">Back-Left</text>
+          <text x="253" y="206" text-anchor="middle" font-size="10.5" font-weight="500" fill="#b83232" opacity="0.7">Back-Right</text>
+          <text x="87" y="82" text-anchor="middle" font-size="38" font-weight="700" fill="#1a7a4a" font-family="'IBM Plex Mono',monospace">54%</text>
+          <text x="253" y="82" text-anchor="middle" font-size="38" font-weight="700" fill="#1a7a4a" font-family="'IBM Plex Mono',monospace">94%</text>
+          <text x="87" y="248" text-anchor="middle" font-size="38" font-weight="700" fill="#b83232" font-family="'IBM Plex Mono',monospace">0%</text>
+          <text x="253" y="248" text-anchor="middle" font-size="38" font-weight="700" fill="#b83232" font-family="'IBM Plex Mono',monospace">0%</text>
+          <text x="87" y="102" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=171</text>
+          <text x="253" y="102" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=179</text>
+          <text x="87" y="268" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=31</text>
+          <text x="253" y="268" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=20</text>
+          <ellipse cx="170" cy="160" rx="17" ry="21" fill="#f6f4f0" stroke="#1a1a1e" stroke-width="1.5" stroke-opacity="0.35"/>
+          <path d="M 170 138 L 164 147 L 176 147 Z" fill="#1a1a1e" opacity="0.25"/>
+          <text x="170" y="127" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.14em" fill="#4a4a52">FRONT</text>
+          <text x="170" y="198" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.14em" fill="#4a4a52">BACK</text>
+          <text x="170" y="330" text-anchor="middle" font-size="9.5" fill="#7a7a84">Per-option accuracy (MiniCPM-o-4.5)</text>
+        </svg>
+      </div>
+    </div>
 
-        <rect x="14" y="14" width="146" height="130" rx="8" fill="#e8f5ee" stroke="#1a7a4a" stroke-width="1.2" stroke-opacity="0.25"/>
-        <rect x="180" y="14" width="146" height="130" rx="8" fill="#e8f5ee" stroke="#1a7a4a" stroke-width="1.2" stroke-opacity="0.25"/>
-        <rect x="14" y="180" width="146" height="130" rx="8" fill="#fceaea" stroke="#b83232" stroke-width="1.2" stroke-opacity="0.25"/>
-        <rect x="180" y="180" width="146" height="130" rx="8" fill="#fceaea" stroke="#b83232" stroke-width="1.2" stroke-opacity="0.25"/>
-
-        <path d="M 170 155 L 60 18 L 280 18 Z" fill="#2663b0" opacity="0.06"/>
-        <path d="M 170 155 L 60 18 L 280 18 Z" fill="none" stroke="#2663b0" stroke-width="0.75" stroke-opacity="0.2" stroke-dasharray="4 3"/>
-
-        <text x="87" y="40" text-anchor="middle" font-size="10.5" font-weight="500" fill="#1a7a4a" opacity="0.7">Front-Left</text>
-        <text x="253" y="40" text-anchor="middle" font-size="10.5" font-weight="500" fill="#1a7a4a" opacity="0.7">Front-Right</text>
-        <text x="87" y="206" text-anchor="middle" font-size="10.5" font-weight="500" fill="#b83232" opacity="0.7">Back-Left</text>
-        <text x="253" y="206" text-anchor="middle" font-size="10.5" font-weight="500" fill="#b83232" opacity="0.7">Back-Right</text>
-
-        <text x="87" y="82" text-anchor="middle" font-size="38" font-weight="700" fill="#1a7a4a" font-family="'IBM Plex Mono',monospace">89%</text>
-        <text x="253" y="82" text-anchor="middle" font-size="38" font-weight="700" fill="#1a7a4a" font-family="'IBM Plex Mono',monospace">74%</text>
-        <text x="87" y="248" text-anchor="middle" font-size="38" font-weight="700" fill="#b83232" font-family="'IBM Plex Mono',monospace">12%</text>
-        <text x="253" y="248" text-anchor="middle" font-size="38" font-weight="700" fill="#b83232" font-family="'IBM Plex Mono',monospace">7%</text>
-
-        <text x="87" y="102" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=194</text>
-        <text x="253" y="102" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=192</text>
-        <text x="87" y="268" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=49</text>
-        <text x="253" y="268" text-anchor="middle" font-size="9.5" fill="#7a7a84" font-family="'IBM Plex Mono',monospace">n=28</text>
-
-        <path d="M 55 180 C 40 162, 40 158, 55 144" fill="none" stroke="#b83232" stroke-width="1.8" stroke-dasharray="4 2.5" marker-end="url(#arrowRed)"/>
-        <text x="26" y="165" text-anchor="middle" font-size="9" font-weight="700" fill="#b83232">47%</text>
-        <path d="M 285 180 C 300 162, 300 158, 285 144" fill="none" stroke="#b83232" stroke-width="1.8" stroke-dasharray="4 2.5" marker-end="url(#arrowRed)"/>
-        <text x="314" y="165" text-anchor="middle" font-size="9" font-weight="700" fill="#b83232">46%</text>
-
-        <ellipse cx="170" cy="160" rx="17" ry="21" fill="#f6f4f0" stroke="#1a1a1e" stroke-width="1.5" stroke-opacity="0.35"/>
-        <path d="M 170 138 L 164 147 L 176 147 Z" fill="#1a1a1e" opacity="0.25"/>
-
-        <text x="170" y="127" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.14em" fill="#4a4a52">FRONT</text>
-        <text x="170" y="198" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.14em" fill="#4a4a52">BACK</text>
-        <text x="6" y="162" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.1em" fill="#a5a5ad" transform="rotate(-90 6 162)">LEFT</text>
-        <text x="334" y="162" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="0.1em" fill="#a5a5ad" transform="rotate(90 334 162)">RIGHT</text>
-
-        <text x="170" y="8" text-anchor="middle" font-size="8" font-weight="500" fill="#2663b0" opacity="0.6" font-family="'IBM Plex Mono',monospace">visual field of view</text>
-
-        <text x="170" y="340" text-anchor="middle" font-size="10" fill="#7a7a84">Per-option accuracy — Ego Direction (Qwen3-Omni)</text>
-        <text x="170" y="358" text-anchor="middle" font-size="9.5" fill="#b83232" font-weight="600">Only 2 "back-right" predictions across all 463 samples</text>
-      </svg>
+    <div class="callout red" style="font-size:12px; flex-shrink:0;">
+      Both models show strong front bias. <strong>MiniCPM never predicts back directions (0% on BL/BR).</strong> Qwen has slight back-prediction capability (12%/7%).
     </div>
   </div>
-  <div class="slide-footer"><span>03 — Failure Analysis · Ego Direction</span><span></span></div>
+  <div class="slide-footer"><span>03 · Failure Analysis · Ego Direction</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
 <!-- ════════════════════ SLIDE 9: CONFUSION MATRICES ════════════════════ -->
-<div class="slide" data-section="Failure Analysis">
+<div class="slide" data-section="Failure Analysis" data-steps="3" id="slide-cm">
   <div class="slide-inner">
     <div class="stag red" style="color:var(--c-red);">Failure Modes 1 &amp; 2</div>
     <div class="sh sh-lg">Confusion Matrices: <em>Direction Predictions</em></div>
 
-    <div style="display:flex; flex:1; align-items:center; justify-content:center;">
-      <div class="chart-frame" style="padding:2px; display:inline-block; line-height:0; max-width:85%;">
-        <img src="assets/qwen3_results/savvy_confusion_matrices.png" alt="Confusion matrices">
+    <div class="cm-grid flex-1" style="align-content:center;">
+      <!-- Column headers: one model name per column -->
+      <div class="cm-col-header" style="color:var(--c-blue);">Qwen3-Omni</div>
+      <div class="cm-col-header" style="color:var(--c-accent);">MiniCPM-o-4.5</div>
+
+      <!-- Qwen3-Omni Ego Direction -->
+      <div class="cm-wrap">
+        <span class="cm-label">Ego Direction</span>
+        <div class="cm-tbl-wrap">
+          <div class="cm-axis cm-axis-left">Ground Truth</div>
+          <table class="cm-table">
+            <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="cm-rh">A</td><td style="background:rgba(38,99,176,0.71)">89%</td><td style="background:rgba(38,99,176,0.07)">9%</td><td style="background:rgba(38,99,176,0.02)">2%</td><td style="background:rgba(38,99,176,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">B</td><td style="background:rgba(38,99,176,0.18)">23%</td><td style="background:rgba(38,99,176,0.59)">74%</td><td style="background:rgba(38,99,176,0.02)">3%</td><td style="background:rgba(38,99,176,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">C</td><td style="background:rgba(38,99,176,0.38)">47%</td><td style="background:rgba(38,99,176,0.33)">41%</td><td style="background:rgba(38,99,176,0.10)">12%</td><td style="background:rgba(38,99,176,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">D</td><td style="background:rgba(38,99,176,0.23)">29%</td><td style="background:rgba(38,99,176,0.37)">46%</td><td style="background:rgba(38,99,176,0.14)">18%</td><td style="background:rgba(38,99,176,0.06)">7%</td></tr>
+          </table>
+        </div>
+        <div class="cm-axis cm-axis-bottom">Predicted</div>
+      </div>
+      <!-- MiniCPM Ego Direction -->
+      <div class="cm-wrap">
+        <span class="cm-label">Ego Direction</span>
+        <div class="cm-tbl-wrap">
+          <div class="cm-axis cm-axis-left">Ground Truth</div>
+          <table class="cm-table">
+            <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="cm-rh">A</td><td style="background:rgba(196,75,40,0.43)">54%</td><td style="background:rgba(196,75,40,0.37)">46%</td><td style="background:rgba(196,75,40,0.01)">1%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">B</td><td style="background:rgba(196,75,40,0.05)">6%</td><td style="background:rgba(196,75,40,0.75)">94%</td><td style="background:rgba(196,75,40,0.00)">0%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">C</td><td style="background:rgba(196,75,40,0.15)">19%</td><td style="background:rgba(196,75,40,0.65)">81%</td><td style="background:rgba(196,75,40,0.00)">0%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">D</td><td style="background:rgba(196,75,40,0.08)">10%</td><td style="background:rgba(196,75,40,0.72)">90%</td><td style="background:rgba(196,75,40,0.00)">0%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+          </table>
+        </div>
+        <div class="cm-axis cm-axis-bottom">Predicted</div>
+      </div>
+      <!-- Qwen3-Omni Allo Direction -->
+      <div class="cm-wrap">
+        <span class="cm-label">Allo Direction</span>
+        <div class="cm-tbl-wrap">
+          <div class="cm-axis cm-axis-left">Ground Truth</div>
+          <table class="cm-table">
+            <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="cm-rh">A</td><td style="background:rgba(38,99,176,0.22)">27%</td><td style="background:rgba(38,99,176,0.38)">47%</td><td style="background:rgba(38,99,176,0.19)">24%</td><td style="background:rgba(38,99,176,0.02)">2%</td></tr>
+            <tr><td class="cm-rh">B</td><td style="background:rgba(38,99,176,0.26)">32%</td><td style="background:rgba(38,99,176,0.32)">40%</td><td style="background:rgba(38,99,176,0.21)">26%</td><td style="background:rgba(38,99,176,0.02)">2%</td></tr>
+            <tr><td class="cm-rh">C</td><td style="background:rgba(38,99,176,0.20)">25%</td><td style="background:rgba(38,99,176,0.40)">50%</td><td style="background:rgba(38,99,176,0.14)">18%</td><td style="background:rgba(38,99,176,0.05)">6%</td></tr>
+            <tr><td class="cm-rh">D</td><td style="background:rgba(38,99,176,0.08)">10%</td><td style="background:rgba(38,99,176,0.17)">21%</td><td style="background:rgba(38,99,176,0.38)">47%</td><td style="background:rgba(38,99,176,0.18)">22%</td></tr>
+          </table>
+        </div>
+        <div class="cm-axis cm-axis-bottom">Predicted</div>
+      </div>
+      <!-- MiniCPM Allo Direction -->
+      <div class="cm-wrap">
+        <span class="cm-label">Allo Direction</span>
+        <div class="cm-tbl-wrap">
+          <div class="cm-axis cm-axis-left">Ground Truth</div>
+          <table class="cm-table">
+            <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="cm-rh">A</td><td style="background:rgba(196,75,40,0.20)">25%</td><td style="background:rgba(196,75,40,0.60)">75%</td><td style="background:rgba(196,75,40,0.00)">0%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">B</td><td style="background:rgba(196,75,40,0.17)">21%</td><td style="background:rgba(196,75,40,0.63)">79%</td><td style="background:rgba(196,75,40,0.00)">0%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">C</td><td style="background:rgba(196,75,40,0.13)">16%</td><td style="background:rgba(196,75,40,0.67)">84%</td><td style="background:rgba(196,75,40,0.00)">0%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+            <tr><td class="cm-rh">D</td><td style="background:rgba(196,75,40,0.16)">20%</td><td style="background:rgba(196,75,40,0.62)">78%</td><td style="background:rgba(196,75,40,0.02)">2%</td><td style="background:rgba(196,75,40,0.00)">0%</td></tr>
+          </table>
+        </div>
+        <div class="cm-axis cm-axis-bottom">Predicted</div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>03 — Failure Analysis · Confusion Matrices</span><span></span></div>
+  <div class="slide-footer"><span>03 · Failure Analysis · Confusion Matrices</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -1145,21 +1284,28 @@ body {
     <div class="stag red" style="color:var(--c-red);">Failure Mode 3</div>
     <div class="sh sh-lg">Distance Estimation: <em>Regression Collapse</em></div>
 
-    <div class="col-2 flex-1">
-      <div class="chart-frame" style="min-height:0; overflow:hidden;">
-        <img src="assets/qwen3_results/savvy_distance_scatter.png" alt="Distance scatter">
+    <div class="col-5-7 flex-1">
+      <div class="col gap-8" style="min-height:0;">
+        <div style="text-align:center; font-size:10px; font-weight:600; color:var(--c-blue); font-family:var(--f-mono); letter-spacing:0.04em;">QWEN3-OMNI</div>
+        <div class="chart-frame" style="min-height:0; overflow:hidden; flex:1;">
+          <img src="assets/qwen3_results/savvy_distance_scatter.png" alt="Qwen3-Omni distance scatter">
+        </div>
+        <div style="text-align:center; font-size:10px; font-weight:600; color:var(--c-blue); font-family:var(--f-mono); letter-spacing:0.04em;">MINICPM-o-4.5</div>
+        <div class="chart-frame" style="min-height:0; overflow:hidden; flex:1;">
+          <img src="assets/minicpm_results/savvy_minicpm_distance_scatter.png" alt="MiniCPM-o-4.5 distance scatter">
+        </div>
       </div>
       <div class="col gap-10">
         <div data-step="0" class="card soft" style="font-size:12px; background:var(--c-red-light);">
-          <div class="card-title">Ego-Distance: Constant ~1m Output</div>
-          <p>Model's answers are clustered around 0.8-1.5. MRA of 0.646 is misleading, for indoor scenes, even a constant can score well (e.g. = 1). </p>
+          <div class="card-title">Regression Collapse (Both Models)</div>
+          <p>Both models show constant predictions for ego-distance (clustered around 0.8-1.5m). MRA scores are misleading: for indoor scenes, even a constant can score well.</p>
         </div>
         <div data-step="1" class="card soft" style="font-size:12px; background:var(--c-accent-light);">
-          <div class="card-title">Allo-Distance: Quantized Outputs</div>
-          <p>Predictions cluster at integer values (~1/2/3/4m). Faint positive correlation for GT 2–5m, but hard ceiling at ~8m where GT extends to 12m. <strong>Some signal exists</strong> but far from calibrated.</p>
+          <div class="card-title">Shared Failure Patterns</div>
+          <p>Predictions cluster at integer values. Faint positive correlation for GT 2-5m, but hard ceiling at ~8m where GT extends to 12m. Range compression is universal across both models.</p>
         </div>
         <div data-step="2" class="callout blue mt-auto" style="font-size:11.5px;">
-          <strong>In the case of SAVVY →</strong> ZoeDepth provides calibrated per-frame metric depth. CDR provides audio-based distance. Both give actual <strong>metric</strong> signals.
+          <strong>SAVVY fix:</strong> ZoeDepth provides calibrated per-frame metric depth. CDR provides audio-based distance. Both give actual <strong>metric</strong> signals.
         </div>
       </div>
     </div>
@@ -1167,163 +1313,41 @@ body {
       MRA = <sup>1</sup>/<sub>10</sub> <span style="font-size:13px;">∑</span><sub style="font-size:8px;"><i>t</i>=0.1</sub><sup style="font-size:8px;">1.0</sup> 𝟙[ |<i>ŷ</i> − <i>y</i>| ≤ <i>t</i> ] &nbsp;<span style="color:#999; font-size:9.5px;">thresholds: 0.1m … 1.0m</span>
     </div>
   </div>
-  <div class="slide-footer"><span>03 — Failure Analysis · Distance</span><span></span></div>
-  <div class="progress-bar"></div> 
-</div>
-
-<!-- ════════════════════ SLIDE 11: DISTANCE DISTRIBUTIONS ════════════════════ -->
-<div class="slide" data-section="Failure Analysis">
-  <div class="slide-inner">
-    <div class="stag red" style="color:var(--c-red);">Failure Mode 3 — Detail</div>
-    <div class="sh sh-lg">Distance Distributions: <em>GT vs. Predictions</em></div>
-
-    <div class="col-7-5 flex-1">
-      <div class="chart-frame" style="min-height:0; overflow:hidden;">
-        <img src="assets/qwen3_results/savvy_distance_distribution.png" alt="Distance distributions">
-      </div>
-      <div class="col gap-12">
-        <!-- <div class="card" style="font-size:12px;">
-          <div class="card-title">Distribution Mismatch</div>
-          <p><strong>Ego-distance:</strong> Massive single spike at ~1m vs. GT spread 0.3–7m. The model ignores variance entirely.</p>
-          <p style="margin-top:5px;"><strong>Allo-distance:</strong> Wider prediction range but over-concentrated at 1–3m vs. GT extending to 12m.</p>
-        </div> -->
-        <div class="callout red" style="font-size:12px;">
-          <strong>Is MRA masking failure?</strong> We want to explore other metrics (regression-based) that captures the model's performance better. We believe MRA is too permissive.
-        </div>
-        <!-- <div class="insight-row">
-          <div class="insight-tag orange">IMPLICATION</div>
-          <p style="font-size:12px;"><strong>Zero metric depth calibration.</strong> AV-LLM training never requires calibrated distance outputs — the capacity may exist but supervision doesn't.</p>
-        </div> -->
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>03 — Failure Analysis · Distance Distributions</span><span></span></div>
+  <div class="slide-footer"><span>03 · Failure Analysis · Distance</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
-<!-- ════════════════════ SLIDE 12: MODALITY ════════════════════ -->
-<div class="slide" data-section="Failure Analysis">
-  <div class="slide-inner">
-    <div class="stag red" style="color:var(--c-red);">Failure Mode 4</div>
-    <div class="sh sh-lg">The Modality Gap: <em>Speech vs. Sound</em></div>
 
-    <div class="col-2 flex-1">
-      <div class="chart-frame" style="min-height:0; overflow:hidden;">
-        <img src="assets/qwen3_results/savvy_modality_performance.png" alt="Modality performance">
-      </div>
-      <div class="col gap-10">
-        <table class="tbl" style="font-size:12.5px;">
-          <thead><tr><th>Metric</th><th>Speech</th><th>Sound</th><th>Δ</th></tr></thead>
-          <tbody>
-            <tr><td>Ego-Dir</td><td class="best">70.5% <span style="font-size:10px;color:var(--c-text-4);">(n=454)</span></td><td class="bad">22.2% <span style="font-size:10px;color:var(--c-text-4);">(n=9)</span></td><td class="bad">−48.3</td></tr>
-            <tr><td>Ego-Dist</td><td class="best">0.654 <span style="font-size:10px;color:var(--c-text-4);">(n=169)</span></td><td class="bad">0.475 <span style="font-size:10px;color:var(--c-text-4);">(n=8)</span></td><td class="bad">−0.18</td></tr>
-            <tr><td>Allo-Dir</td><td>26.3% <span style="font-size:10px;color:var(--c-text-4);">(n=529)</span></td><td>32.9% <span style="font-size:10px;color:var(--c-text-4);">(n=73)</span></td><td>+6.6</td></tr>
-            <tr><td>Allo-Dist</td><td class="best">0.346 <span style="font-size:10px;color:var(--c-text-4);">(n=247)</span></td><td class="bad">0.103 <span style="font-size:10px;color:var(--c-text-4);">(n=33)</span></td><td class="bad">−0.24</td></tr>
-          </tbody>
-        </table>
-        <!-- <div class="card cred" style="font-size:12px;">
-          <div class="card-title">Transcript-Mediated "Reasoning"</div>
-          <p>For speech events, the model matches described topics to recognized transcripts → finds timestamp → uses visual context. For non-speech sounds, <strong>this anchor is absent</strong> and it guesses.</p>
-        </div> -->
-        <!-- <div class="insight-row mt-auto">
-          <div class="insight-tag red">KEY FINDING</div>
-          <p style="font-size:12px;">Spatial "reasoning" is <strong>mediated entirely by language understanding</strong>, not by audio-spatial processing.</p>
-        </div> -->
-        <!-- <div class="callout blue" style="font-size:11.5px;">
-          <strong>SAVVY fix →</strong> SRP-PHAT/CDR work on raw audio signal, not transcripts. They localize any sound — speech or environmental.
-        </div> -->
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>03 — Failure Analysis · Modality</span><span></span></div>
-  <div class="progress-bar"></div>
-</div>
-
-<!-- ════════════════════ SLIDE 13: KEY WEAKNESSES ════════════════════ -->
-<div class="slide" data-section="Failure Analysis" data-steps="4">
-  <div class="slide-inner">
-    <div class="stag red" style="color:var(--c-red);">Quick Summary</div>
-    <div class="sh sh-lg">Qwen3-Omni's Key Weaknesses</div>
-
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; flex:1; align-content:start; margin-top:8px;">
-
-      <div data-step="0" class="card soft" style="padding:14px 16px; background:var(--c-red-light);">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-          <span class="tag red" style="font-size:9px;">Slide 8</span>
-          <span style="font-weight:700; font-size:14px;">Front Bias</span>
-        </div>
-        <p style="font-size:12px; margin:0;">The model defaults to <strong>"front"</strong> for any sound it cannot localize visually. Behind-camera directions are virtually never predicted.</p>
-        <div style="margin-top:8px; font-size:11px; color:var(--c-red); font-weight:600;">73% of ego-direction predictions → front hemisphere</div>
-      </div>
-
-      <div data-step="1" class="card soft" style="padding:14px 16px; background:var(--c-red-light);">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-          <span class="tag red" style="font-size:9px;">Slide 9</span>
-          <span style="font-weight:700; font-size:14px;">Allocentric Direction Collapse</span>
-        </div>
-        <p style="font-size:12px; margin:0;">Cannot perform coordinate-frame rotation from ego to allocentric perspective. Allocentric direction accuracy is <strong>near random</strong>.</p>
-        <div style="margin-top:8px; font-size:11px; color:var(--c-red); font-weight:600;">26% accuracy on allo-direction (chance ≈ 25%)</div>
-      </div>
-
-      <div data-step="2" class="card soft" style="padding:14px 16px; background:var(--c-red-light);">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-          <span class="tag red" style="font-size:9px;">Slides 10–11</span>
-          <span style="font-weight:700; font-size:14px;">Distance Regression Collapse</span>
-        </div>
-        <p style="font-size:12px; margin:0;">Predicts a <strong>fixed constant</strong> (~1m ego, ~2m allo) regardless of true distance. No metric depth estimation capability.</p>
-        <div style="margin-top:8px; font-size:11px; color:var(--c-red); font-weight:600;">Predictions cluster at mean — zero correlation with GT</div>
-      </div>
-
-      <div data-step="3" class="card" style="padding:14px 16px; border-left-color:#aaa; opacity:0.5;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-          <span class="tag" style="font-size:9px; background:#ddd; color:#888;">Slide 12</span>
-          <span style="font-weight:700; font-size:14px; color:#999;">Modality Gap</span>
-          <span style="font-size:10px; color:#999; font-style:italic; margin-left:auto;">small sample size — may not generalize</span>
-        </div>
-        <p style="font-size:12px; margin:0; color:#999;">Spatial reasoning is <strong>mediated entirely by speech transcripts</strong>. Non-speech sounds (claps, footsteps) have no grounding anchor.</p>
-        <div style="margin-top:8px; font-size:11px; color:#999; font-weight:600;">Ego-dir: 70.5% (speech) vs 22.2% (sound)</div>
-      </div>
-
-    </div>
-
-    <div data-step="4" class="callout red" style="font-size:12px; margin-top:auto;">
-      <strong>Bottom line —</strong> Qwen3-Omni has no spatial audio processing, no metric depth, and no coordinate transforms.
-    </div>
-  </div>
-  <div class="slide-footer"><span>03 — Failure Analysis · Key Weaknesses</span><span></span></div>
-  <div class="progress-bar"></div>
-</div>
-
-<!-- ════════════════════ SLIDE 14: SECTION — PRELIMINARY EXPERIMENT ════════════════════ -->
-<div class="slide" data-section="Preliminary Experiment">
+<!-- ════════════════════ SLIDE 14: SECTION — PRELIMINARY EXPERIMENTS ════════════════════ -->
+<div class="slide" data-section="Preliminary Experiments">
   <div class="divider-layout">
     <div class="divider-num">03</div>
-    <div class="sh sh-xl">Preliminary Experiment</div>
+    <div class="sh sh-xl">Preliminary Experiments</div>
     <p class="sp" style="max-width:540px;">Can cognitive maps help AV-LLMs reason about space?</p>
   </div>
-  <div class="slide-footer"><span>03 — Preliminary Experiment</span><span></span></div>
+  <div class="slide-footer"><span>03 · Preliminary Experiments</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
 <!-- ════════════════════ SLIDE 15: THINKING IN SPACE ════════════════════ -->
-<div class="slide" data-section="Preliminary Experiment">
+<div class="slide" data-section="Preliminary Experiments">
   <div class="slide-inner">
     <div class="stag green">Inspiration</div>
     <div class="sh sh-lg">Thinking in Space: <em>Cognitive Maps</em></div>
 
-    <p style="font-size:10px; color:var(--c-text-4); font-family:var(--f-mono); margin-bottom:8px;">Jia et al. — "Thinking in Space" (CVPR 2025) · VSI-Bench</p>
+    <p style="font-size:10px; color:var(--c-text-4); font-family:var(--f-mono); margin-bottom:8px;">Jia et al., "Thinking in Space" (CVPR 2025) · VSI-Bench</p>
 
     <!-- Top row: image (left) + cognitive maps table (right), vertically centered -->
     <div style="display:flex; gap:24px; align-items:center; flex:1; min-height:0;">
       <div class="chart-frame" style="line-height:0; overflow:hidden; flex:1; min-width:0;">
-        <img src="assets/thinking_in_space.png" alt="Thinking in Space — cognitive map teaser" style="width:75%; border-radius:3px;">
+        <img src="assets/thinking_in_space.png" alt="Thinking in Space cognitive map teaser" style="width:75%; border-radius:3px;">
       </div>
       <div class="card soft" style="padding:14px 16px; border-radius:6px; flex:0 0 auto; background:var(--c-green-light);">
         <div class="card-title" style="color:var(--c-green);">Cognitive maps help (VSI-Bench)</div>
         <table class="tbl" style="font-size:12px; margin-top:4px;">
           <thead><tr><th>Condition</th><th>Rel. Dist</th><th>Δ</th></tr></thead>
           <tbody>
-            <tr><td>Baseline</td><td>46.0%</td><td>—</td></tr>
+            <tr><td>Baseline</td><td>46.0%</td><td>&ndash;</td></tr>
             <tr><td><strong>+ Predicted map</strong></td><td class="best">56.0%</td><td class="best">+10%</td></tr>
             <tr><td><strong>+ GT map</strong></td><td class="best">66.0%</td><td class="best">+20%</td></tr>
           </tbody>
@@ -1340,12 +1364,12 @@ body {
       <strong>Our idea →</strong> If <em>generating</em> cognitive maps helps, what if we <strong>provide pre-computed maps as input</strong> to Qwen2.5-Omni on SAVVY-Bench?
     </div>
   </div>
-  <div class="slide-footer"><span>03 — Preliminary Experiment · Inspiration</span><span></span></div>
+  <div class="slide-footer"><span>03 · Preliminary Experiments · Inspiration</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
 <!-- ════════════════════ SLIDE 16: OUR COGNITIVE MAPS ════════════════════ -->
-<div class="slide" data-section="Preliminary Experiment">
+<div class="slide" data-section="Preliminary Experiments">
   <div class="slide-inner">
     <div class="stag green">Results</div>
     <div class="sh sh-lg">Cognitive Maps on <em>SAVVY-Bench</em></div>
@@ -1390,46 +1414,327 @@ body {
 }]</div>
         </div>
       </div>
-      <!-- Right: results + analysis -->
+      <!-- Right: results table -->
       <div class="col gap-10">
-        <div class="card soft" style="padding:14px 16px; background:var(--c-red-light);">
-          <div class="card-title" style="color:var(--c-red);">Performance dropped across all categories</div>
-          <p style="font-size:12px; line-height:1.55;">Providing cognitive maps as additional input led to a <strong>loss in performance</strong> on every task.</p>
-        </div>
-
         <div class="card" style="padding:14px 16px;">
-          <div class="card-title">Formats explored: <strong>(We will re-run these experiments)</strong></div>
-          <div style="font-size:12px; line-height:1.65;">
-            <p><span class="tag red" style="font-size:9px;">no gain</span> &nbsp;<strong>As image</strong>: top-down grid rendered as an image alongside video input</p>
-            <p style="margin-top:5px;"><span class="tag red" style="font-size:9px;">no gain</span> &nbsp;<strong>As JSON</strong>: structured object positions as key-value pairs in the prompt</p>
-            <p style="margin-top:5px;"><span class="tag red" style="font-size:9px;">no gain</span> &nbsp;<strong>As text grid</strong>: ASCII-based task grid layout in the prompt. (Needs a dictionary)</p>
-          </div>
+          <div class="card-title">Qwen3-Omni + Cognitive Maps (Subset of SAVVY-Bench)</div>
+          <table class="tbl" style="font-size:11px; margin-top:8px;">
+            <thead>
+              <tr><th>CogMaps</th><th>Ego-Dir</th><th>Ego-Dist</th><th>Allo-Dir</th><th>Allo-Dist</th><th>Avg</th></tr>
+            </thead>
+            <tbody>
+              <tr class="hl"><td>no (baseline)</td><td>76.58</td><td>66.25</td><td>24.64</td><td>32.74</td><td>50.05</td></tr>
+              <tr><td>GT (json)</td>
+                <td>74.77 <span style="font-size:9px; color:var(--c-red);">(-1.81)</span></td>
+                <td>64.69 <span style="font-size:9px; color:var(--c-red);">(-1.56)</span></td>
+                <td>26.09 <span style="font-size:9px; color:var(--c-green);">(+1.45)</span></td>
+                <td>27.40 <span style="font-size:9px; color:var(--c-red);">(-5.34)</span></td>
+                <td>48.24 <span style="font-size:9px; color:var(--c-red);">(-1.82)</span></td>
+              </tr>
+              <tr><td>GT (img)</td>
+                <td>70.97 <span style="font-size:9px; color:var(--c-red);">(-5.61)</span></td>
+                <td>42.92 <span style="font-size:9px; color:var(--c-red);">(-23.33)</span></td>
+                <td>27.78 <span style="font-size:9px; color:var(--c-green);">(+3.14)</span></td>
+                <td>25.68 <span style="font-size:9px; color:var(--c-red);">(-7.06)</span></td>
+                <td>41.84 <span style="font-size:9px; color:var(--c-red);">(-8.22)</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="card" style="padding:14px 16px;">
-          <div class="card-title">Possible explanations</div>
-          <div style="font-size:12px; line-height:1.65;">
-            <p><strong style="color:var(--c-accent);">Dynamic scenes</strong>: SAVVY-Bench has moving cameras and sound sources. A static map may not capture the temporal dynamics needed.</p>
-            <p style="margin-top:5px;"><strong style="color:var(--c-accent);">Wrong formatting</strong>: We think the JSON format was not properly structured for the model to interpret, although it works for the authors. Feeding the maps as images is too "OOD" for Qwen, based on our initial experiments.</p>
-          </div>
-        </div>
-
-        <div class="callout yellow" style="font-size:12px; margin-top:auto;">
-          <strong>Takeaway →</strong> Cognitive maps as <em>input</em> didn't help in any format, but the concept of spatial "CoT" prompting remains promising.
+        <div class="callout red" style="font-size:12px;">
+          <strong>Closed cognitive maps hurt performance.</strong> GT maps as JSON or image both lead to losses, especially on ego-distance (-23.33 with image input). The model cannot leverage static 2-entity maps.
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>03 — Preliminary Experiment · Results</span><span></span></div>
+  <div class="slide-footer"><span>03 · Preliminary Experiments · Results</span><span></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════════════ SLIDE 16a: OPEN COGMAP METHODOLOGY ════════════════════ -->
+<div class="slide" data-section="Preliminary Experiments">
+  <div class="slide-inner">
+    <div class="stag green">Methodology</div>
+    <div class="sh sh-lg">Open Cognitive Map: <em>Two-Pass Approach</em></div>
+
+    <div class="col-5-7 flex-1" style="align-items:start; margin-top:4px;">
+      <!-- Left: Two-pass pipeline with prompt excerpts -->
+      <div class="col gap-10">
+        <div class="pstep">
+          <div class="pstep-num green">1</div>
+          <div class="pstep-body" style="flex:1;">
+            <h4 style="font-size:14px;">Generate Spatial Map</h4>
+            <div class="json-preview" style="margin-top:6px; font-size:9.5px; line-height:1.7; max-height:none; padding:10px 12px;"><span class="jk">[Task]</span> Video captures an indoor scene.
+Build a spatial map by identifying objects,
+estimating positions on a <span class="jn">10×10 grid</span>.
+
+<span class="jk">[Map]</span> Furniture, appliances, doors,
+windows, fixtures, people. Only visible
+objects.
+
+<span class="jk">[Output]</span> JSON:
+{<span class="js">"object"</span>: [(<span class="jn">x</span>, <span class="jn">y</span>)], ...}</div>
+          </div>
+        </div>
+
+        <div class="pstep">
+          <div class="pstep-num green">2</div>
+          <div class="pstep-body" style="flex:1;">
+            <h4 style="font-size:14px;">Answer with Map Context</h4>
+            <div class="json-preview" style="margin-top:6px; font-size:9.5px; line-height:1.7; max-height:none; padding:10px 12px;"><span class="jk">[Context]</span>
+{<span class="js">"refrigerator"</span>: [<span class="jn">6,3</span>], <span class="js">"sink"</span>: [<span class="jn">2,7</span>],
+ <span class="js">"coffee"</span>: [<span class="jn">6,6</span>], ...}
+
+<span class="jk">[Question]</span> Where is the person
+relative to where you face?
+<span class="jp">A: front-left   B: front-right</span>
+<span class="jp">C: back-left    D: back-right</span></div>
+          </div>
+        </div>
+
+        <div class="callout orange" style="font-size:11px; padding:8px 12px;">
+          <strong>Format drift:</strong> Some outputs use pixel coordinates <span style="font-family:var(--f-mono); font-size:9px; background:rgba(0,0,0,0.06); padding:2px 4px; border-radius:2px;">&lt;point&gt;748 752&lt;/point&gt;</span> or bounding boxes instead of grid.
+        </div>
+      </div>
+
+      <!-- Right: Example output + grid visualization -->
+      <div class="col gap-10">
+        <div class="card" style="padding:16px 18px;">
+          <div class="card-title" style="margin-bottom:12px; font-size:14px;">Example: Model Map Output (Kitchen)</div>
+          <div style="display:flex; gap:18px; align-items:start;">
+            <div class="json-preview" style="flex:1; font-size:10.5px; line-height:1.8; max-height:none; padding:12px 14px;">{
+  <span class="jk">"refrigerator"</span>: [<span class="jn">6</span>, <span class="jn">3</span>],
+  <span class="jk">"sink"</span>: [<span class="jn">2</span>, <span class="jn">7</span>],
+  <span class="jk">"coffee machine"</span>: [<span class="jn">6</span>, <span class="jn">6</span>],
+  <span class="jk">"table"</span>: [<span class="jn">3</span>, <span class="jn">9</span>],
+  <span class="jk">"person"</span>: [<span class="jn">4</span>, <span class="jn">5</span>],
+  <span class="jk">"camera"</span>: [<span class="jn">7</span>, <span class="jn">8</span>]
+}</div>
+            <div style="flex-shrink:0; text-align:center;">
+              <svg viewBox="-2 -2 104 104" width="200" height="200" style="border-radius:4px; background:#1e1e2e;">
+                <g stroke="#2e2e3e" stroke-width="0.25">
+                  <line x1="0" y1="10" x2="100" y2="10"/><line x1="0" y1="20" x2="100" y2="20"/>
+                  <line x1="0" y1="30" x2="100" y2="30"/><line x1="0" y1="40" x2="100" y2="40"/>
+                  <line x1="0" y1="50" x2="100" y2="50"/><line x1="0" y1="60" x2="100" y2="60"/>
+                  <line x1="0" y1="70" x2="100" y2="70"/><line x1="0" y1="80" x2="100" y2="80"/>
+                  <line x1="0" y1="90" x2="100" y2="90"/>
+                  <line x1="10" y1="0" x2="10" y2="100"/><line x1="20" y1="0" x2="20" y2="100"/>
+                  <line x1="30" y1="0" x2="30" y2="100"/><line x1="40" y1="0" x2="40" y2="100"/>
+                  <line x1="50" y1="0" x2="50" y2="100"/><line x1="60" y1="0" x2="60" y2="100"/>
+                  <line x1="70" y1="0" x2="70" y2="100"/><line x1="80" y1="0" x2="80" y2="100"/>
+                  <line x1="90" y1="0" x2="90" y2="100"/>
+                </g>
+                <rect x="0" y="0" width="100" height="100" fill="none" stroke="#3a3a4a" stroke-width="0.5"/>
+                <!-- Corner labels -->
+                <text x="2" y="4" fill="#5a5a6a" font-size="3" font-family="sans-serif">(1,1)</text>
+                <text x="98" y="99" fill="#5a5a6a" font-size="3" text-anchor="end" font-family="sans-serif">(10,10)</text>
+                <!-- refrigerator (6,3) -->
+                <circle cx="55" cy="25" r="3" fill="#89b4fa" opacity="0.9"/>
+                <text x="55" y="21" fill="#89b4fa" font-size="3.2" text-anchor="middle" font-family="sans-serif">fridge</text>
+                <!-- sink (2,7) -->
+                <circle cx="15" cy="65" r="3" fill="#89b4fa" opacity="0.9"/>
+                <text x="15" y="61" fill="#89b4fa" font-size="3.2" text-anchor="middle" font-family="sans-serif">sink</text>
+                <!-- coffee machine (6,6) -->
+                <circle cx="55" cy="55" r="3" fill="#89b4fa" opacity="0.9"/>
+                <text x="55" y="51" fill="#89b4fa" font-size="3.2" text-anchor="middle" font-family="sans-serif">coffee</text>
+                <!-- dining table (3,9) -->
+                <circle cx="25" cy="85" r="3" fill="#89b4fa" opacity="0.9"/>
+                <text x="25" y="81" fill="#89b4fa" font-size="3.2" text-anchor="middle" font-family="sans-serif">table</text>
+                <!-- other person (4,5) -->
+                <circle cx="35" cy="45" r="3.5" fill="#e05050" opacity="0.9"/>
+                <text x="35" y="41" fill="#e05050" font-size="3.2" text-anchor="middle" font-weight="bold" font-family="sans-serif">other person</text>
+                <!-- camera wearer (7,8) -->
+                <circle cx="65" cy="75" r="3.5" fill="#4aba7a" opacity="0.9"/>
+                <text x="65" y="71" fill="#4aba7a" font-size="3.2" text-anchor="middle" font-weight="bold" font-family="sans-serif">camera wearer</text>
+              </svg>
+              <div style="display:flex; gap:10px; justify-content:center; margin-top:8px; font-size:9.5px;">
+                <span style="color:var(--c-text-3); font-family:var(--f-mono);"><span style="display:inline-block; width:7px; height:7px; background:#89b4fa; border-radius:50%; vertical-align:middle;"></span> objects</span>
+                <span style="color:var(--c-text-3); font-family:var(--f-mono);"><span style="display:inline-block; width:7px; height:7px; background:#e05050; border-radius:50%; vertical-align:middle;"></span> person</span>
+                <span style="color:var(--c-text-3); font-family:var(--f-mono);"><span style="display:inline-block; width:7px; height:7px; background:#4aba7a; border-radius:50%; vertical-align:middle;"></span> camera</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <div class="card cred" style="flex:1; padding:10px 12px;">
+            <span class="tag red" style="font-size:9px; margin-bottom:4px; display:inline-block;">Closed Map</span>
+            <div class="json-preview" style="font-size:9px; line-height:1.6; max-height:none; padding:7px 9px;">{<span class="jk">"camera"</span>: [<span class="jn">600 500</span>],
+ <span class="jk">"person"</span>: [<span class="jn">350 300</span>]}</div>
+            <p style="font-size:10px; color:var(--c-text-3); margin-top:4px;"><strong>2 objects</strong> · pixel coords</p>
+          </div>
+          <div class="card cgreen" style="flex:1; padding:10px 12px;">
+            <span class="tag green" style="font-size:9px; margin-bottom:4px; display:inline-block;">Open Map</span>
+            <div class="json-preview" style="font-size:9px; line-height:1.6; max-height:none; padding:7px 9px;">{<span class="jk">"fridge"</span>: [<span class="jn">6,3</span>],
+ <span class="jk">"sink"</span>: [<span class="jn">2,7</span>], <span class="jk">"coffee"</span>: [<span class="jn">6,6</span>],
+ <span class="jk">"table"</span>: [<span class="jn">3,9</span>], ...}</div>
+            <p style="font-size:10px; color:var(--c-text-3); margin-top:4px;"><strong>avg 8.6 objects</strong> · 10×10 grid</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>03 &middot; Preliminary Experiments &middot; Open Map Methodology</span><span></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════════════ SLIDE 16b: OPEN COGNITIVE MAPS ════════════════════ -->
+<div class="slide" data-section="Preliminary Experiments">
+  <div class="slide-inner">
+    <div class="stag green">Results</div>
+    <div class="sh sh-lg">Model-Generated Open Cognitive Maps</div>
+
+    <div class="col flex-1 gap-16">
+      <!-- MiniCPM-o 4.5: Complete set (n=1,310) -->
+      <div class="card" style="padding:16px 18px;">
+        <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:10px;">
+          <div class="card-title" style="font-size:15px; margin-bottom:0;">MiniCPM-o 4.5 (Closed)</div>
+          <span style="font-family:var(--f-mono); font-size:10px; color:var(--c-text-3);">n=1,310 &middot; Baseline</span>
+        </div>
+        <table class="tbl" style="font-size:13px;">
+          <thead>
+            <tr>
+              <th style="font-size:10px;">Method</th>
+              <th style="font-size:10px;">Ego-Dir <span style="font-weight:400; text-transform:none; letter-spacing:0;">(401)</span></th>
+              <th style="font-size:10px;">Allo-Dir <span style="font-weight:400; text-transform:none; letter-spacing:0;">(507)</span></th>
+              <th style="font-size:10px;">Ego-Dist <span style="font-weight:400; text-transform:none; letter-spacing:0;">(158)</span></th>
+              <th style="font-size:10px;">Allo-Dist <span style="font-weight:400; text-transform:none; letter-spacing:0;">(244)</span></th>
+              <th style="font-size:10px;">Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl">
+              <td><strong>Baseline</strong></td>
+              <td>64.1%</td>
+              <td>27.8%</td>
+              <td>49.7%</td>
+              <td>27.0%</td>
+              <td>41.10%</td>
+            </tr>
+            <tr>
+              <td><strong>OpenCogMap</strong></td>
+              <td class="best">73.6% <span style="font-size:9px; color:var(--c-green);">(+9.5)</span></td>
+              <td class="bad">25.8% <span style="font-size:9px; color:var(--c-red);">(&minus;2.0)</span></td>
+              <td class="bad">26.1% <span style="font-size:9px; color:var(--c-red);">(&minus;23.6)</span></td>
+              <td class="bad">20.9% <span style="font-size:9px; color:var(--c-red);">(&minus;6.15)</span></td>
+              <td class="bad">38.10% <span style="font-size:9px; color:var(--c-red);">(&minus;3.0)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MiniCPM-o 4.5: Partial set (n=930) for comparison with closed maps -->
+      <div class="card" style="padding:16px 18px;">
+        <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:10px;">
+          <div class="card-title" style="font-size:15px; margin-bottom:0;">MiniCPM-o 4.5 + Open Cognitive Maps</div>
+          <span style="font-family:var(--f-mono); font-size:10px; color:var(--c-text-3);">n=930 &middot; With CogMaps</span>
+        </div>
+        <table class="tbl" style="font-size:13px;">
+          <thead>
+            <tr>
+              <th style="font-size:10px;">Method</th>
+              <th style="font-size:10px;">Ego-Dir <span style="font-weight:400; text-transform:none; letter-spacing:0;">(401)</span></th>
+              <th style="font-size:10px;">Allo-Dir <span style="font-weight:400; text-transform:none; letter-spacing:0;">(507)</span></th>
+              <th style="font-size:10px;">Ego-Dist <span style="font-weight:400; text-transform:none; letter-spacing:0;">(22)</span></th>
+              <th style="font-size:10px;">Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl">
+              <td><strong>Baseline</strong></td>
+              <td>64.1%</td>
+              <td>27.8%</td>
+              <td>59.1%</td>
+              <td>44.2%</td>
+            </tr>
+            <tr>
+              <td><strong>OpenCogMap</strong></td>
+              <td class="best">72.6% <span style="font-size:9px; color:var(--c-green);">(+8.5)</span></td>
+              <td class="bad">24.7% <span style="font-size:9px; color:var(--c-red);">(&minus;3.2)</span></td>
+              <td class="bad">40.9% <span style="font-size:9px; color:var(--c-red);">(&minus;18.2)</span></td>
+              <td class="bad">45.7% <span style="font-size:9px; color:var(--c-green);">(+1.5)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout green" style="font-size:12px;">
+        <strong>Consistent across models:</strong> Open cognitive maps improve ego-direction (+8&ndash;10pp) but hurt distance estimation (&minus;18&ndash;20pp ego-dist). Allo-direction resists improvement in both cases.
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>03 · Preliminary Experiments · Model-Generated Maps</span><span></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════════════ SLIDE: SECTION — PROMPT STRATEGIES ════════════════════ -->
+<div class="slide" data-section="Prompt Strategies">
+  <div class="divider-layout">
+    <div class="divider-num">04</div>
+    <div class="sh sh-xl">Prompt Strategy Experiments</div>
+    <p class="sp" style="max-width:540px;">Can prompting alone fix spatial reasoning failures? Systematic evaluation on MiniCPM-o 4.5 (N=1,310).</p>
+  </div>
+  <div class="slide-footer"><span>04 · Prompt Strategies</span><span></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════════════ SLIDE: DISTANCE — CONFIDENCE FORMAT ════════════════════ -->
+<div class="slide" data-section="Prompt Strategies">
+  <div class="slide-inner">
+    <div class="stag blue">Distance</div>
+    <div class="sh sh-lg">Improving Distance: <em>Confidence Format</em></div>
+
+    <div class="col-5-7 flex-1" style="align-items:start;">
+      <!-- Left: prompt & mechanism -->
+      <div class="col gap-12">
+        <p class="sp" style="max-width:none; margin-bottom:6px; font-size:14px;">Structured output format forces precise numeric commitments instead of round-number defaults.</p>
+
+        <div class="codeblock" style="font-size:12px; line-height:1.8; padding:18px 22px;">
+<span class="cm">// Post-prompt for distance tasks</span>
+Give your best distance estimate
+in meters, then rate confidence.
+
+Format: <span class="kw">DISTANCE: X.XX</span>,
+        <span class="kw">CONFIDENCE: [H/M/L]</span>
+
+<span class="cm">// Example</span>
+<span class="ok">DISTANCE: 0.85, CONFIDENCE: H</span>
+        </div>
+      </div>
+
+      <!-- Right: results -->
+      <div class="col gap-14">
+        <div class="card" style="padding:18px 22px;">
+          <div class="card-title" style="font-size:16px; margin-bottom:12px;">Distance Probe Comparison &mdash; Full Scale (N=402)</div>
+          <table class="tbl" style="font-size:14px;">
+            <thead>
+              <tr><th style="font-size:12px;">Strategy</th><th style="font-size:12px;">Ego-Dist</th><th style="font-size:12px;">Allo-Dist</th></tr>
+            </thead>
+            <tbody>
+              <tr class="hl"><td style="font-size:14px;">Baseline</td><td style="font-size:14px;">49.7%</td><td style="font-size:14px;">27.0%</td></tr>
+              <tr class="hlb"><td style="font-size:14px;"><strong>Confidence</strong></td><td class="best" style="font-size:14px;">58.8% <span style="font-size:10px; color:var(--c-green);">(+9.1)</span></td><td class="best" style="font-size:14px;">29.6% <span style="font-size:10px; color:var(--c-green);">(+2.6)</span></td></tr>
+              <tr><td style="font-size:14px;">Two Decimals</td><td style="font-size:14px;">51.3%</td><td style="font-size:14px;">25.3%</td></tr>
+              <tr><td style="font-size:14px;">Avoid Round</td><td class="bad" style="font-size:14px;">37.0%</td><td style="font-size:14px;">27.7%</td></tr>
+              <tr class="dim"><td style="font-size:14px;">CogMap (any)</td><td class="bad" style="font-size:14px;">26.1% <span style="font-size:10px; color:var(--c-red);">(&minus;23.6)</span></td><td class="bad" style="font-size:14px;">20.9% <span style="font-size:10px; color:var(--c-red);">(&minus;6.1)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size:13px; color:var(--c-text-3); text-align:center; line-height:1.6; margin-top:14px;">Cognitive maps catastrophically hurt distance — model computes from grid coords with no metric scale.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>04 · Prompt Strategies · Confidence Format</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
 <!-- ════════════════════ SLIDE 17: OTHER DIRECTIONS ════════════════════ -->
-<div class="slide" data-section="Preliminary Experiment">
+<div class="slide" data-section="Preliminary Experiments">
   <div class="slide-inner">
     <div class="stag green">Next Steps</div>
     <div class="sh sh-lg">Other Research Directions</div>
-    <p class="sp" style="margin-bottom:16px;">Two complementary directions targeting the core failure modes — <strong>not</strong> exploring generation at this stage.</p>
+    <p class="sp" style="margin-bottom:16px;">Two complementary directions targeting the core failure modes, <strong>not</strong> exploring generation at this stage.</p>
 
     <div class="col-2 flex-1" style="align-items:stretch;">
       <div class="card accent col" style="padding:18px 20px;">
@@ -1468,9 +1773,9 @@ body {
 
         <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--c-border-light); font-size:11.5px; line-height:1.6; color:var(--c-text-3);">
           <p><strong style="color:var(--c-text-2);">Approaches under consideration:</strong></p>
-          <p style="margin-top:2px;">— Tool-augmented inference (external geometric reasoning)</p>
-          <p>— Fine-tuning on perspective-change tasks</p>
-          <p>— Structured prompting with explicit coordinate frames</p>
+          <p style="margin-top:2px;">· Tool-augmented inference (external geometric reasoning)</p>
+          <p>· Fine-tuning on perspective-change tasks</p>
+          <p>· Structured prompting with explicit coordinate frames</p>
         </div>
       </div>
     </div>
@@ -1479,7 +1784,7 @@ body {
       <strong>Scope note →</strong> Unlike the generation-focused research of the group, our current focus is on the <strong>understanding</strong> side — improving how models perceive and reason about space, not how they generate spatial content.
     </div> -->
   </div>
-  <div class="slide-footer"><span>03 — Preliminary Experiment · Next Steps</span><span></span></div>
+  <div class="slide-footer"><span>03 · Preliminary Experiments · Next Steps</span><span></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -1513,7 +1818,7 @@ body {
     <div class="sh sh-xl">Research Directions</div>
     <p class="sp" style="max-width:540px;">Six ideas for bridging Gap 2 — each anchored to a specific empirical failure mode from our analysis.</p>
   </div>
-  <div class="slide-footer"><span>04 — Research Directions</span><span></span></div>
+  <div class="slide-footer"><span>04 · Research Directions</span><span></span></div>
   <div class="progress-bar"></div>
 </div> -->
 
@@ -1561,7 +1866,7 @@ body {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>04 — Research Directions · High Priority</span><span></span></div>
+  <div class="slide-footer"><span>04 · Research Directions · High Priority</span><span></span></div>
   <div class="progress-bar"></div>
 </div> -->
 
@@ -1609,7 +1914,7 @@ body {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>04 — Research Directions · Exploratory</span><span></span></div>
+  <div class="slide-footer"><span>04 · Research Directions · Exploratory</span><span></span></div>
   <div class="progress-bar"></div>
 </div> -->
 
@@ -1647,7 +1952,7 @@ body {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>04 — Research Directions · Roadmap</span><span></span></div>
+  <div class="slide-footer"><span>04 · Research Directions · Roadmap</span><span></span></div>
   <div class="progress-bar"></div>
 </div> -->
 
@@ -1719,6 +2024,64 @@ function applySubStep(i) {
     }
   }
 
+  // --- Task cards highlighting (4 Spatial QA Tasks slide) ---
+  const taskCards = slide.querySelector('.task-cards');
+  if (taskCards) {
+    const cards = taskCards.querySelectorAll('.card');
+    const taskVideos = slide.querySelector('.task-videos');
+    taskCards.classList.remove('highlighting');
+    cards.forEach(c => c.classList.remove('task-lit'));
+
+    if (step >= 1 && step <= 4) {
+      taskCards.style.opacity = '1';
+      taskCards.style.transform = 'scale(1)';
+      taskCards.classList.add('highlighting');
+      cards.forEach(c => {
+        const t = c.getAttribute('data-task');
+        let lit = false;
+        if (step === 1) lit = t.startsWith('ego');
+        if (step === 2) lit = t.startsWith('allo');
+        if (step === 3) lit = t.endsWith('-dir');
+        if (step === 4) lit = t.endsWith('-dist');
+        c.classList.toggle('task-lit', lit);
+      });
+      if (taskVideos) { taskVideos.style.opacity = '0.30'; taskVideos.style.transform = 'scale(0.98)'; taskVideos.style.pointerEvents = 'none'; }
+    } else if (step === 5) {
+      taskCards.style.opacity = '0.30';
+      taskCards.style.transform = 'scale(0.98)';
+      if (taskVideos) { taskVideos.style.opacity = '1'; taskVideos.style.transform = 'scale(1)'; taskVideos.style.pointerEvents = 'all'; }
+    } else {
+      taskCards.style.opacity = '1';
+      taskCards.style.transform = 'scale(1)';
+      if (taskVideos) { taskVideos.style.opacity = '0.30'; taskVideos.style.transform = 'scale(0.98)'; taskVideos.style.pointerEvents = 'none'; }
+    }
+  }
+
+  // --- Confusion matrix cell highlighting ---
+  const cmGrid = slide.querySelector('.cm-grid');
+  if (cmGrid) {
+    const tables = slide.querySelectorAll('.cm-table');
+    tables.forEach(tbl => {
+      const rows = tbl.querySelectorAll('tr');
+      for (let r = 1; r <= 4; r++) {
+        const cells = rows[r].querySelectorAll('td');
+        for (let c = 1; c <= 4; c++) {
+          const rowIdx = r - 1; // 0=A, 1=B, 2=C, 3=D
+          const colIdx = c - 1;
+          let dim = false;
+          if (step === 1) {
+            dim = !(rowIdx <= 1 && colIdx <= 1);
+          } else if (step === 2) {
+            dim = !(rowIdx >= 2 && colIdx <= 1);
+          } else if (step === 3) {
+            dim = !(rowIdx >= 2 && colIdx >= 2);
+          }
+          cells[c].classList.toggle('cm-dim', dim);
+        }
+      }
+    });
+  }
+
   // --- Generic data-step system ---
   // step 0 highlights data-step="0", step 1 highlights data-step="1", etc.
   const stepEls = slide.querySelectorAll('[data-step]');
@@ -1735,18 +2098,18 @@ function applySubStep(i) {
   if (sotaTbl) {
     const rows = sotaTbl.querySelectorAll('tbody tr[data-sota]');
     if (step === 0) {
-      // Highlight open-source (dim) vs closed-source gap
+      // Highlight paper open-source vs closed-source gap
       sotaTbl.classList.add('highlighting');
       rows.forEach(r => {
         const g = r.getAttribute('data-sota');
-        r.classList.toggle('sota-lit', g === 'open' || g === 'closed');
+        r.classList.toggle('sota-lit', g === 'paper-open' || g === 'closed');
       });
     } else if (step === 1) {
-      // Highlight Qwen3-Omni bridging gap 1
+      // Highlight our open-source bridging gap 1
       sotaTbl.classList.add('highlighting');
       rows.forEach(r => {
         const g = r.getAttribute('data-sota');
-        r.classList.toggle('sota-lit', g === 'qwen3' || g === 'closed');
+        r.classList.toggle('sota-lit', g === 'ours' || g === 'closed');
       });
     } else if (step === 2) {
       // Highlight SAVVY vs best e2e
