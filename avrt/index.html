@@ -423,11 +423,32 @@ table.t.cmp tr.srow.on td{background:rgba(117,0,20,.07);} table.t.cmp tr.srow.on
   body{overflow:visible; background:#fff; display:block;}
   .deck{transform:none!important;}
   .slide{opacity:1!important; position:relative; page-break-after:always; pointer-events:all;}
-  #hud,#img-overlay,#slide-jump{display:none!important;}
+  #hud,#img-overlay,#slide-jump,#mobile-warning{display:none!important;}
 }
+
+/* ===================== PHONE WARNING ===================== */
+/* Shown only on actual phones (detected via JS, see bottom of file), never on
+   a resized desktop window or a tablet. */
+#mobile-warning{display:none;}
+html.is-phone #mobile-warning{display:flex; position:fixed; inset:0; z-index:9999;
+  flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  padding:32px; background:var(--navy); color:#fff;
+  font-family:var(--f-body); -webkit-font-smoothing:antialiased;}
+#mobile-warning .mw-icon{font-size:52px; line-height:1; margin-bottom:24px;}
+#mobile-warning h1{font-family:var(--f-head); font-weight:700; font-size:26px;
+  letter-spacing:-.02em; line-height:1.12; margin-bottom:16px; color:#fff;}
+#mobile-warning h1 em{font-style:normal; color:var(--br);}
+#mobile-warning p{font-size:16px; line-height:1.5; color:rgba(255,255,255,.78); max-width:30ch;}
+/* prevent the scaled-down deck from being interacted with behind the notice */
+html.is-phone, html.is-phone body{overflow:hidden;}
 </style>
 </head>
 <body>
+<div id="mobile-warning">
+  <div class="mw-icon">🖥️</div>
+  <h1>This deck needs a <em>bigger screen</em></h1>
+  <p>These slides are designed for a wide display and won't render properly on a phone. Please open this link on a laptop, desktop, or projector.</p>
+</div>
 <div class="deck" id="deck">
 
 <!-- ════════════ TITLE ════════════ -->
@@ -1007,6 +1028,17 @@ function scaleDeck(){
   d.style.transform='scale('+Math.min(window.innerWidth/1280, window.innerHeight/720)+')';
 }
 scaleDeck(); window.addEventListener('resize', scaleDeck);
+
+/* Flag actual phones so the small-screen warning shows there but not on a
+   resized desktop window or a tablet. UA-sniff first; fall back to the
+   touch + no-hover + small-screen combination for phones with odd UAs. */
+(function(){
+  const ua = navigator.userAgent || '';
+  const uaPhone = /iPhone|iPod|Android.*Mobile|Windows Phone|BlackBerry|BB10|Opera Mini|IEMobile/i.test(ua);
+  const touchPhone = window.matchMedia('(hover:none) and (pointer:coarse)').matches
+    && Math.min(screen.width, screen.height) <= 480;
+  if(uaPhone || touchPhone) document.documentElement.classList.add('is-phone');
+})();
 
 document.getElementById('deck').addEventListener('click', e=>{
   if(e.target.closest('a, .paperfig img, button')) return;
