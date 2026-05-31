@@ -1,0 +1,15 @@
+{
+  "index": 857,
+  "question": "Why did the red wine spill on her face?",
+  "options": [
+    "A woman who dislikes her threw red wine on her face.",
+    "Her husband threw red wine on her face during a fight.",
+    "The woman with golden long hair was startled by a firework sound.",
+    "The woman with golden short hair was startled by a firework sound."
+  ],
+  "answer": "The woman with golden short hair was startled by a firework sound.",
+  "audio content": "Fireworks sound",
+  "image content": "The image depicts a woman with blonde, curly hair styled in a vintage fashion. She is wearing a glamorous, sparkling necklace and earrings. Her makeup is dramatic, with dark eyeliner and bright red lipstick. However, her face is smeared with what appears to be blood, particularly around her nose and mouth, suggesting a scene of distress or violence. The background is dark and filled with shelves of books, indicating that the setting might be a library or a room with a large collection of books. The overall atmosphere of the image is eerie and unsettling.",
+  "image_path": "mm_data/image/7_063_a_women.png",
+  "audio_path": "mm_data/audio/7_063_a_women.mp3"
+}

@@ -1,0 +1,38 @@
+{
+  "picnic": {
+    "index": 871,
+    "question": "What is likely to happen next?",
+    "options": [
+      "They'll stop the outdoor football game and wait for the rain to stop.",
+      "They will praise the brilliant sunshine.",
+      "They will stop the picnic and look for shelter.",
+      "They will go flying kites."
+    ],
+    "answer": "They will stop the picnic and look for shelter.",
+    "audio content": "Thunder sound + rain sound"
+  },
+  "phone": {
+    "index": 708,
+    "question": "What are they doing?",
+    "options": [
+      "They are looking for a very important document on the table.",
+      "They are looking for a mobile phone on the table.",
+      "They are looking for a gray landline on the table.",
+      "The are trying to find a ringing mobile phone on the floor."
+    ],
+    "answer": "They are looking for a mobile phone on the table.",
+    "audio content": "Sound of picking up a landline phone, putting it back, and continuous ringing"
+  },
+  "dog": {
+    "index": 882,
+    "question": "What will happen next?",
+    "options": [
+      "The phone will fall off.",
+      "The dog will fall asleep.",
+      "Someone will answer the phone.",
+      "The dog will bark."
+    ],
+    "answer": "The dog will bark.",
+    "audio content": "Mobile phone ringtone"
+  }
+}

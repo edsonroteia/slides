@@ -80,14 +80,43 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .qrtxt{text-align:center; font-size:14px; color:var(--t3); line-height:1.4;}
 .qrtxt b{display:block; color:var(--accent); font-weight:700; font-size:15px; margin-bottom:2px;}
 
+/* ===================== ABOUT ME ===================== */
+.about-body{flex:1; min-height:0; display:flex; flex-direction:column; gap:30px; justify-content:center;}
+.about-top{display:grid; grid-template-columns:312px 1fr; gap:48px; align-items:center;}
+.about-id{display:flex; flex-direction:column; align-items:flex-start; gap:13px;}
+.about-avatar{width:124px; height:124px; border-radius:50%; object-fit:cover; display:block;
+  border:3px solid #fff; box-shadow:0 4px 18px rgba(0,0,0,.18); background:var(--dim);}
+.about-name{display:flex; align-items:center; gap:13px; font-family:var(--f-head); font-weight:700;
+  font-size:35px; line-height:1; letter-spacing:-.022em; color:var(--ink);}
+.about-name .flag{width:34px; height:auto; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,.2); display:block;}
+.about-role{font-size:18px; font-weight:700; color:var(--accent);}
+.about-adv{font-size:16px; line-height:1.55; color:var(--t3);}
+.about-adv b{color:var(--ink); font-weight:700;}
+.about-rlab{font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--blue); margin-bottom:15px;}
+.about-areas{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+.about-areas .area{padding-top:16px; border-top:3px solid var(--border);}
+.about-areas .area.now{border-top-color:var(--accent);}
+.about-areas h4{font-family:var(--f-head); font-size:19px; font-weight:700; line-height:1.1; letter-spacing:-.012em; color:var(--ink); margin-bottom:9px;}
+.about-areas .now h4{color:var(--accent);}
+.about-areas p{position:relative; padding-left:17px; font-size:15px; line-height:1.45; color:var(--t2);}
+.about-areas p::before{content:''; position:absolute; left:1px; top:7px; width:6px; height:6px; border-radius:50%; background:var(--t4);}
+.about-areas .now p::before{background:var(--accent);}
+.about-areas p b{color:var(--ink); font-weight:700;}
+.about-areas p .who{display:block; font-size:12.5px; color:var(--t4); margin-top:2px;}
+.about-meta{display:inline-flex; align-self:flex-start; align-items:center; gap:11px; background:var(--blue-l);
+  border:1px solid rgba(25,102,255,.22); border-radius:9px; padding:8px 14px;}
+.about-meta .meta-mark{flex-shrink:0; display:flex; align-items:center;}
+.about-meta .meta-txt{font-size:13.5px; color:var(--t3); line-height:1.3;}
+.about-meta .meta-txt b{color:var(--blue-dk); font-weight:700;}
+
 /* ===================== 01 SUMMARY ===================== */
-.summary{flex:1; min-height:0; display:flex; flex-direction:column; gap:16px;}
-.summaryPunch{position:relative; overflow:hidden; border-radius:12px; padding:16px 26px 16px 30px; background:var(--accent);
-  display:flex; align-items:center; gap:20px; box-shadow:0 2px 10px rgba(117,0,20,.18);}
+.summary{flex:1; min-height:0; display:flex; flex-direction:column; gap:34px; justify-content:center;}
+.summaryPunch{position:relative; overflow:hidden; border-radius:14px; padding:26px 34px 26px 38px; background:var(--accent);
+  display:flex; align-items:center; gap:24px; box-shadow:0 2px 10px rgba(117,0,20,.18);}
 .summaryPunch::before{content:''; position:absolute; left:0; top:0; bottom:0; width:7px; background:var(--navy);}
-.summaryPunch .eyebrow{position:relative; z-index:1; font-size:14px; font-weight:700; letter-spacing:.01em; color:#fff;
-  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.34); border-radius:7px; padding:9px 15px; flex-shrink:0;}
-.summaryPunch .punchText{position:relative; z-index:1; font-family:var(--f-head); font-size:22px; line-height:1.18; font-weight:700; letter-spacing:-.012em; color:#fff;}
+.summaryPunch .eyebrow{position:relative; z-index:1; font-size:16px; font-weight:700; letter-spacing:.01em; color:#fff;
+  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.34); border-radius:7px; padding:11px 18px; flex-shrink:0;}
+.summaryPunch .punchText{position:relative; z-index:1; font-family:var(--f-head); font-size:28px; line-height:1.2; font-weight:700; letter-spacing:-.012em; color:#fff;}
 .summaryPunch .punchText strong{color:#ffc4c9; font-weight:700;}
 .summaryCompare{display:grid; grid-template-columns:1fr 40px 1fr 40px 1.08fr; gap:12px; align-items:stretch;}
 .summini{background:#fff; border:1px solid var(--border); border-radius:12px; padding:15px 16px; display:flex; flex-direction:column; gap:9px;}
@@ -98,12 +127,12 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .summini.muted{background:#f5f6f8;} .summini.teach{background:#f5f8ff; border-color:rgba(25,102,255,.18);}
 .summini.ours{background:var(--accent-l); border-color:rgba(117,0,20,.25);} .summini.ours h3{color:var(--accent);}
 .sumarrow{display:flex; align-items:center; justify-content:center; color:var(--accent); font-family:var(--f-head); font-size:34px; font-weight:800;}
-.summaryContrib{flex:1; min-height:0; display:flex; flex-direction:column;}
-.slabel{font-size:14px; font-weight:700; letter-spacing:.01em; color:var(--blue); margin-bottom:12px;}
-.summaryContrib ul{list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
-.summaryContrib li{position:relative; padding-top:14px; border-top:3px solid var(--accent); font-size:16px; line-height:1.36; color:var(--t2);}
-.summaryContrib li .cn{display:block; font-size:13px; font-weight:700; color:var(--accent); margin-bottom:7px;}
-.summaryContrib li b{display:block; color:var(--ink); font-weight:700; font-size:19px; line-height:1.12; letter-spacing:-.012em; margin-bottom:8px;}
+.summaryContrib{flex:none; display:flex; flex-direction:column;}
+.slabel{font-size:16px; font-weight:700; letter-spacing:.01em; color:var(--blue); margin-bottom:18px;}
+.summaryContrib ul{list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:34px;}
+.summaryContrib li{position:relative; padding-top:18px; border-top:3px solid var(--accent); font-size:18.5px; line-height:1.4; color:var(--t2);}
+.summaryContrib li .cn{display:block; font-size:14px; font-weight:700; color:var(--accent); margin-bottom:9px;}
+.summaryContrib li b{display:block; color:var(--ink); font-weight:700; font-size:23px; line-height:1.14; letter-spacing:-.012em; margin-bottom:11px;}
 
 /* ===================== 02 METHOD ===================== */
 .methodbody{flex:1; min-height:0; display:grid; grid-template-columns:1.18fr 1fr; gap:30px; align-items:stretch;}
@@ -203,6 +232,231 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .rv.on{opacity:1;}
 .dimmed{opacity:.2 !important; transition:opacity .4s ease;}
 
+/* ===================== MOTIVATION (01–04) · flat, MIT identity ===================== */
+.mot{flex:1; min-height:0; display:flex; flex-direction:column;}
+.motfoot{flex-shrink:0; margin-top:20px; padding-top:14px; border-top:2px solid var(--accent); font-size:16.5px; color:var(--t3); line-height:1.36;}
+.motfoot b{color:var(--ink); font-weight:700;} .motfoot em{font-style:normal; color:var(--accent); font-weight:700;}
+@keyframes hookwv{from{height:4px}to{height:15px}}
+
+/* 01 · three examples, flat on the page (no cards) */
+.exrow3{flex:1; min-height:0; display:grid; grid-template-columns:repeat(3,1fr); gap:44px; align-items:start; padding-top:4px;}
+.ex{display:flex; flex-direction:column; min-width:0;}
+.exfig{width:100%; height:176px; overflow:hidden; background:var(--dim);}
+.exfig img{width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block;}
+.exrule{height:4px; background:var(--accent); margin-bottom:12px;}
+.exq{font-family:var(--f-head); font-size:17px; font-weight:700; color:var(--ink); line-height:1.16; letter-spacing:-.01em; margin-bottom:10px;}
+.exopts{list-style:none; counter-reset:o; display:flex; flex-direction:column; gap:6px;}
+.exopts li{counter-increment:o; position:relative; padding-left:22px; font-size:13px; line-height:1.26; color:var(--t2);}
+.exopts li::before{content:counter(o,upper-alpha); position:absolute; left:0; top:0; font-size:12px; font-weight:700; color:var(--t4);}
+.exopts li.correct.on{color:var(--accent); font-weight:700;}
+.exopts li.correct.on::before{color:var(--accent);}
+.exopts li.correct.on::after{content:'  ✓'; font-weight:800;}
+.exaudio{display:inline-flex; align-items:center; gap:9px; margin:0 0 13px; padding:0; background:none; border:none; cursor:pointer; font-family:var(--f-body); color:var(--accent);}
+.exaudio .ptri{width:0; height:0; border-left:12px solid var(--accent); border-top:7px solid transparent; border-bottom:7px solid transparent;}
+.exaudio .pl{font-size:16px; font-weight:800;}
+.exaudio .pw{display:inline-flex; align-items:flex-end; gap:3px; height:15px;}
+.exaudio .pw i{width:3px; height:5px; background:var(--accent); opacity:.45;}
+.exaudio.on .pw i{animation:hookwv .7s ease-in-out infinite alternate; opacity:1;}
+.exaudio.on .pw i:nth-child(2){animation-delay:.12s} .exaudio.on .pw i:nth-child(3){animation-delay:.24s} .exaudio.on .pw i:nth-child(4){animation-delay:.36s}
+
+/* shared lead + bottom callout */
+.p2lead,.p3lead{flex-shrink:0; font-family:var(--f-head); font-size:29px; font-weight:700; line-height:1.16; letter-spacing:-.02em; color:var(--ink); margin-bottom:4px;}
+.p2lead em,.p3lead em{font-style:normal; color:var(--accent);} .p2lead b{font-weight:700; color:var(--blue-dk);}
+.motcallout{flex-shrink:0; margin-top:18px; display:flex; align-items:center; gap:15px; background:#fff; border:1px solid var(--border); border-radius:12px; padding:13px 20px;}
+.motcallout .mco-ic{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:var(--accent-l);}
+.motcallout .mco-ic svg{width:19px; height:19px; color:var(--accent);}
+.motcallout .mco-tx{font-size:16px; color:var(--t3); line-height:1.36;}
+.motcallout .mco-tx b{color:var(--accent); font-weight:800;} .motcallout .mco-tx b.blu{color:var(--blue-dk);}
+.motcallout.p2co .mco-ic{background:var(--blue);} .motcallout.p2co .mco-ic svg{color:#fff;}
+
+/* 02 · perception vs reasoning (icon cards) */
+.praflow{flex:1; min-height:0; display:grid; grid-template-columns:1fr auto 1.2fr auto 1fr; align-items:center; gap:16px;}
+.prabox{border-radius:16px; padding:20px 22px; display:flex; flex-direction:column; gap:11px;}
+.prabox.percept{background:#eef4ff;} .prabox.reason{background:#fbeff0;} .prabox.answer{background:#eef6ee;}
+.prak{font-size:13px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; text-align:center;}
+.percept .prak{color:var(--blue);} .reason .prak{color:var(--accent);} .answer .prak{color:#2e7d32;}
+.prafact{display:flex; align-items:center; gap:12px; font-family:var(--f-head); font-size:19px; font-weight:700; color:var(--ink); letter-spacing:-.012em; line-height:1.1;}
+.praplus{text-align:center; color:var(--t4); font-size:17px; font-weight:700; line-height:.2;}
+.prabig{display:flex; align-items:center; gap:13px; font-family:var(--f-head); font-size:19px; font-weight:700; color:var(--ink); line-height:1.18; letter-spacing:-.012em;}
+.prabig b{display:block; color:var(--accent);}
+.praic{width:40px; height:40px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.75);}
+.praic svg{width:21px; height:21px;}
+.percept .praic svg{color:var(--blue);} .reason .praic svg{color:var(--accent);} .answer .praic svg{color:#2e7d32;}
+.praarr{font-size:30px; color:var(--accent); text-align:center; font-weight:300;}
+/* slide 02 · example thumbnail + thought balloon */
+.exthumb{position:relative; width:100%; height:78px; border-radius:12px; overflow:hidden; margin:1px 0 3px; box-shadow:0 2px 9px rgba(0,0,0,.13);}
+.exthumb img{width:100%; height:100%; object-fit:cover; object-position:center 42%; display:block;}
+.boltbadge{position:absolute; top:6px; right:6px; width:29px; height:29px; border-radius:50%; background:rgba(28,31,36,.82); display:flex; align-items:center; justify-content:center; box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.boltbadge svg{width:16px; height:16px;}
+.reason{position:relative; overflow:visible;}
+.thought{position:absolute; left:50%; bottom:100%; transform:translateX(-50%); margin-bottom:6px; display:flex; flex-direction:column; align-items:center; pointer-events:none; z-index:3;}
+.tbubble{display:flex; align-items:center; justify-content:center; background:#fff; border:1.5px solid #bcd3ff; border-radius:50%; width:58px; height:58px; box-shadow:0 8px 22px rgba(25,102,255,.22);}
+.tbubble svg{width:32px; height:32px; color:var(--blue); flex-shrink:0;}
+.tdot{display:block; border-radius:50%; background:#fff; border:1.5px solid #bcd3ff; box-shadow:0 2px 5px rgba(25,102,255,.18);}
+.tdot.d1{width:11px; height:11px; margin-top:4px;}
+.tdot.d2{width:7px; height:7px; margin-top:3px;}
+/* slide 02 spotlight (final step) → 03 handoff */
+.ex{transition:opacity .55s ease, transform .55s ease, filter .55s ease;}
+.ex.dimmed{opacity:.34; filter:grayscale(.32);}
+/* understand slide: examples begin dimmed, then light up one by one */
+.understand .ex{opacity:.28; filter:grayscale(.4);}
+.understand .ex.on{opacity:1; filter:none;}
+.ex.on{transform:translateY(-2px) scale(1.015);}
+.ex.on .exfig{box-shadow:0 0 0 2px var(--blue), 0 8px 20px rgba(0,0,0,.14);}
+.motfoot{transition:opacity .45s ease;} .motfoot.dimmed{opacity:.32;}
+.exnext{flex-shrink:0; margin-top:13px; opacity:0; transform:translateY(5px); transition:opacity .55s ease, transform .55s ease; font-family:var(--f-head); font-size:17px; font-weight:700; color:var(--t3); letter-spacing:-.015em;}
+.exnext.on{opacity:1; transform:none;}
+.exnext b{color:var(--blue);}
+/* 03 element entrance (subtle, staggered) */
+.img-flip-clone{display:block; box-shadow:0 6px 18px rgba(0,0,0,.14);}
+.reason-intro .p2lead,
+.reason-intro .praflow > .praarr,
+.reason-intro .prabox.reason,
+.reason-intro .prabox.answer{opacity:0; transform:translateY(7px);}
+.reason-intro .prabox.reason .thought{opacity:0;}
+.reason-intro.s3in .p2lead,
+.reason-intro.s3in .praflow > .praarr,
+.reason-intro.s3in .prabox.reason,
+.reason-intro.s3in .prabox.answer{opacity:1; transform:none; transition:opacity .5s ease, transform .5s ease;}
+.reason-intro.s3in .p2lead{transition-delay:.04s;}
+.reason-intro.s3in .praflow > *:nth-child(2){transition-delay:.34s;}
+.reason-intro.s3in .prabox.reason{transition-delay:.44s;}
+.reason-intro.s3in .praflow > *:nth-child(4){transition-delay:.54s;}
+.reason-intro.s3in .prabox.answer{transition-delay:.62s;}
+.reason-intro.s3in .prabox.reason .thought{opacity:1; transition:opacity .45s ease; transition-delay:.82s;}
+/* centered + symmetric layouts (slides 02 & 03) */
+.understand .mot{justify-content:center;}
+.understand .exrow3{flex:0 0 auto; align-items:center; padding-top:0;}
+.reason-intro .mot{justify-content:center;}
+.reason-intro .p2lead{text-align:center; margin-bottom:26px;}
+.reason-intro .praflow{flex:0 0 auto; align-items:center;}
+/* slide 03 perceive = full example card (matches slide 02) */
+.reason-intro .percept{gap:9px;}
+.excard{width:100%;}
+.excard .exfig{height:150px; border:3px solid var(--blue);}
+.excard .exrule{margin-bottom:0;}
+.excard .exaudio{margin:9px 0 0;}
+.reason-intro .percept .prafact{font-size:16px;}
+.reason-intro .percept .praplus{font-size:15px;}
+/* presenter annotation tools */
+.deck.hl-mode{cursor:crosshair;}
+.deck.mag-mode, .deck.mag-mode *{cursor:none!important;}
+.hl-rect{position:absolute; background:rgba(255,221,0,.42); mix-blend-mode:multiply; border-radius:3px; pointer-events:none; z-index:60;}
+#mag-wrap{position:fixed; width:230px; height:230px; pointer-events:none; z-index:9500; display:none;}
+#mag-lens{position:absolute; inset:0; box-sizing:border-box; border-radius:50%; border:5px solid rgba(28,31,36,.92); box-shadow:0 8px 26px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,255,255,.55); overflow:hidden; background:#fff;}
+#mag-lens .mag-inner{position:absolute; top:0; left:0; transform-origin:top left; will-change:transform,left,top;}
+#mag-handle{position:absolute; right:-19px; bottom:-19px; width:44px; height:14px; background:rgba(28,31,36,.92); border-radius:7px; transform:rotate(45deg); transform-origin:center; box-shadow:0 2px 6px rgba(0,0,0,.35);}
+#tool-hud{position:fixed; bottom:16px; left:50%; transform:translateX(-50%); display:none; align-items:center; gap:9px; background:rgba(28,31,36,.93); color:#fff; font:600 12px/1 var(--f-body); padding:9px 15px; border-radius:22px; z-index:9600; letter-spacing:.02em; box-shadow:0 6px 20px rgba(0,0,0,.32);}
+#tool-hud.on{display:flex;}
+#tool-hud b{font-weight:800; letter-spacing:.04em; text-transform:uppercase; font-size:11px;}
+#tool-hud span{color:rgba(255,255,255,.7); font-weight:500;}
+#tool-hud kbd{background:rgba(255,255,255,.2); border-radius:5px; padding:3px 7px; font-family:var(--f-body); font-weight:800; font-size:11px;}
+
+/* 03 · reasoning per modality (icon cards) */
+.modgrid{flex:1; min-height:0; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; align-items:stretch;}
+.modcard{position:relative; background:#f7f9fc; border:1px solid var(--border-l); border-radius:16px; padding:22px 16px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:11px;}
+.modcard.miss{background:#fbf1f2; border-color:rgba(117,0,20,.18);}
+.modbadge{position:absolute; top:13px; right:13px; width:24px; height:24px;}
+.modcard.have .modbadge{color:var(--blue);} .modcard.miss .modbadge{color:var(--accent);}
+.modicon{width:66px; height:66px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#e9f0ff;}
+.modicon svg{width:32px; height:32px; color:var(--blue);}
+.modcard.miss .modicon{background:var(--accent-l);} .modcard.miss .modicon svg{color:var(--accent);}
+.modname{font-family:var(--f-head); font-size:25px; font-weight:700; letter-spacing:-.02em; color:var(--ink);}
+.modcard.miss .modname{color:var(--accent);}
+.modsub{font-size:14px; color:var(--t4);} .modcard.miss .modsub{color:var(--accent); font-weight:700;}
+
+/* ── landscape Venn (slide 04 · the gap) ── */
+.p3head{display:flex; align-items:flex-start; justify-content:space-between; gap:26px; margin-bottom:11px;}
+.p3head .p3lead.slim{flex:1; min-width:0; margin-bottom:0;}
+.p3head .leg{margin-top:3px;}
+.p3lead.slim{font-size:23px; line-height:1.2;}
+.p3lead.slim em{color:var(--accent);}
+.land{flex:1; min-height:0; display:flex; flex-direction:column; gap:7px;}
+.landgrid{flex:1; min-height:0; display:grid; grid-template-columns:1fr 1.32fr 1fr; grid-template-rows:1.12fr 1fr; gap:9px;}
+.zone{position:relative; border-radius:12px; padding:7px 9px 8px; display:flex; flex-direction:column; min-height:0;}
+.zone.za{grid-column:1; grid-row:1 / 3; background:var(--blue-l);}
+.zone.zav{grid-column:2; grid-row:1; background:#f1ebfb;}
+.zone.zgap{grid-column:2; grid-row:2; background:linear-gradient(155deg,#f1ebfb 35%,var(--accent-l)); border:1.5px solid rgba(117,0,20,.42); box-shadow:0 0 0 4px rgba(117,0,20,.06);}
+.zone.zv{grid-column:3; grid-row:1 / 3; background:#fdeee1;}
+.zlab{display:flex; align-items:center; gap:8px; margin-bottom:9px; flex-shrink:0;}
+.zlab .zt{font-family:var(--f-head); font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); white-space:nowrap;}
+.zone.zgap .zlab .zt{color:var(--accent);}
+.gapflag{font-size:10.5px; font-weight:800; letter-spacing:.03em; text-transform:uppercase; color:#fff; background:var(--accent); padding:3px 8px; border-radius:20px; white-space:nowrap;}
+.chips{display:flex; flex-wrap:wrap; gap:7px 8px; align-content:flex-start; min-height:0;}
+.zone.zav .chips,.zone.zgap .chips{flex:1; overflow:hidden;}
+.chip{position:relative; display:flex; flex-direction:column; padding:7px 14px; border-radius:8px; background:rgba(255,255,255,.8); border:1px solid rgba(20,24,27,.07);}
+.chip b{font-family:var(--f-head); font-size:17px; font-weight:700; color:var(--ink); line-height:1.18; white-space:nowrap; letter-spacing:-.01em;}
+.chip i{font-size:12.5px; font-style:normal; color:var(--t3); line-height:1.25; white-space:nowrap;}
+.zone.zgap .chip{background:rgba(255,255,255,.9); border-color:rgba(117,0,20,.18);}
+.zone.zgap .chip b{color:var(--accent);}
+.rgroup{margin-top:auto; background:rgba(138,109,0,.1); border:1px solid rgba(138,109,0,.22); border-radius:11px; padding:9px 10px 10px;}
+.rlab{display:flex; align-items:center; gap:6px; font-family:var(--f-head); font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;}
+.rlab svg{width:15px; height:15px; flex-shrink:0;}
+.rgroup .chip{background:rgba(255,255,255,.85); border-color:rgba(138,109,0,.22);}
+.chip.mine{border-color:rgba(117,0,20,.55); box-shadow:0 0 0 2px rgba(117,0,20,.13);}
+.chip.mine b{color:var(--accent);}
+.chip .star{position:absolute; top:-7px; right:-7px; min-width:18px; height:18px; padding:0 3px; background:var(--accent); color:#fff; border-radius:9px; font-size:10px; line-height:18px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+.leg{flex-shrink:0; display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:var(--t3); white-space:nowrap;}
+.leg .star{display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:var(--accent); color:#fff; border-radius:9px; font-size:10px;}
+/* dim the few AV-reasoning papers and float the verdict on top of them */
+.zone.zgap .chips{opacity:.32; filter:saturate(.6);}
+.gapnote{position:absolute; left:11px; right:11px; top:34px; bottom:9px; margin:0; z-index:2;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  font-size:14.5px; color:var(--accent); font-weight:700; line-height:1.32; letter-spacing:-.005em;
+  background:rgba(255,247,248,.4); border:1.5px solid rgba(117,0,20,.28); border-radius:10px;
+  padding:8px 16px; box-shadow:0 6px 18px rgba(117,0,20,.08);}
+
+/* stepped focus: ① non-reasoning models ② with-reasoning groups ③ audio-visual + reasoning ④ our teachers */
+.landgrid[data-focusgroup] .zone,
+.landgrid[data-focusgroup] .chip,
+.landgrid[data-focusgroup] .rgroup,
+.landgrid[data-focusgroup] .zone > .chips{transition:opacity .4s ease, box-shadow .4s ease;}
+
+/* ① spotlight the non-reasoning models, dim the reasoning groups + the gap */
+.landgrid[data-focus="1"] .zone.za .rgroup,
+.landgrid[data-focus="1"] .zone.zv .rgroup,
+.landgrid[data-focus="1"] .zone.zgap{opacity:.14;}
+
+/* ② spotlight both "with reasoning" groups */
+.landgrid[data-focus="2"] .zone.zav,
+.landgrid[data-focus="2"] .zone.zgap,
+.landgrid[data-focus="2"] .zone.za > .chips,
+.landgrid[data-focus="2"] .zone.zv > .chips{opacity:.14;}
+.landgrid[data-focus="2"] .rgroup{box-shadow:0 0 0 3px rgba(138,109,0,.35); border-color:rgba(138,109,0,.5);}
+
+/* ③ spotlight audio-visual + reasoning (the gap) */
+.landgrid[data-focus="3"] .zone.za,
+.landgrid[data-focus="3"] .zone.zav,
+.landgrid[data-focus="3"] .zone.zv{opacity:.14;}
+.landgrid[data-focus="3"] .zone.zgap{box-shadow:0 0 0 4px rgba(117,0,20,.3);}
+
+/* ④ bring up only the two teachers: AF3 + Kimi-VL-Thinking */
+.landgrid[data-focus="4"] .zone.zav,
+.landgrid[data-focus="4"] .zone.zgap{opacity:.14;}
+.landgrid[data-focus="4"] .zone.za .chip:not(.teach),
+.landgrid[data-focus="4"] .zone.zv .chip:not(.teach){opacity:.16;}
+.landgrid[data-focus="4"] .chip.teach{box-shadow:0 0 0 2.5px var(--accent); border-color:var(--accent);}
+.landgrid[data-focus="4"] .chip.teach b{color:var(--accent);}
+
+/* 04 · solution flow, flat */
+.midea{flex:1; min-height:0; display:flex; align-items:center; justify-content:center; gap:16px;}
+.iteachers{display:flex; flex-direction:column; gap:14px;}
+.ibox{border-radius:13px; padding:16px 18px; background:#fff; border:1px solid var(--border); display:flex; flex-direction:column; gap:4px; text-align:center;}
+.ibox .ihd{font-family:var(--f-head); font-weight:700; font-size:17px; color:var(--ink); letter-spacing:-.01em;}
+.ibox .isub{font-size:12px; color:var(--t4);}
+.ibox .itrace{margin-top:9px; font-size:12.5px; font-weight:700; border-radius:7px; padding:7px 10px; line-height:1.15;}
+.ibox.aud .itrace{background:#e9f0ff; color:var(--blue-dk);}
+.ibox.vis .itrace{background:#eef1f4; color:var(--t2);}
+.ibox.merger{background:var(--blue-l); border-color:rgba(25,102,255,.35);}
+.ibox.merger .itrace{background:#fff; color:var(--blue-dk); border:1px solid rgba(25,102,255,.35);}
+.ibox.student{background:var(--accent); border-color:var(--accent);}
+.ibox.student .ihd{color:#fff;} .ibox.student .isub{color:rgba(255,255,255,.7);}
+.itwostep{display:flex; gap:8px; margin-top:9px; justify-content:center;}
+.itwostep span{background:rgba(255,255,255,.16); color:#fff; font-size:12px; font-weight:700; border-radius:6px; padding:6px 10px;}
+.iarr{color:var(--t4); font-size:26px; font-weight:800; flex-shrink:0;}
+.ikey{flex-shrink:0; background:var(--navy); border-radius:12px; padding:16px 26px; text-align:center; color:#fff; font-family:var(--f-head); font-size:18px; font-weight:700; line-height:1.25;}
+.ikey b{color:#9ec3ff;} .ikey .red{color:#ffc4c9;}
+
 /* ===================== THANK YOU ===================== */
 .thanks .slide-inner{align-items:center; justify-content:center; text-align:center;}
 .thx-eyebrow{font-size:14px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--br); margin-bottom:16px;}
@@ -218,6 +472,66 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .thx-poster{display:flex; flex-direction:column; align-items:center; gap:11px;}
 .thx-poster img{width:392px; max-width:40vw; border-radius:7px; box-shadow:0 10px 34px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.14);}
 .thx-poster .cap{font-size:14px; font-weight:700; color:var(--br); letter-spacing:.01em; text-align:center;}
+
+/* ===================== SECTION DIVIDERS ===================== */
+.slide.section{background:var(--navy);}
+.section .slide-inner{justify-content:center;}
+.sectionwrap{max-width:920px;}
+.sec-num{font-family:var(--f-head); font-size:19px; font-weight:700; color:var(--br); letter-spacing:.05em;}
+.sec-kick{font-size:14px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.42); margin-top:6px;}
+.sec-title{font-family:var(--f-head); font-size:76px; font-weight:700; color:#fff; letter-spacing:-.03em; line-height:1; margin:14px 0 0;}
+.sec-rule{width:80px; height:5px; background:var(--br); border-radius:3px; margin:24px 0 22px;}
+.sec-sub{font-size:23px; color:rgba(255,255,255,.7); line-height:1.34; max-width:760px;}
+
+/* ===================== TRAINING · SFT ===================== */
+.sftlead{font-size:24px; line-height:1.36; color:var(--t2); max-width:1040px;}
+.sftlead strong{color:var(--ink); font-weight:700;}
+.sftflow{display:flex; align-items:stretch; justify-content:center; gap:14px;}
+.sftcard{flex:1; max-width:330px; border-radius:13px; padding:16px 18px; background:#fff; border:1px solid var(--border); display:flex; flex-direction:column; gap:6px; text-align:center; justify-content:center;}
+.sftcard.ours{background:var(--accent); border-color:var(--accent);}
+.sftcard .sfth{font-family:var(--f-head); font-weight:700; font-size:17px; color:var(--ink); letter-spacing:-.01em; line-height:1.12;}
+.sftcard.ours .sfth{color:#fff;}
+.sftcard .sftb{font-size:14px; line-height:1.3; color:var(--t3);}
+.sftcard.ours .sftb{color:rgba(255,255,255,.82);}
+.sftarr{display:flex; align-items:center; color:var(--t4); font-size:30px; font-weight:800; flex-shrink:0;}
+.sfteqwrap{display:flex; flex-direction:column; align-items:center; gap:16px;}
+.sfteq{display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
+  font-family:var(--f-head); font-size:34px; color:var(--ink); letter-spacing:-.012em;}
+.sfteq .lhs{color:var(--t2);}
+.sfteq .neg{color:var(--t3); font-weight:400;}
+.sfteq .sum{display:inline-flex; flex-direction:column; align-items:center; color:var(--t2); line-height:1;}
+.sfteq .sum .sig{font-size:1.5em;}
+.sfteq .sum .top{font-size:.34em; font-weight:600; margin-bottom:2px;}
+.sfteq .sum .bot{font-size:.34em; font-weight:600; margin-top:2px;}
+.sfteq sub{font-size:.46em; font-weight:600; letter-spacing:0;}
+.sfteq .logterm{position:relative; padding:8px 17px; border-radius:11px; line-height:1;
+  background:var(--accent-l); color:var(--accent); box-shadow:0 2px 12px rgba(117,0,20,.13);}
+.sfteq .logterm small{display:block; font-family:var(--f-body); font-size:10.5px; font-weight:700;
+  letter-spacing:.02em; text-transform:uppercase; color:var(--accent); opacity:.78; margin-top:7px;}
+.sfteqnote{display:flex; justify-content:center; flex-wrap:wrap; gap:12px 30px; font-size:15.5px; color:var(--t3);}
+.sfteqnote span{white-space:nowrap;}
+.sfteqnote b{color:var(--ink); font-weight:700; font-family:var(--f-head); font-style:italic;}
+.sfteqnote i{font-style:normal; color:var(--t4); font-size:13.5px;}
+.sfttake{max-width:760px; margin:0 auto; text-align:center; font-size:19px; line-height:1.45; color:var(--t2);}
+.sfttake strong{color:var(--ink); font-weight:700;}
+.sftwhy{display:grid; grid-template-columns:repeat(3,1fr); gap:30px;}
+.sftwhy .sftwcell{position:relative; padding-top:16px; border-top:3px solid var(--accent); font-size:17px; line-height:1.38; color:var(--t2);}
+.sftwhy .sftwcell b{display:block; color:var(--ink); font-weight:700; font-size:20px; line-height:1.14; letter-spacing:-.012em; margin-bottom:8px;}
+
+/* ===================== DATASET COMPOSITION · two datasets ===================== */
+.data-v .figwide img{max-height:236px;}
+.mdata{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:auto;}
+.dcard{border-radius:13px; padding:15px 18px; border:1px solid var(--border); background:#fff; display:flex; flex-direction:column;}
+.dcard.sft{background:var(--accent-l); border-color:rgba(117,0,20,.22);}
+.dcard.grpo{background:var(--gold-l); border-color:rgba(138,109,0,.26);}
+.dctag{font-size:12.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--accent);}
+.dcard.grpo .dctag{color:var(--gold);}
+.dcname{font-family:var(--f-head); font-size:24px; font-weight:700; color:var(--ink); letter-spacing:-.012em; line-height:1; margin:5px 0 11px;}
+.dcstats{display:grid; grid-template-columns:1fr 1fr; gap:7px 16px;}
+.dcstats span{font-size:14px; color:var(--t2); line-height:1.22;}
+.dcstats span b{color:var(--ink); font-weight:700;}
+.dcuse{margin-top:11px; padding-top:9px; border-top:1px solid rgba(20,24,27,.1); font-size:13px; font-weight:700; color:var(--accent);}
+.dcard.grpo .dcuse{color:var(--gold);}
 
 /* ===================== 03 TABLE ===================== */
 .tblwrap{flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center;}
@@ -238,6 +552,17 @@ table.t tr.grp td::before{content:''; display:inline-block; width:8px; height:8p
 table.t tr.avg td{font-weight:700; background:rgba(117,0,20,.05); border-top:1.5px solid rgba(117,0,20,.2); border-bottom:1.5px solid rgba(117,0,20,.2);}
 table.t tr.avg td:first-child{color:var(--ink);} table.t tr.avg .base{color:var(--t3); font-weight:600;}
 table.t.hl thead tr:first-child th:nth-child(3), table.t.hl thead tr:last-child th:nth-child(4), table.t.hl tbody tr:not(.grp) td:nth-child(5){border-left:1px solid var(--border);}
+/* generic step spotlight: dim elements not lit at the current step */
+[data-lit]{transition:opacity .35s ease;}
+[data-lit].unlit{opacity:.13;}
+/* slide 09 · step focus (dim everything except the highlighted group) */
+table.t.hl td, table.t.hl th{transition:opacity .35s ease;}
+table.t.hl[data-focus="1"] :is(td,th).base, table.t.hl[data-focus="1"] :is(td,th).avrt, table.t.hl[data-focus="1"] td.best{opacity:.13;}
+table.t.hl[data-focus="2"] :is(td,th).sota, table.t.hl[data-focus="2"] :is(td,th).avrt, table.t.hl[data-focus="2"] td.best{opacity:.13;}
+table.t.hl[data-focus="3"] :is(td,th).sota, table.t.hl[data-focus="3"] :is(td,th).base{opacity:.13;}
+table.t.hl[data-focus="4"] tbody tr:not(.r-avqa){opacity:.13;}
+table.t.hl[data-focus="5"] tbody tr:not(.r-av){opacity:.13;}
+table.t.hl[data-focus="6"] tbody tr:not(.r-aud){opacity:.13;}
 .tnote{margin-top:12px; font-size:15px; line-height:1.3; color:var(--t2);}
 .tnote strong{color:var(--accent); font-weight:700;} .tnote .sm{color:var(--t4); font-size:13px;}
 
@@ -425,7 +750,12 @@ table.t.cmp tr.srow.on td{background:rgba(117,0,20,.07);} table.t.cmp tr.srow.on
   body{overflow:visible; background:#fff; display:block;}
   .deck{transform:none!important;}
   .slide{opacity:1!important; position:relative; page-break-after:always; pointer-events:all;}
-  #hud,#img-overlay,#slide-jump,#mobile-warning{display:none!important;}
+  #hud,#img-overlay,#slide-jump,#mobile-warning,#mag-wrap,#tool-hud{display:none!important;}
+  .hl-rect{display:none!important;}
+  .reason-intro .p2lead,.reason-intro .praflow>.praarr,.reason-intro .prabox.reason,
+  .reason-intro .prabox.answer,.reason-intro .prabox.reason .thought{opacity:1!important; transform:none!important;}
+  .reason-intro .prabox.reason .thought{transform:translateX(-50%)!important;}
+  .ex{opacity:1!important; filter:none!important; transform:none!important;} .exnext{display:none!important;}
 }
 
 /* ===================== PHONE WARNING ===================== */
@@ -481,36 +811,290 @@ html.is-phone, html.is-phone body{overflow:hidden;}
   <div class="progress-bar"></div>
 </div>
 
-<!-- ════════════ 01 SUMMARY ════════════ -->
+<!-- ════════════ ABOUT ME ════════════ -->
 <div class="slide">
   <div class="slide-inner">
-    <div class="shead" style="--rule:var(--blue);"><span class="idx">01</span><span class="ttl">Summary</span><span class="post">The problem · the idea · the result</span></div>
+    <div class="shead"><span class="ttl">About <em>me</em></span></div>
+    <div class="pbody about-body">
+      <div class="about-top">
+        <div class="about-id">
+          <img class="about-avatar" src="assets/edson.jpeg" alt="Edson Araujo">
+          <div class="about-name">Edson Araujo
+            <svg class="flag" viewBox="0 0 30 21" role="img" aria-label="Brazilian flag">
+              <rect width="30" height="21" rx="2.5" fill="#009C3B"/>
+              <polygon points="15,2.6 27.2,10.5 15,18.4 2.8,10.5" fill="#FFDF00"/>
+              <circle cx="15" cy="10.5" r="4.7" fill="#002776"/>
+              <path d="M10.7,9.1 Q15,11.5 19.3,9.1" stroke="#fff" stroke-width="0.9" fill="none"/>
+            </svg>
+          </div>
+          <div class="about-role">Third-year PhD Student</div>
+          <div class="about-adv">
+            Advised by <b>Prof. Hilde Kuehne</b><br>University of Tübingen<br>
+            <span style="display:inline-block; margin-top:8px;">Co-advised by <b>Dr. Jim Glass</b><br>MIT CSAIL</span>
+          </div>
+        </div>
+        <div class="about-research">
+          <div class="about-rlab">PhD research</div>
+          <div class="about-areas">
+            <div class="area now">
+              <h4>Audio-Visual Learning</h4>
+              <p>CAV-MAE Sync<span class="who">first author · CVPR 2025</span></p>
+              <p style="margin-top:9px;">Omni-R1<span class="who">co-author · ASRU 2025</span></p>
+              <p style="margin-top:9px;"><b>AVRT</b><span class="who">first author · under submission</span></p>
+            </div>
+            <div class="area">
+              <h4>Video Understanding</h4>
+              <p>TTA-Vid<span class="who">co-first author · under submission</span></p>
+              <p style="margin-top:9px;">Decompose, Compare, and Decide<span class="who">collaborator · under submission</span></p>
+            </div>
+            <div class="area">
+              <h4>Spatial Audio-Video understanding</h4>
+              <p>Teaching omni-modal models to answer spatial questions about egocentric video and 3D audio.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-meta">
+        <span class="meta-mark"><img src="assets/meta_mark.svg" alt="Meta" style="height:17px; width:auto; display:block;"></span>
+        <span class="meta-txt">Leaving for a Research Internship at Meta Reality Labs &middot; Summer &amp; Fall 2026</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>About the author</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ SECTION · INTRODUCTION ════════════ -->
+<div class="slide section dark">
+  <div class="slide-inner">
+    <div class="sectionwrap">
+      <div class="sec-num">01 / 04</div>
+      <div class="sec-title">Introduction</div>
+      <div class="sec-rule"></div>
+      <div class="sec-sub">Why audio-visual understanding needs reasoning, and the gap no end-to-end model fills today.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Introduction</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 01 MOTIVATION · UNDERSTANDING AV ════════════ -->
+<div class="slide understand" data-steps="6">
+  <div class="slide-inner">
+    <div class="shead"><span class="idx">01</span><span class="ttl">Understanding <em>audio-visual</em> content</span></div>
+    <div class="mot">
+      <div class="exrow3">
+        <div class="ex" data-reveal="1">
+          <div class="exfig"><img id="pic-a" src="assets/hook/picnic.png" alt="a family having a picnic in a park"></div>
+          <div class="exrule"></div>
+          <button class="exaudio" type="button" onclick="miniPlay(this)"><span class="ptri"></span><span class="pl">Hear: thunder + rain</span><span class="pw"><i></i><i></i><i></i><i></i></span><audio id="snd-picnic" src="assets/hook/picnic.mp3" preload="auto"></audio></button>
+          <div class="exq">What is likely to happen next?</div>
+          <ol class="exopts">
+            <li>They’ll stop the football game and wait for the rain.</li>
+            <li>They will praise the brilliant sunshine.</li>
+            <li class="correct" data-reveal="2">They will stop the picnic and look for shelter.</li>
+            <li>They will go flying kites.</li>
+          </ol>
+        </div>
+        <div class="ex" data-reveal="3">
+          <div class="exfig"><img src="assets/hook/phone.png" alt="two people searching a table in a room"></div>
+          <div class="exrule"></div>
+          <button class="exaudio" type="button" onclick="miniPlay(this)"><span class="ptri"></span><span class="pl">Hear: a phone ringing</span><span class="pw"><i></i><i></i><i></i><i></i></span><audio src="assets/hook/phone.mp3" preload="none"></audio></button>
+          <div class="exq">What are they doing?</div>
+          <ol class="exopts">
+            <li>Looking for an important document on the table.</li>
+            <li class="correct" data-reveal="4">Looking for a mobile phone on the table.</li>
+            <li>Looking for a gray landline on the table.</li>
+            <li>Trying to find a ringing phone on the floor.</li>
+          </ol>
+        </div>
+        <div class="ex" data-reveal="5">
+          <div class="exfig"><img src="assets/hook/firework.png" alt="a woman with red wine on her face in a dim interior"></div>
+          <div class="exrule"></div>
+          <button class="exaudio" type="button" onclick="miniPlay(this)"><span class="ptri"></span><span class="pl">Hear: sudden fireworks</span><span class="pw"><i></i><i></i><i></i><i></i></span><audio src="assets/hook/firework.mp3" preload="none"></audio></button>
+          <div class="exq">Why did the red wine spill on her face?</div>
+          <ol class="exopts">
+            <li>A woman who dislikes her threw wine at her.</li>
+            <li>Her husband threw wine during a fight.</li>
+            <li>The long-haired woman was startled by a firework.</li>
+            <li class="correct" data-reveal="6">The short-haired woman was startled by a firework.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Understanding AV content</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 02 MOTIVATION · PERCEPTION VS REASONING ════════════ -->
+<div class="slide reason-intro">
+  <div class="slide-inner">
+    <div class="shead" style="--rule:var(--blue);"><span class="idx">02</span><span class="ttl">Perception isn’t enough: we must <em>reason</em></span></div>
+    <div class="mot">
+      <div class="p2lead">A model can <b>perceive</b> each stream on its own.<br>Answering still takes <em>reasoning across them</em>.</div>
+      <div class="praflow">
+        <div class="prabox percept">
+          <div class="prak">Perceive</div>
+          <div class="excard">
+            <div class="exfig"><img id="pic-b" src="assets/hook/picnic.png" alt="a family having a picnic in a park"></div>
+            <div class="exrule"></div>
+            <button class="exaudio" type="button" onclick="miniPlay(this)"><span class="ptri"></span><span class="pl">Hear: thunder + rain</span><span class="pw"><i></i><i></i><i></i><i></i></span><audio id="snd-picnic3" src="assets/hook/picnic.mp3" preload="auto"></audio></button>
+          </div>
+          <div class="prafact"><span class="praic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span>sees a family picnic</div>
+          <div class="praplus">+</div>
+          <div class="prafact"><span class="praic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"/></svg></span>hears thunder</div>
+        </div>
+        <div class="praarr">→</div>
+        <div class="prabox reason">
+          <div class="thought">
+            <div class="tbubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg></div>
+            <span class="tdot d1"></span>
+            <span class="tdot d2"></span>
+          </div>
+          <div class="prak">Reason</div>
+          <div class="prabig"><span class="praic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.142 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/></svg></span><span>thunder over an outdoor meal<br><b>= rain is coming</b></span></div>
+        </div>
+        <div class="praarr">→</div>
+        <div class="prabox answer">
+          <div class="prak">Answer</div>
+          <div class="prabig"><span class="praic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="M22 12a10 10 0 0 0-20 0Z"/><path d="M12 12v6a2 2 0 0 0 4 0"/></svg></span><span>they pack up and find shelter</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Why reasoning</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 03 MOTIVATION · THE GAP ════════════ -->
+<div class="slide" data-steps="4">
+  <div class="slide-inner">
+    <div class="shead"><span class="idx">03</span><span class="ttl">The landscape: reasoning everywhere <em>except across audio + video</em></span></div>
+    <div class="mot">
+      <div class="p3head">
+        <div class="p3lead slim">Dozens of models cover audio, video, and reasoning. The audio-visual reasoning corner has work, but <em>no end-to-end reasoner</em>.</div>
+        <span class="leg"><span class="star">&#9733;</span>our prior work</span>
+      </div>
+      <div class="land">
+        <div class="landgrid" data-focusgroup>
+          <div class="zone za">
+            <div class="zlab"><span class="zt">Audio</span></div>
+            <div class="chips">
+              <span class="chip" title="Qwen2-Audio Technical Report"><b>Qwen2-Audio</b><i>Chu · arXiv&#8217;24</i></span>
+              <span class="chip" title="Audio Flamingo 2: An Audio-Language Model with Long-Audio Understanding and Expert Reasoning Abilities"><b>Audio Flamingo 2</b><i>Ghosh · ICML&#8217;25</i></span>
+              <span class="chip" title="Kimi-Audio Technical Report"><b>Kimi-Audio</b><i>Kimi Team · arXiv&#8217;25</i></span>
+            </div>
+            <div class="rgroup">
+              <div class="rlab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.142 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/></svg>with reasoning</div>
+              <div class="chips">
+                <span class="chip mine" title="Omni-R1: Do You Really Need Audio to Fine-Tune Your Audio LLM?"><span class="star">&#9733;</span><b>Omni-R1</b><i>Rouditchenko · ASRU&#8217;25</i></span>
+                <span class="chip" title="SARI: Structured Audio Reasoning via Curriculum-Guided Reinforcement Learning"><b>SARI</b><i>Wen · arXiv&#8217;25</i></span>
+                <span class="chip" title="Audio-Reasoner: Improving Reasoning Capability in Large Audio Language Models"><b>Audio-Reasoner</b><i>Xie · EMNLP&#8217;25</i></span>
+                <span class="chip" title="Audio-CoT: Exploring Chain-of-Thought Reasoning in Large Audio Language Model"><b>Audio-CoT</b><i>Ma · ASRU&#8217;25</i></span>
+                <span class="chip teach" title="Audio Flamingo 3: Advancing Audio Intelligence with Fully Open Large Audio Language Models"><b>Audio Flamingo 3</b><i>Goel · NeurIPS&#8217;25</i></span>
+              </div>
+            </div>
+          </div>
+          <div class="zone zav">
+            <div class="zlab"><span class="zt">Audio + Video</span></div>
+            <div class="chips">
+              <span class="chip" title="AVicuna: Empowering LLMs with Pseudo-Untrimmed Videos for Audio-Visual Temporal Understanding"><b>AVicuna</b><i>Tang · AAAI&#8217;25</i></span>
+              <span class="chip" title="Phi-4-Mini Technical Report: Compact yet Powerful Multimodal Language Models via Mixture-of-LoRAs"><b>Phi-4-MM</b><i>Microsoft · arXiv&#8217;25</i></span>
+              <span class="chip" title="Aligned Better, Listen Better for Audio-Visual Large Language Models"><b>Dolphin</b><i>Guo · ICLR&#8217;25</i></span>
+              <span class="chip" title="VideoLLaMA 2: Advancing Spatial-Temporal Modeling and Audio Understanding in Video-LLMs"><b>VideoLLaMA 2</b><i>Cheng · arXiv&#8217;24</i></span>
+              <span class="chip" title="Gemma 3 Technical Report"><b>Gemma 3n</b><i>Gemma Team · arXiv&#8217;25</i></span>
+              <span class="chip" title="Qwen2.5-Omni Technical Report"><b>Qwen2.5-Omni</b><i>Xu · arXiv&#8217;25</i></span>
+              <span class="chip" title="Meerkat: Audio-Visual Large Language Model for Grounding in Space and Time"><b>Meerkat</b><i>Chowdhury · ECCV&#8217;24</i></span>
+              <span class="chip" title="Ola: Pushing the Frontiers of Omni-Modal Language Model with Progressive Modality Alignment"><b>Ola</b><i>Liu · arXiv&#8217;25</i></span>
+              <span class="chip" title="OpenOmni: Advancing Open-Source Omnimodal Large Language Models with Progressive Multimodal Alignment and Real-Time Self-Aware Emotional Speech Synthesis"><b>OpenOmni</b><i>Luo · NeurIPS&#8217;25</i></span>
+              <span class="chip" title="PAVE: Patching and Adapting Video Large Language Models"><b>PAVE</b><i>Liu · CVPR&#8217;25</i></span>
+            </div>
+          </div>
+          <div class="zone zgap">
+            <div class="zlab"><span class="zt">Audio + Video + Reasoning</span><span class="gapflag">no end-to-end reasoner</span></div>
+            <div class="chips">
+              <span class="chip" title="Daily-Omni: Towards Audio-Visual Reasoning with Temporal Alignment across Modalities"><b>Daily-Omni</b><i>Zhou · arXiv&#8217;25</i></span>
+              <span class="chip" title="Crab: A Unified Audio-Visual Scene Understanding Model with Explicit Cooperation"><b>Crab</b><i>Du · CVPR&#8217;25</i></span>
+              <span class="chip" title="HumanOmniV2: From Understanding to Omni-Modal Reasoning with Context"><b>HumanOmniV2</b><i>Yang · arXiv&#8217;25</i></span>
+              <span class="chip" title="Omni-R1: Reinforcement Learning for Omnimodal Reasoning via Two-System Collaboration"><b>Omni-R1</b><i>Zhong · NeurIPS&#8217;25</i></span>
+              <span class="chip" title="AURELIA: Test-time Reasoning Distillation in Audio-Visual LLMs"><b>Aurelia</b><i>Chowdhury · ICCV&#8217;25</i></span>
+              <span class="chip" title="EchoInk-R1: Exploring Audio-Visual Reasoning in Multimodal LLMs via Reinforcement Learning"><b>EchoInk-R1</b><i>Xing · arXiv&#8217;25</i></span>
+            </div>
+            <div class="gapnote">Agents, pipelines, test-time distillation, or benchmarks. None is an end-to-end audio-visual reasoner.</div>
+          </div>
+          <div class="zone zv">
+            <div class="zlab"><span class="zt">Video</span></div>
+            <div class="chips">
+              <span class="chip" title="LLaVA-Video: Video Instruction Tuning With Synthetic Data"><b>LLaVA-Video</b><i>Zhang · TMLR&#8217;25</i></span>
+              <span class="chip" title="Qwen2.5-VL Technical Report"><b>Qwen2.5-VL</b><i>Bai · arXiv&#8217;25</i></span>
+              <span class="chip" title="InternVL3: Exploring Advanced Training and Test-Time Recipes for Open-Source Multimodal Models"><b>InternVL3</b><i>Zhu · arXiv&#8217;25</i></span>
+              <span class="chip" title="VideoLLaMA 3: Frontier Multimodal Foundation Models for Image and Video Understanding"><b>VideoLLaMA 3</b><i>Zhang · arXiv&#8217;25</i></span>
+            </div>
+            <div class="rgroup">
+              <div class="rlab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.142 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/></svg>with reasoning</div>
+              <div class="chips">
+                <span class="chip" title="Temporal Chain of Thought: Long-Video Understanding by Thinking in Frames"><b>Temporal CoT</b><i>Arnab · NeurIPS&#8217;25</i></span>
+                <span class="chip teach" title="Kimi-VL Technical Report"><b>Kimi-VL-Thinking</b><i>Du · arXiv&#8217;25</i></span>
+                <span class="chip" title="Video-R1: Reinforcing Video Reasoning in MLLMs"><b>Video-R1</b><i>Feng · NeurIPS&#8217;25</i></span>
+                <span class="chip" title="SiLVR: A Simple Language-based Video Reasoning Framework"><b>SiLVR</b><i>Zhang · TMLR&#8217;26</i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>The gap</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 04 MOTIVATION · OUR SOLUTION ════════════ -->
+<div class="slide" data-steps="4">
+  <div class="slide-inner">
+    <div class="shead"><span class="idx">04</span><span class="ttl">Our solution: <em>compose specialists</em>, train one student</span></div>
+    <div class="mot">
+      <div class="midea">
+        <div class="iteachers rv" data-reveal="1">
+          <div class="ibox aud">
+            <div class="ihd">Audio teacher</div>
+            <div class="isub">Audio Flamingo 3</div>
+            <div class="itrace">audio reasoning trace</div>
+          </div>
+          <div class="ibox vis">
+            <div class="ihd">Vision teacher</div>
+            <div class="isub">Kimi-VL-Thinking</div>
+            <div class="itrace">visual reasoning trace</div>
+          </div>
+        </div>
+        <div class="iarr rv" data-reveal="2">→</div>
+        <div class="ibox merger rv" data-reveal="2">
+          <div class="ihd">Text-only merger</div>
+          <div class="isub">Qwen2.5-14B</div>
+          <div class="itrace">unified audio-visual<br>reasoning trace</div>
+        </div>
+        <div class="iarr rv" data-reveal="3">→</div>
+        <div class="ibox student rv" data-reveal="3">
+          <div class="ihd">AV student</div>
+          <div class="isub">Qwen2.5-Omni 3B / 7B</div>
+          <div class="itwostep"><span>① SFT cold-start</span><span>② GRPO</span></div>
+        </div>
+      </div>
+      <div class="ikey rv" data-reveal="4">The merger never sees pixels or audio. It <b>composes two already-interpreted traces</b> into the target format. The result is <span class="red">one audio-visual reasoner</span> at inference.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Our solution</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 05 SUMMARY ════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="shead" style="--rule:var(--blue);"><span class="idx">05</span><span class="ttl">Summary</span></div>
     <div class="summary">
       <div class="summaryPunch">
         <span class="eyebrow">AVRT</span>
         <span class="punchText">Trains audio-visual reasoners by composing <strong>audio-only and vision-only reasoning traces</strong> with a <strong>text-only merger</strong>, enabling cross-modal reasoning <strong>without a native multimodal teacher</strong>.</span>
-      </div>
-      <div class="summaryCompare">
-        <div class="summini muted">
-          <h3>Current AV data</h3>
-          <p><span class="m ok">✓</span><span>video, audio, question, answer</span></p>
-          <p><span class="m no">✗</span><span>explicit reasoning traces</span></p>
-          <p><span class="m no">✗</span><span>joint reasoning teacher</span></p>
-        </div>
-        <div class="sumarrow">→</div>
-        <div class="summini teach">
-          <h3>Single-modality teachers</h3>
-          <p><span class="m ok">✓</span><span>strong visual reasoning</span></p>
-          <p><span class="m ok">✓</span><span>strong audio reasoning</span></p>
-          <p><span class="m no">✗</span><span>no native AV reasoning</span></p>
-        </div>
-        <div class="sumarrow">→</div>
-        <div class="summini ours">
-          <h3>AVRT</h3>
-          <p><span class="m ok">✓</span><span>text-only merger composes traces</span></p>
-          <p><span class="m ok">✓</span><span>SFT cold start + GRPO</span></p>
-          <p><span class="m ok">✓</span><span>one AV reasoner at inference</span></p>
-        </div>
       </div>
       <div class="summaryContrib">
         <div class="slabel">Key contributions</div>
@@ -526,40 +1110,92 @@ html.is-phone, html.is-phone body{overflow:hidden;}
   <div class="progress-bar"></div>
 </div>
 
-<!-- ════════════ 02 METHOD ════════════ -->
-<div class="slide" data-steps="4">
+<!-- ════════════ SECTION · METHOD ════════════ -->
+<div class="slide section dark">
   <div class="slide-inner">
-    <div class="shead"><span class="idx">02</span><span class="ttl">Method: compose specialists via a <em>text-only merger</em></span></div>
-    <div class="pbody method-v">
+    <div class="sectionwrap">
+      <div class="sec-num">02 / 04</div>
+      <div class="sec-title">Method</div>
+      <div class="sec-rule"></div>
+      <div class="sec-sub">First compose the reasoning data, then train the student in two stages: an SFT cold-start, then GRPO.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Method</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 02 METHOD · DATASET COMPOSITION ════════════ -->
+<div class="slide" data-steps="3">
+  <div class="slide-inner">
+    <div class="shead"><span class="idx">06</span><span class="ttl">Dataset: <em>compose</em> specialist traces into AV reasoning</span></div>
+    <div class="pbody data-v">
       <div class="paperfig figwide">
         <img src="assets/teaser.svg" alt="AVRT methodology: single-modality teachers merged by a text-only LLM into the AVRT dataset">
       </div>
-      <div class="msteps">
-        <div class="pstep" data-reveal="1"><span class="pn">1</span><div><b>Generate</b><p>Single-modality teachers each reason in the format they were optimized for.</p></div></div>
-        <div class="pstep" data-reveal="2"><span class="pn">2</span><div><b>Merge</b><p>A text-only LLM fuses the two chains into one audio-visual reasoning trace.</p></div></div>
-        <div class="pstep" data-reveal="3"><span class="pn">3</span><div><b>Train</b><p>SFT cold-start on the traces, then GRPO for audio-visual QA.</p></div></div>
+      <div class="msteps" style="grid-template-columns:repeat(2,1fr);">
+        <div class="pstep" data-reveal="1"><span class="pn">1</span><div><b>Generate</b><p>Audio-only and vision-only teachers each reason in the format they were optimized for.</p></div></div>
+        <div class="pstep" data-reveal="2"><span class="pn">2</span><div><b>Merge</b><p>A text-only LLM (Qwen2.5-14B) fuses the two chains into one audio-visual reasoning trace.</p></div></div>
       </div>
-      <div class="mdash" data-reveal="4">
-        <div class="mdlab">AVRT-20K dataset</div>
-        <div class="mdgrid">
-          <div class="mdcell"><b>19.2K</b><span>AV reasoning traces</span></div>
-          <div class="mdcell"><b>AVQA</b><span>source dataset</span></div>
-          <div class="mdcell"><b>~165</b><span>tokens / chain</span></div>
-          <div class="mdcell"><b>100%</b><span>format-valid</span></div>
-          <div class="mdcell"><b>10 s</b><span>clips · 1280×720</span></div>
-          <div class="mdcell"><b>4-way</b><span>MCQ + reasoning</span></div>
+      <div class="mdata rv" data-reveal="3">
+        <div class="dcard sft">
+          <div class="dctag">SFT trace dataset</div>
+          <div class="dcname">AVRT-20K</div>
+          <div class="dcstats">
+            <span><b>19.2K</b> AV reasoning traces</span>
+            <span><b>~165</b> tokens / chain</span>
+            <span><b>100%</b> format-valid</span>
+            <span><b>10 s</b> clips · 1280×720</span>
+          </div>
+          <div class="dcuse">→ Stage 1 · SFT cold-start</div>
+        </div>
+        <div class="dcard grpo">
+          <div class="dctag">GRPO prompt set</div>
+          <div class="dcname">AVQA · 4-way MCQ</div>
+          <div class="dcstats">
+            <span><b>video + audio</b> + question</span>
+            <span><b>no</b> reasoning traces</span>
+            <span><b>answer key</b> drives the reward</span>
+            <span><b>MCQ</b> + reasoning eval</span>
+          </div>
+          <div class="dcuse">→ Stage 2 · GRPO</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>Method · click figure to zoom</span><span class="counter"></span></div>
+  <div class="slide-footer"><span>Dataset composition · click figure to zoom</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 02 METHOD · SFT COLD-START ════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="shead"><span class="idx">07</span><span class="ttl">Stage 1: <em>SFT cold-start</em> on composed traces</span></div>
+    <div class="pbody" style="justify-content:center; gap:40px;">
+      <div class="sftlead" style="text-align:center; margin:0 auto;">Plain next-token imitation of the <strong>AVRT-20K</strong> aggregated traces.</div>
+      <div class="sfteqwrap">
+        <div class="sfteq">
+          <span class="lhs">&#8466;<sub>SFT</sub> =</span>
+          <span class="neg">&minus;</span>
+          <span class="sum"><span class="top">|R<sub>agg</sub>|</span><span class="sig">&sum;</span><span class="bot">t = 1</span></span>
+          <span class="logterm">log&nbsp;p<sub>&theta;</sub>( r<sub>t</sub> | X, Q, r<sub>&lt;t</sub> )<small>token-level cross-entropy on the trace</small></span>
+        </div>
+        <div class="sfteqnote">
+          <span><b>X</b> <i>video + audio</i></span>
+          <span><b>Q</b> <i>question</i></span>
+          <span><b>R<sub>agg</sub></b> <i>&lt;think&gt; reasoning &lt;/think&gt; &lt;answer&gt;</i></span>
+        </div>
+      </div>
+      <div class="sfttake">A cold start that teaches the <strong>&lt;think&gt; / &lt;answer&gt; format</strong> and cross-modal reasoning behavior, giving GRPO a good base policy to build on.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Training · SFT cold-start</span><span class="counter"></span></div>
   <div class="progress-bar"></div>
 </div>
 
 <!-- ════════════ 03 REWARD DESIGN ════════════ -->
 <div class="slide" data-steps="3">
   <div class="slide-inner">
-    <div class="shead" style="--rule:var(--gold);"><span class="idx">03</span><span class="ttl">What the <em>GRPO reward</em> optimizes</span><span class="post">click to step through the three rewards ▸</span></div>
+    <div class="shead" style="--rule:var(--gold);"><span class="idx">08</span><span class="ttl">Stage 2: <em>GRPO</em>, what the reward optimizes</span></div>
     <div class="pbody">
       <div class="rweq">
         <span class="lhs">R =</span>
@@ -580,7 +1216,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
           </div>
           <div class="rwchip" data-reveal="3">96 words counted · lands in the sweet spot</div>
         </div>
-        <div class="rwcol rwcol-plot">
+        <div class="rwcol rwcol-plot rv" data-reveal="3">
           <div class="rwlab">Length reward · μ = 100 · σ = 20 · bonus 100–200w</div>
           <div class="rwformula">R<sub>length</sub> = min(1, <b>e<sup>−(w−μ)²/2σ²</sup></b> + b·[100 ≤ w ≤ 200])</div>
           <div class="rwplot">
@@ -621,34 +1257,48 @@ html.is-phone, html.is-phone body{overflow:hidden;}
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>Reward design</span><span class="counter"></span></div>
+  <div class="slide-footer"><span>Training · GRPO reward</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ SECTION · RESULTS ════════════ -->
+<div class="slide section dark">
+  <div class="slide-inner">
+    <div class="sectionwrap">
+      <div class="sec-num">03 / 04</div>
+      <div class="sec-title">Results</div>
+      <div class="sec-rule"></div>
+      <div class="sec-sub">State of the art at comparable size, a balanced win over both teachers, and evidence that the traces are what transfers.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Results</span><span class="counter"></span></div>
   <div class="progress-bar"></div>
 </div>
 
 <!-- ════════════ 04 SOTA TABLE ════════════ -->
-<div class="slide">
+<div class="slide" data-steps="6">
   <div class="slide-inner">
-    <div class="shead"><span class="idx">04</span><span class="ttl">SOTA at <em>comparable size</em></span><span class="post">3B and 7B · zero-shot except AVQA</span></div>
+    <div class="shead"><span class="idx">09</span><span class="ttl">SOTA at <em>comparable size</em></span></div>
     <div class="tblwrap">
-      <table class="t hl">
+      <table class="t hl" data-focusgroup>
         <colgroup><col class="bm"><col class="sc"><col class="bc"><col class="ac"><col class="sc"><col class="bc"><col class="ac"></colgroup>
         <thead>
           <tr><th rowspan="2">Benchmark</th><th colspan="3" class="grphd">3B model</th><th colspan="3" class="grphd">7B model</th></tr>
-          <tr><th class="sota">SOTA</th><th class="base">Base</th><th>AVRT <span class="d">(+Δ)</span></th><th class="sota">SOTA</th><th class="base">Base</th><th>AVRT <span class="d">(+Δ)</span></th></tr>
+          <tr><th class="sota">SOTA</th><th class="base">Base</th><th class="avrt">AVRT <span class="d">(+Δ)</span></th><th class="sota">SOTA</th><th class="base">Base</th><th class="avrt">AVRT <span class="d">(+Δ)</span></th></tr>
         </thead>
         <tbody>
-          <tr class="grp"><td colspan="7">Audio-Visual</td></tr>
-          <tr><td>AVQA<sup>†</sup></td><td class="sota">88.3</td><td class="base">88.3</td><td class="best">91.1<span class="d">+2.8</span></td><td class="sota">86.6</td><td class="base">84.9</td><td class="best">90.4<span class="d">+5.5</span></td></tr>
-          <tr><td>DailyOmni</td><td class="sota">44.7</td><td class="base">43.1</td><td class="best">49.2<span class="d">+6.1</span></td><td class="sota lead">64.0</td><td class="base">51.5</td><td class="best">54.4<span class="d">+2.9</span></td></tr>
-          <tr><td>OmniBench</td><td class="sota">50.2</td><td class="base">50.2</td><td class="best">56.3<span class="d">+6.1</span></td><td class="sota">50.7</td><td class="base">50.7</td><td class="best">57.1<span class="d">+6.4</span></td></tr>
-          <tr><td>Video-MME</td><td class="sota">55.4</td><td class="base">55.4</td><td class="best">62.6<span class="d">+7.2</span></td><td class="sota lead">68.4</td><td class="base">58.1</td><td class="best">64.1<span class="d">+6.0</span></td></tr>
-          <tr><td>RIVA-S</td><td class="sota">62.4</td><td class="base">62.4</td><td class="best">71.3<span class="d">+8.9</span></td><td class="sota lead">76.7</td><td class="base">74.9</td><td class="best">75.3<span class="d">+0.4</span></td></tr>
-          <tr><td>RIVA-A</td><td class="sota">38.4</td><td class="base">38.4</td><td class="best">49.3<span class="d">+10.9</span></td><td class="sota">48.9</td><td class="base">41.3</td><td class="best">50.7<span class="d">+9.4</span></td></tr>
-          <tr class="avg"><td>AV Avg</td><td class="sota">49.9</td><td class="base">49.9</td><td class="best">57.7<span class="d">+7.8</span></td><td class="sota">55.3</td><td class="base">55.3</td><td class="best">60.3<span class="d">+5.0</span></td></tr>
-          <tr class="grp"><td colspan="7">Audio</td></tr>
-          <tr><td>MMAR</td><td class="sota">53.7</td><td class="base">53.7</td><td class="best">57.3<span class="d">+3.6</span></td><td class="sota">56.5</td><td class="base">56.5</td><td class="best">59.1<span class="d">+2.6</span></td></tr>
-          <tr><td>MMAU</td><td class="sota">61.1</td><td class="base">61.1</td><td class="best">70.0<span class="d">+8.9</span></td><td class="sota">71.9</td><td class="base">71.9</td><td class="best">75.4<span class="d">+3.5</span></td></tr>
-          <tr class="avg"><td>A Avg</td><td class="sota">57.4</td><td class="base">57.4</td><td class="best">63.7<span class="d">+6.3</span></td><td class="sota">64.2</td><td class="base">64.2</td><td class="best">67.3<span class="d">+3.1</span></td></tr>
+          <tr class="grp r-avqa r-av"><td colspan="7">Audio-Visual</td></tr>
+          <tr class="r-avqa"><td>AVQA<sup>†</sup></td><td class="sota">88.3</td><td class="base">88.3</td><td class="best">91.1<span class="d">+2.8</span></td><td class="sota">86.6</td><td class="base">84.9</td><td class="best">90.4<span class="d">+5.5</span></td></tr>
+          <tr class="r-av"><td>DailyOmni</td><td class="sota">44.7</td><td class="base">43.1</td><td class="best">49.2<span class="d">+6.1</span></td><td class="sota lead">64.0</td><td class="base">51.5</td><td class="best">54.4<span class="d">+2.9</span></td></tr>
+          <tr class="r-av"><td>OmniBench</td><td class="sota">50.2</td><td class="base">50.2</td><td class="best">56.3<span class="d">+6.1</span></td><td class="sota">50.7</td><td class="base">50.7</td><td class="best">57.1<span class="d">+6.4</span></td></tr>
+          <tr class="r-av"><td>Video-MME</td><td class="sota">55.4</td><td class="base">55.4</td><td class="best">62.6<span class="d">+7.2</span></td><td class="sota lead">68.4</td><td class="base">58.1</td><td class="best">64.1<span class="d">+6.0</span></td></tr>
+          <tr class="r-av"><td>RIVA-S</td><td class="sota">62.4</td><td class="base">62.4</td><td class="best">71.3<span class="d">+8.9</span></td><td class="sota lead">76.7</td><td class="base">74.9</td><td class="best">75.3<span class="d">+0.4</span></td></tr>
+          <tr class="r-av"><td>RIVA-A</td><td class="sota">38.4</td><td class="base">38.4</td><td class="best">49.3<span class="d">+10.9</span></td><td class="sota">48.9</td><td class="base">41.3</td><td class="best">50.7<span class="d">+9.4</span></td></tr>
+          <tr class="avg r-av"><td>AV Avg</td><td class="sota">49.9</td><td class="base">49.9</td><td class="best">57.7<span class="d">+7.8</span></td><td class="sota">55.3</td><td class="base">55.3</td><td class="best">60.3<span class="d">+5.0</span></td></tr>
+          <tr class="grp r-aud"><td colspan="7">Audio</td></tr>
+          <tr class="r-aud"><td>MMAR</td><td class="sota">53.7</td><td class="base">53.7</td><td class="best">57.3<span class="d">+3.6</span></td><td class="sota">56.5</td><td class="base">56.5</td><td class="best">59.1<span class="d">+2.6</span></td></tr>
+          <tr class="r-aud"><td>MMAU</td><td class="sota">61.1</td><td class="base">61.1</td><td class="best">70.0<span class="d">+8.9</span></td><td class="sota">71.9</td><td class="base">71.9</td><td class="best">75.4<span class="d">+3.5</span></td></tr>
+          <tr class="avg r-aud"><td>A Avg</td><td class="sota">57.4</td><td class="base">57.4</td><td class="best">63.7<span class="d">+6.3</span></td><td class="sota">64.2</td><td class="base">64.2</td><td class="best">67.3<span class="d">+3.1</span></td></tr>
         </tbody>
       </table>
       <div class="tnote"><strong>Best AV average at both sizes</strong>; gains over base up to <strong>+10.9</strong>. <span class="sm"><b>SOTA</b> = best prior model of that size (incl. base); <u>underlined</u> where it still leads. <sup>†</sup>AVQA in-domain (excluded from avg); else zero-shot.</span></div>
@@ -661,7 +1311,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 <!-- ════════════ 04 RADAR ════════════ -->
 <div class="slide" data-steps="4">
   <div class="slide-inner">
-    <div class="shead" style="--rule:var(--blue);"><span class="idx">05</span><span class="ttl">A balanced win over <em>both teachers</em></span><span class="post">AV-avg across 5 benchmarks</span></div>
+    <div class="shead" style="--rule:var(--blue);"><span class="idx">10</span><span class="ttl">A balanced win over <em>both teachers</em></span></div>
     <div class="radarbody">
       <div class="radarfig">
         <svg viewBox="-24 -18 485 299" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Radar chart of AV benchmark scores: vision teacher, audio teacher, base model, and AVRT student">
@@ -711,65 +1361,34 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 </div>
 
 <!-- ════════════ 05 ABLATION ════════════ -->
-<div class="slide">
+<div class="slide" data-steps="2">
   <div class="slide-inner">
-    <div class="shead"><span class="idx">06</span><span class="ttl">Do we need <em>AVRT</em>?</span><span class="post">Merged AV traces beat single-modality supervision</span></div>
+    <div class="shead"><span class="idx">11</span><span class="ttl">Do we need <em>AVRT</em>?</span></div>
     <div class="pbody" style="justify-content:center; gap:4px;">
-      <div class="hbars">
+      <div class="hbars" data-lit="1">
         <div class="hbar"><span class="hl">Base · Qwen2.5-Omni</span><span class="ht"><span class="hf" style="width:35%"></span></span><span class="hv">50.2</span></div>
         <div class="hbar"><span class="hl">RL only</span><span class="ht"><span class="hf" style="width:52.5%"></span></span><span class="hv">52.3</span></div>
         <div class="hbar"><span class="hl">Audio-only SFT + RL</span><span class="ht"><span class="hf" style="width:41.7%"></span></span><span class="hv">51.0</span></div>
         <div class="hbar"><span class="hl">Video-only SFT + RL</span><span class="ht"><span class="hf" style="width:50.8%"></span></span><span class="hv">52.1</span></div>
         <div class="hbar best"><span class="hl">AVRT full</span><span class="ht"><span class="hf" style="width:85.8%"></span></span><span class="hv">56.3<span class="hd">+6.1</span></span></div>
       </div>
-      <div class="hbaxisrow"><div class="daxis"><span style="left:0%">46</span><span style="left:25%">49</span><span style="left:50%">52</span><span style="left:75%">55</span><span style="left:100%">58</span></div></div>
-      <div class="hbaxisrow"><div class="daxcap">OmniBench accuracy (%) · zero-suppressed</div></div>
-      <div class="errsplit">
+      <div class="hbaxisrow" data-lit="1"><div class="daxis"><span style="left:0%">46</span><span style="left:25%">49</span><span style="left:50%">52</span><span style="left:75%">55</span><span style="left:100%">58</span></div></div>
+      <div class="hbaxisrow" data-lit="1"><div class="daxcap">OmniBench accuracy (%) · zero-suppressed</div></div>
+      <div class="errsplit" data-lit="2">
         <div class="errcell"><span class="el">Logic errors ↓</span><span class="ev">48.9 → <b>43.0</b></span><span class="ed">−5.9</span></div>
-        <div class="errcell flat"><span class="el">Format errors ↓</span><span class="ev">0.9 → <b>0.2</b></span><span class="ed">−0.7</span></div>
+        <div class="errcell flat"><span class="el">Format errors ↓</span><span class="ev">0.4 → <b>0.2</b></span><span class="ed">−0.2</span></div>
       </div>
-      <div class="callout red" style="margin-top:16px;">Gains are <strong>reasoning, not formatting</strong>: composed AV traces cut logic errors far more than format errors.</div>
+      <div class="callout red" style="margin-top:16px;" data-lit="2">Gains are <strong>reasoning, not formatting</strong>: composed AV traces cut logic errors far more than format errors.</div>
     </div>
   </div>
   <div class="slide-footer"><span>Ablation</span><span class="counter"></span></div>
   <div class="progress-bar"></div>
 </div>
 
-<!-- ════════════ 07 ALIGNMENT (merger family) ════════════ -->
-<div class="slide">
-  <div class="slide-inner">
-    <div class="shead"><span class="idx">07</span><span class="ttl">Composition needs an <em>aligned</em> merger</span><span class="post">Merger-model ablation · OmniBench</span></div>
-    <div class="pbody" style="justify-content:center;">
-      <div class="alignbody">
-        <div>
-          <div class="rwlab" style="color:var(--t4);">OmniBench accuracy · by merger family</div>
-          <div class="hbars">
-            <div class="hbar"><span class="hl">Base · Qwen2.5-Omni</span><span class="ht"><span class="hf" style="width:35%"></span></span><span class="hv">50.2</span></div>
-            <div class="hbar loss"><span class="hl">Gemma-3-12B merger</span><span class="ht"><span class="hf" style="width:20.8%"></span></span><span class="hv">48.5<span class="hd">−1.7</span></span></div>
-            <div class="hbar best"><span class="hl">Qwen2.5-14B merger</span><span class="ht"><span class="hf" style="width:85.8%"></span></span><span class="hv">56.3<span class="hd">+6.1</span></span></div>
-          </div>
-          <div class="hbaxisrow"><div class="daxis"><span style="left:0%">46</span><span style="left:25%">49</span><span style="left:50%">52</span><span style="left:75%">55</span><span style="left:100%">58</span></div></div>
-          <div class="hbaxisrow"><div class="daxcap">OmniBench accuracy (%) · zero-suppressed</div></div>
-        </div>
-        <div>
-          <ul class="mbul">
-            <li><b>Same family wins:</b> the Qwen merger shares the student's backbone, so its token distribution aligns and the model converges to the answer format fast.</li>
-            <li><b>Cross-family hurts:</b> Gemma's different tokenization forces a distribution the student must unlearn, dropping <b>below</b> the base.</li>
-          </ul>
-          <div class="callout blue" style="margin-top:14px;"><strong>Not just our quirk.</strong> Teacher–student architectural alignment is an established, recent distillation finding: <strong>VOLD</strong> (Bousselham et al., CVPR 2026) shows cold-start alignment is essential for on-policy transfer. AVRT adds an evidence point in the trace-composition setting.</div>
-          <div class="anote">Consistent with this, cross-family transfer to <b>VideoLLaMA2</b> (also a Qwen-based LM) still reproduces the gain.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>Merger alignment</span><span class="counter"></span></div>
-  <div class="progress-bar"></div>
-</div>
-
 <!-- ════════════ 08 TRACE-QUALITY EVAL SETUP ════════════ -->
 <div class="slide" data-steps="3">
   <div class="slide-inner">
-    <div class="shead"><span class="idx">08</span><span class="ttl">How we score <em>trace quality</em></span><span class="post">two AV judges · ~600 validation traces</span></div>
+    <div class="shead"><span class="idx">12</span><span class="ttl">How we score <em>trace quality</em></span></div>
     <div class="pbody" style="justify-content:center;">
       <div class="judgeflow">
         <div class="jcol rv" data-reveal="1">
@@ -831,15 +1450,15 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 <!-- ════════════ 06 TRACE QUALITY vs 30B ════════════ -->
 <div class="slide" data-steps="3">
   <div class="slide-inner">
-    <div class="shead"><span class="idx">09</span><span class="ttl">Trace quality: AVRT vs <em>Qwen3-Omni-30B</em></span></div>
+    <div class="shead"><span class="idx">13</span><span class="ttl">Trace quality: AVRT vs <em>Qwen3-Omni-30B</em></span></div>
     <div class="pbody">
-      <div class="prefhead rv" data-reveal="1" data-dim="3"><span class="pl">Head-to-head trace preference</span><span class="pr">Gemini-3.1-Flash-Lite judge · ~600 val samples</span></div>
-      <div class="h2h rv" data-reveal="1" data-dim="3">
+      <div class="prefhead rv" data-reveal="1" data-dim="2"><span class="pl">Head-to-head trace preference</span><span class="pr">Gemini-3.1-Flash-Lite judge · ~600 val samples</span></div>
+      <div class="h2h rv" data-reveal="1" data-dim="2">
         <div class="s win" style="width:51.2%; background:var(--accent);">AVRT 51.2%</div>
         <div class="s tie" style="width:10.3%;">Tie 10.3%</div>
         <div class="s" style="width:38.5%; background:#4a5560;">Qwen3-Omni-30B 38.5%</div>
       </div>
-      <div class="h2hlegend rv" data-reveal="1" data-dim="3">
+      <div class="h2hlegend rv" data-reveal="1" data-dim="2">
         <span><i style="background:var(--accent)"></i>AVRT preferred</span>
         <span><i style="background:#b8c2cc"></i>Tie</span>
         <span><i style="background:#4a5560"></i>Qwen3-Omni-30B</span>
@@ -875,7 +1494,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 <!-- ════════════ 07 QUALITATIVE ════════════ -->
 <div class="slide" data-steps="5">
   <div class="slide-inner">
-    <div class="shead" style="--rule:var(--blue);"><span class="idx">10</span><span class="ttl">Qualitative: <em>cross-modal traces</em></span><span class="post">The student binds auditory cues to visual evidence</span></div>
+    <div class="shead" style="--rule:var(--blue);"><span class="idx">14</span><span class="ttl">Qualitative: <em>cross-modal traces</em></span></div>
     <div class="pbody qual-v">
       <div class="paperfig figwide">
         <img src="assets/qualitative.svg" alt="AVRT qualitative reasoning traces on OmniBench: color-coded visual, audio, and cross-modal evidence">
@@ -894,10 +1513,42 @@ html.is-phone, html.is-phone body{overflow:hidden;}
   <div class="progress-bar"></div>
 </div>
 
-<!-- ════════════ 08 GENERALIZATION ════════════ -->
+<!-- ════════════ ALIGNMENT (merger family) ════════════ -->
 <div class="slide">
   <div class="slide-inner">
-    <div class="shead"><span class="idx">11</span><span class="ttl">Does filtering hurt generalization?</span><span class="post">Hard = neither teacher correct</span></div>
+    <div class="shead"><span class="idx">15</span><span class="ttl">Composition needs an <em>aligned</em> merger</span></div>
+    <div class="pbody" style="justify-content:center;">
+      <div class="alignbody">
+        <div>
+          <div class="rwlab" style="color:var(--t4);">OmniBench accuracy · by merger family</div>
+          <div class="hbars">
+            <div class="hbar"><span class="hl">Base · Qwen2.5-Omni</span><span class="ht"><span class="hf" style="width:35%"></span></span><span class="hv">50.2</span></div>
+            <div class="hbar loss"><span class="hl">Gemma-3-12B merger</span><span class="ht"><span class="hf" style="width:20.8%"></span></span><span class="hv">48.5<span class="hd">−1.7</span></span></div>
+            <div class="hbar best"><span class="hl">Qwen2.5-14B merger</span><span class="ht"><span class="hf" style="width:85.8%"></span></span><span class="hv">56.3<span class="hd">+6.1</span></span></div>
+          </div>
+          <div class="hbaxisrow"><div class="daxis"><span style="left:0%">46</span><span style="left:25%">49</span><span style="left:50%">52</span><span style="left:75%">55</span><span style="left:100%">58</span></div></div>
+          <div class="hbaxisrow"><div class="daxcap">OmniBench accuracy (%) · zero-suppressed</div></div>
+        </div>
+        <div>
+          <ul class="mbul">
+            <li><b>Same family wins:</b> the Qwen merger shares the student's backbone, so its token distribution aligns and the model converges to the answer format fast.</li>
+            <li><b>Cross-family hurts:</b> Gemma's different tokenization forces a distribution the student must unlearn, dropping <b>below</b> the base.</li>
+          </ul>
+          <div class="callout blue" style="margin-top:14px;"><strong>Not just our quirk.</strong> Teacher–student architectural alignment is an established, recent distillation finding: <strong>VOLD</strong> (Bousselham et al., CVPR 2026) shows cold-start alignment is essential for on-policy transfer. AVRT adds an evidence point in the trace-composition setting.</div>
+          <div class="anote">Consistent with this, cross-family transfer to <b>VideoLLaMA2</b> (also a Qwen-based LM) still reproduces the gain.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Merger alignment</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ 08 GENERALIZATION (commented out per request) ════════════ -->
+<!--
+<div class="slide">
+  <div class="slide-inner">
+    <div class="shead"><span class="idx">16</span><span class="ttl">Does filtering hurt generalization?</span></div>
     <div class="pbody" style="justify-content:center;">
       <div class="dumbs">
         <div class="dumb">
@@ -924,17 +1575,32 @@ html.is-phone, html.is-phone body{overflow:hidden;}
   <div class="slide-footer"><span>Generalization</span><span class="counter"></span></div>
   <div class="progress-bar"></div>
 </div>
+-->
 
 <!-- ════════════ 09 ROBUSTNESS ════════════ -->
 <div class="slide" data-steps="3">
   <div class="slide-inner">
-    <div class="shead"><span class="idx">12</span><span class="ttl">Robustness checks</span><span class="post">Beyond AV multiple choice</span></div>
+    <div class="shead"><span class="idx">16</span><span class="ttl">Robustness checks</span></div>
     <div class="pbody" style="justify-content:center;">
       <div class="tchart"><svg viewBox="0 0 770 352" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Transfer-check gains: base vs AVRT bars with gain arrows, grouped by evaluation type"><line x1="200" y1="40" x2="200" y2="324" stroke="#d7dbe0" stroke-width="1" stroke-dasharray="3 4"/><line x1="535" y1="40" x2="535" y2="324" stroke="#d7dbe0" stroke-width="1" stroke-dasharray="3 4"/><text class="rv" data-step="1" x="100" y="26" text-anchor="middle" font-family="'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="22" font-weight="700" fill="#626a73">Open-ended</text><text class="rv" data-step="2" x="367" y="26" text-anchor="middle" font-family="'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="22" font-weight="700" fill="#626a73">Vision-only</text><text class="rv" data-step="2" x="367" y="44" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="16.5" fill="#8b959e">no audio</text><text class="rv" data-step="3" x="640" y="26" text-anchor="middle" font-family="'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="22" font-weight="700" fill="#626a73">Other AV student</text><text class="rv" data-step="3" x="640" y="44" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="16.5" fill="#8b959e">evaluated on OmniBench</text><line x1="48" y1="248.1" x2="744" y2="248.1" stroke="#eef1f4" stroke-width="1"/><text x="36" y="253.1" text-anchor="end" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="15" fill="#a7afb8">30</text><line x1="48" y1="205.7" x2="744" y2="205.7" stroke="#eef1f4" stroke-width="1"/><text x="36" y="210.7" text-anchor="end" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="15" fill="#a7afb8">40</text><line x1="48" y1="163.3" x2="744" y2="163.3" stroke="#eef1f4" stroke-width="1"/><text x="36" y="168.3" text-anchor="end" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="15" fill="#a7afb8">50</text><line x1="48" y1="120.9" x2="744" y2="120.9" stroke="#eef1f4" stroke-width="1"/><text x="36" y="125.9" text-anchor="end" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="15" fill="#a7afb8">60</text><line x1="48" y1="78.5" x2="744" y2="78.5" stroke="#eef1f4" stroke-width="1"/><text x="36" y="83.5" text-anchor="end" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="15" fill="#a7afb8">70</text><line x1="48" y1="282" x2="744" y2="282" stroke="#d7dbe0" stroke-width="1.5"/><g class="rv" data-step="1"><rect x="54" y="244.5" width="40" height="37.5" rx="4" fill="#9aa3ab"/><rect x="106" y="220.5" width="40" height="61.5" rx="4" fill="#750014"/><path d="M74,241.5 C74,182.5 126,182.5 126,220.5" fill="none" stroke="#750014" stroke-width="2.4"/><path d="M126.0,220.5 L120.7,208.6 L131.3,208.6 Z" fill="#750014"/><text x="100" y="174.5" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="700" fill="#750014">+5.66</text><text x="100" y="311" text-anchor="middle" font-family="'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#16181b">EgoSound</text><text x="100" y="334" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="23" fill="#626a73"><tspan>30.85</tspan><tspan fill="#626a73"> → </tspan><tspan fill="#750014" font-weight="700">36.51</tspan></text></g><g class="rv" data-step="2"><rect x="239" y="120.9" width="40" height="161.1" rx="4" fill="#9aa3ab"/><rect x="291" y="97.7" width="40" height="184.3" rx="4" fill="#750014"/><path d="M259,117.9 C259,59.7 311,59.7 311,97.7" fill="none" stroke="#750014" stroke-width="2.4"/><path d="M311.0,97.7 L305.7,85.8 L316.3,85.8 Z" fill="#750014"/><text x="285" y="51.7" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="700" fill="#750014">+5.47</text><text x="285" y="311" text-anchor="middle" font-family="'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#16181b">MVBench</text><text x="285" y="334" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="23" fill="#626a73"><tspan>60</tspan><tspan fill="#626a73"> → </tspan><tspan fill="#750014" font-weight="700">65.47</tspan></text><rect x="404" y="142.6" width="40" height="139.4" rx="4" fill="#9aa3ab"/><rect x="456" y="126.1" width="40" height="155.9" rx="4" fill="#750014"/><path d="M424,139.6 C424,88.1 476,88.1 476,126.1" fill="none" stroke="#750014" stroke-width="2.4"/><path d="M476.0,126.1 L470.7,114.2 L481.3,114.2 Z" fill="#750014"/><text x="450" y="80.1" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="700" fill="#750014">+3.91</text><text x="450" y="311" text-anchor="middle" font-family="'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#16181b">Video-MME</text><text x="450" y="334" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="23" fill="#626a73"><tspan>54.87</tspan><tspan fill="#626a73"> → </tspan><tspan fill="#750014" font-weight="700">58.78</tspan></text></g><g class="rv" data-step="3"><rect x="594" y="223.4" width="40" height="58.6" rx="4" fill="#9aa3ab"/><rect x="646" y="211.1" width="40" height="70.9" rx="4" fill="#750014"/><path d="M614,220.4 C614,173.1 666,173.1 666,211.1" fill="none" stroke="#750014" stroke-width="2.4"/><path d="M666.0,211.1 L660.7,199.2 L671.3,199.2 Z" fill="#750014"/><text x="640" y="165.1" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="700" fill="#750014">+2.91</text><text x="640" y="311" text-anchor="middle" font-family="'Neue Haas Grotesk Display Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#16181b">VideoLLaMA2</text><text x="640" y="334" text-anchor="middle" font-family="'Neue Haas Grotesk Text Pro','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="23" fill="#626a73"><tspan>35.81</tspan><tspan fill="#626a73"> → </tspan><tspan fill="#750014" font-weight="700">38.72</tspan></text></g></svg></div>
       <div class="bignote">AVRT transfers to <b>open-ended QA</b>, <b>single-modality</b> evaluation, and <b>another student family</b>.</div>
     </div>
   </div>
   <div class="slide-footer"><span>Robustness</span><span class="counter"></span></div>
+  <div class="progress-bar"></div>
+</div>
+
+<!-- ════════════ SECTION · CONCLUSION ════════════ -->
+<div class="slide section dark">
+  <div class="slide-inner">
+    <div class="sectionwrap">
+      <div class="sec-num">04 / 04</div>
+      <div class="sec-title">Conclusion</div>
+      <div class="sec-rule"></div>
+      <div class="sec-sub">What AVRT shows, and where composing reasoning from single-modality teachers goes next.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Conclusion</span><span class="counter"></span></div>
   <div class="progress-bar"></div>
 </div>
 
@@ -982,6 +1648,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 </div><!-- /deck -->
 
 <div id="hud"><button onclick="prevSlide()">‹</button><span id="hud-count">1 / 15</span><button onclick="nextSlide()">›</button></div>
+<div id="tool-hud"></div>
 <div id="img-overlay"><img alt="zoom"></div>
 
 <script>
@@ -999,23 +1666,110 @@ function applySteps(){
   slides[cur].querySelectorAll('[data-dim]').forEach(el=>{
     el.classList.toggle('dimmed', curStep >= +el.dataset.dim);
   });
+  const fg=slides[cur].querySelector('[data-focusgroup]');
+  if(fg) fg.setAttribute('data-focus', String(curStep));
+  slides[cur].querySelectorAll('[data-lit]').forEach(el=>{
+    el.classList.toggle('unlit', el.dataset.lit !== String(curStep));
+  });
 }
 function go(n, atEnd){
   if(n<0||n>=total) return;
-  slides[cur].classList.remove('active');
+  const prev=cur;
+  const doFlip = n===prev+1 && slides[prev].classList.contains('understand') && slides[n].classList.contains('reason-intro');
+  let srcRect=null;
+  if(doFlip){ const s=slides[prev].querySelector('#pic-a'); if(s) srcRect=s.getBoundingClientRect(); }
+  if(slides[prev].classList.contains('reason-intro') && n!==prev) fadeOutSnd();
+  slides[prev].classList.remove('active');
   cur=n; slides[cur].classList.add('active');
   curStep = atEnd ? maxSteps(cur) : 0;
   applySteps();
   document.querySelectorAll('.counter').forEach(c=>c.textContent=(cur+1)+' / '+total);
   document.querySelectorAll('.progress-bar').forEach(b=>b.style.width=((cur+1)/total*100)+'%');
   document.getElementById('hud-count').textContent=(cur+1)+' / '+total;
+  clearHl(); if(magMode) refreshLens();
+  if(slides[cur].classList.contains('reason-intro')) reasonIntro(srcRect);
 }
+function reasonIntro(srcRect){
+  const slide=slides[cur];
+  slide.classList.remove('s3in');
+  void slide.offsetWidth;
+  // slide 03 audio is play-on-click only; stop anything carried from the previous slide
+  document.querySelectorAll('.exaudio audio').forEach(x=>x.pause());
+  const destImg=slide.querySelector('#pic-b');
+  if(srcRect && destImg){
+    const dr=destImg.getBoundingClientRect();
+    const clone=destImg.cloneNode(true); clone.removeAttribute('id'); clone.className='img-flip-clone';
+    const cd=getComputedStyle(destImg);
+    Object.assign(clone.style,{position:'fixed',left:dr.left+'px',top:dr.top+'px',width:dr.width+'px',height:dr.height+'px',
+      margin:'0',zIndex:'9000',objectFit:'cover',objectPosition:cd.objectPosition,borderRadius:cd.borderRadius});
+    document.body.appendChild(clone);
+    const dx=srcRect.left-dr.left, dy=srcRect.top-dr.top, sx=srcRect.width/dr.width, sy=srcRect.height/dr.height;
+    clone.style.transformOrigin='top left';
+    clone.style.transform='translate('+dx+'px,'+dy+'px) scale('+sx+','+sy+')';
+    destImg.style.opacity='0';
+    void clone.offsetWidth;
+    clone.style.transition='transform .5s cubic-bezier(.4,0,.2,1)';
+    clone.style.transform='translate(0,0) scale(1,1)';
+    const done=()=>{ destImg.style.opacity=''; clone.remove(); };
+    clone.addEventListener('transitionend',done,{once:true});
+    setTimeout(done,750);
+  }
+  requestAnimationFrame(()=>requestAnimationFrame(()=>slide.classList.add('s3in')));
+}
+function fadeOutSnd(){ document.querySelectorAll('.exaudio audio').forEach(a=>{ if(a.paused) return;
+  let v=a.volume; const t=setInterval(()=>{ v-=.12; if(v<=0){ a.pause(); a.currentTime=0; a.volume=1; const b=a.closest('.exaudio'); if(b) b.classList.remove('on'); clearInterval(t); } else a.volume=v; },45); }); }
 function nextSlide(){ if(curStep < maxSteps(cur)){ curStep++; applySteps(); } else go(cur+1); }
 function prevSlide(){ if(curStep > 0){ curStep--; applySteps(); } else go(cur-1, true); }
+
+/* ===== presenter tools: highlighter (H) + magnifier (J) ===== */
+const deckEl=document.getElementById('deck');
+let hlMode=false, magMode=false, hlDrag=null, magWrap=null, magInner=null;
+function deckMetrics(){ const r=deckEl.getBoundingClientRect(); return {r, s:r.width/1280}; }
+function showToolHud(){ const h=document.getElementById('tool-hud'); if(!h) return;
+  if(hlMode){ h.innerHTML='<b>Highlighter</b><span>drag to mark</span><kbd>Esc</kbd><span>clear</span>'; h.classList.add('on'); }
+  else if(magMode){ h.innerHTML='<b>Magnifier</b><kbd>J</kbd><span>to exit</span>'; h.classList.add('on'); }
+  else h.classList.remove('on'); }
+function clearHl(){ deckEl.querySelectorAll('.hl-rect').forEach(x=>x.remove()); }
+function setHl(on){ hlMode=on; deckEl.classList.toggle('hl-mode',on); if(on) setMag(false); showToolHud(); }
+function buildLens(){ magWrap=document.createElement('div'); magWrap.id='mag-wrap';
+  const lens=document.createElement('div'); lens.id='mag-lens';
+  magInner=document.createElement('div'); magInner.className='mag-inner';
+  lens.appendChild(magInner); magWrap.appendChild(lens);
+  const handle=document.createElement('span'); handle.id='mag-handle'; magWrap.appendChild(handle);
+  document.body.appendChild(magWrap); }
+function refreshLens(){ if(!magInner) return; magInner.innerHTML='';
+  const clone=deckEl.cloneNode(true); clone.removeAttribute('id');
+  clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+  clone.querySelectorAll('audio,video,.img-flip-clone').forEach(n=>n.remove());
+  clone.style.transform='none'; clone.style.opacity='1';
+  magInner.appendChild(clone); }
+function setMag(on){ magMode=on; deckEl.classList.toggle('mag-mode',on);
+  if(on){ setHl(false); if(!magWrap) buildLens(); refreshLens(); magWrap.style.display='block';
+    const m=deckMetrics(); moveLens(m.r.left+m.r.width/2, m.r.top+m.r.height/2); }
+  else if(magWrap){ magWrap.style.display='none'; if(magInner) magInner.innerHTML=''; }
+  showToolHud(); }
+function moveLens(cx,cy){ if(!magMode||!magWrap) return;
+  const D=230, R=D/2, bd=5, ic=(D-2*bd)/2, Z=2;
+  const {r,s}=deckMetrics(), lx=(cx-r.left)/s, ly=(cy-r.top)/s, sc=s*Z;
+  magWrap.style.left=(cx-R)+'px'; magWrap.style.top=(cy-R)+'px';
+  magInner.style.transform='scale('+sc+')';
+  magInner.style.left=(ic-lx*sc)+'px'; magInner.style.top=(ic-ly*sc)+'px'; }
+deckEl.addEventListener('mousedown', e=>{ if(!hlMode) return;
+  const {r,s}=deckMetrics(), x=(e.clientX-r.left)/s, y=(e.clientY-r.top)/s;
+  const d=document.createElement('div'); d.className='hl-rect';
+  Object.assign(d.style,{left:x+'px',top:y+'px',width:'0px',height:'0px'});
+  deckEl.appendChild(d); hlDrag={d,x,y}; e.preventDefault(); });
+window.addEventListener('mousemove', e=>{
+  if(magMode) moveLens(e.clientX,e.clientY);
+  if(hlMode && hlDrag){ const {r,s}=deckMetrics(), x=(e.clientX-r.left)/s, y=(e.clientY-r.top)/s;
+    const L=Math.min(x,hlDrag.x),T=Math.min(y,hlDrag.y),W=Math.abs(x-hlDrag.x),H=Math.abs(y-hlDrag.y);
+    Object.assign(hlDrag.d.style,{left:L+'px',top:T+'px',width:W+'px',height:H+'px'}); } });
+window.addEventListener('mouseup', ()=>{ if(hlDrag){ if(parseFloat(hlDrag.d.style.width)<6 && parseFloat(hlDrag.d.style.height)<6) hlDrag.d.remove(); hlDrag=null; } });
+
 document.addEventListener('keydown', e=>{
   if(document.getElementById('slide-jump').classList.contains('active')) return;
-  if(['ArrowRight',' ','PageDown'].includes(e.key)){ e.preventDefault(); nextSlide(); }
-  else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); prevSlide(); }
+  if(['ArrowRight',' ','PageDown'].includes(e.key)){ e.preventDefault(); nextSlide(); if(magMode) refreshLens(); }
+  else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); prevSlide(); if(magMode) refreshLens(); }
   else if(e.key==='Home'){ e.preventDefault(); go(0); }
   else if(e.key==='End'){ e.preventDefault(); go(total-1); }
   else if(e.key==='g'||e.key==='G'){ e.preventDefault(); openJump(); }
@@ -1042,17 +1796,19 @@ scaleDeck(); window.addEventListener('resize', scaleDeck);
   if(uaPhone || touchPhone) document.documentElement.classList.add('is-phone');
 })();
 
-document.getElementById('deck').addEventListener('click', e=>{
-  if(e.target.closest('a, .paperfig img, button')) return;
-  const r=document.getElementById('deck').getBoundingClientRect();
-  if((e.clientX-r.left)/r.width < 0.28) prevSlide(); else nextSlide();
-});
+/* Clicking the slide no longer navigates; use the arrow keys (or HUD arrows). */
 
 const ov=document.getElementById('img-overlay'), ovImg=ov.querySelector('img');
 document.querySelectorAll('.paperfig img').forEach(img=>{
   img.addEventListener('click', e=>{ e.stopPropagation(); ovImg.src=img.src; ov.classList.add('active'); });
 });
 ov.addEventListener('click', ()=>{ ov.classList.remove('active'); ovImg.src=''; });
+function miniPlay(btn){ const a=btn.querySelector('audio');
+  document.querySelectorAll('.exaudio audio').forEach(x=>{ if(x!==a){ x.pause(); } });
+  document.querySelectorAll('.exaudio').forEach(c=>{ if(c!==btn) c.classList.remove('on'); });
+  if(a.paused){ a.currentTime=0; a.play(); btn.classList.add('on'); } else { a.pause(); btn.classList.remove('on'); }
+  a.onended=()=>btn.classList.remove('on');
+}
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && ov.classList.contains('active')){ ov.classList.remove('active'); ovImg.src=''; }}, true);
 
 const jump=document.createElement('div'); jump.id='slide-jump';
