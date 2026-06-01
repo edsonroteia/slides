@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AVRT: Audio-Visual Reasoning Transfer · Edson Araujo</title>
+<!-- KaTeX for rendering the SFT loss and GRPO reward equations -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
 <!-- One slide per poster panel. MIT brand (brand.mit.edu), cohesive with poster.html. -->
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -108,6 +111,11 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .about-meta .meta-mark{flex-shrink:0; display:flex; align-items:center;}
 .about-meta .meta-txt{font-size:13.5px; color:var(--t3); line-height:1.3;}
 .about-meta .meta-txt b{color:var(--blue-dk); font-weight:700;}
+.about-meta .meta-txt a{color:var(--blue-dk); font-weight:700; text-decoration:none; border-bottom:1px solid rgba(25,102,255,.4);}
+.about-metas{display:flex; flex-wrap:wrap; gap:12px; align-self:flex-start;}
+.about-metas .about-meta{align-self:auto;}
+.about-meta .cvpr-badge{flex-shrink:0; font-size:11px; font-weight:700; letter-spacing:.02em;
+  color:var(--blue-dk); background:#fff; border:1px solid rgba(25,102,255,.3); border-radius:6px; padding:3px 7px;}
 
 /* ===================== 01 SUMMARY ===================== */
 .summary{flex:1; min-height:0; display:flex; flex-direction:column; gap:34px; justify-content:center;}
@@ -190,6 +198,7 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .rewardbody{flex:1; min-height:0; display:grid; grid-template-columns:1.04fr 1fr; gap:28px; align-items:stretch;}
 .rwcol{display:flex; flex-direction:column; min-height:0;}
 .rwlab{font-size:12.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t4); margin-bottom:9px;}
+.rwlab .katex{text-transform:none;}
 
 .rwcode{flex:1; background:var(--navy); border-radius:13px; padding:16px 20px;
   font-family:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace; font-size:13.5px; color:#aab2bb;
@@ -211,6 +220,7 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .rwchip.on{opacity:1; transform:none;}
 
 .rwformula{font-size:14px; color:var(--t3); font-family:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace; margin-bottom:6px;}
+.rwformula .katex{font-size:1.12em; color:var(--t2);}
 .rwformula b{color:var(--gold); font-weight:700;}
 .rwcol-plot{justify-content:center;}
 .rwcol-plot .rwlab, .rwcol-plot .rwformula{text-align:center;}
@@ -245,12 +255,22 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .exfig img{width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block;}
 .exrule{height:4px; background:var(--accent); margin-bottom:12px;}
 .exq{font-family:var(--f-head); font-size:17px; font-weight:700; color:var(--ink); line-height:1.16; letter-spacing:-.01em; margin-bottom:10px;}
-.exopts{list-style:none; counter-reset:o; display:flex; flex-direction:column; gap:6px;}
-.exopts li{counter-increment:o; position:relative; padding-left:22px; font-size:13px; line-height:1.26; color:var(--t2);}
-.exopts li::before{content:counter(o,upper-alpha); position:absolute; left:0; top:0; font-size:12px; font-weight:700; color:var(--t4);}
-.exopts li.correct.on{color:var(--accent); font-weight:700;}
-.exopts li.correct.on::before{color:var(--accent);}
-.exopts li.correct.on::after{content:'  ✓'; font-weight:800;}
+.exopts{list-style:none; counter-reset:o; display:flex; flex-direction:column; gap:4px;}
+.exopts li{counter-increment:o; position:relative; padding:3px 8px 3px 24px; font-size:13px; line-height:1.26; color:var(--t2); border-radius:7px; transition:background .25s ease, color .25s ease;}
+.exopts li::before{content:counter(o,upper-alpha); position:absolute; left:9px; top:3px; font-size:12px; font-weight:700; color:var(--t4);}
+/* moving spotlight: the alternative currently being weighed */
+.exopts li.opt-active{background:rgba(25,102,255,.09); color:var(--ink);}
+.exopts li.opt-active::before{color:var(--blue);}
+/* ground-truth answer (lands last, then stays marked) */
+.exopts li.correct.opt-active,.exopts li.correct.resolved{color:var(--accent); font-weight:700; background:rgba(117,0,20,.07);}
+.exopts li.correct.opt-active::before,.exopts li.correct.resolved::before{content:'✓'; color:var(--accent); font-weight:800;}
+/* per-alternative modality icons (vision / audio) */
+.exopts li .modi{display:inline-flex; align-items:center; gap:5px; margin-left:8px; vertical-align:-2px; opacity:0; transform:translateX(-4px); transition:opacity .25s ease, transform .25s ease;}
+.exopts li.opt-active .modi,.exopts li.resolved .modi{opacity:1; transform:none;}
+.exopts li .modi .mi{width:15px; height:15px; flex-shrink:0;}
+.exopts li .modi .mi-eye{color:var(--blue);}
+.exopts li .modi .mi-ear{color:var(--accent);}
+.exopts li .modi .mi.partial{opacity:.4;}        /* only half-supported by this modality */
 .exaudio{display:inline-flex; align-items:center; gap:9px; margin:0 0 13px; padding:0; background:none; border:none; cursor:pointer; font-family:var(--f-body); color:var(--accent);}
 .exaudio .ptri{width:0; height:0; border-left:12px solid var(--accent); border-top:7px solid transparent; border-bottom:7px solid transparent;}
 .exaudio .pl{font-size:16px; font-weight:800;}
@@ -496,7 +516,8 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .sftarr{display:flex; align-items:center; color:var(--t4); font-size:30px; font-weight:800; flex-shrink:0;}
 .sfteqwrap{display:flex; flex-direction:column; align-items:center; gap:16px;}
 .sfteq{display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
-  font-family:var(--f-head); font-size:34px; color:var(--ink); letter-spacing:-.012em;}
+  font-family:var(--f-head); font-size:30px; color:var(--ink); letter-spacing:-.012em;}
+.sfteq .katex-display{margin:0;}
 .sfteq .lhs{color:var(--t2);}
 .sfteq .neg{color:var(--t3); font-weight:400;}
 .sfteq .sum{display:inline-flex; flex-direction:column; align-items:center; color:var(--t2); line-height:1;}
@@ -520,10 +541,9 @@ ul.b li strong{color:var(--text); font-weight:600;}
 
 /* ===================== DATASET COMPOSITION · two datasets ===================== */
 .data-v .figwide img{max-height:236px;}
-.mdata{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:auto;}
-.dcard{border-radius:13px; padding:15px 18px; border:1px solid var(--border); background:#fff; display:flex; flex-direction:column;}
-.dcard.sft{background:var(--accent-l); border-color:rgba(117,0,20,.22);}
-.dcard.grpo{background:var(--gold-l); border-color:rgba(138,109,0,.26);}
+.mdata{display:grid; grid-template-columns:1fr 1fr; column-gap:44px; margin-top:auto;}
+.dcard{display:flex; flex-direction:column; padding:2px 0;}
+.dcard.grpo{padding-left:44px; border-left:1px solid var(--border);}
 .dctag{font-size:12.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--accent);}
 .dcard.grpo .dctag{color:var(--gold);}
 .dcname{font-family:var(--f-head); font-size:24px; font-weight:700; color:var(--ink); letter-spacing:-.012em; line-height:1; margin:5px 0 11px;}
@@ -773,6 +793,69 @@ html.is-phone #mobile-warning{display:flex; position:fixed; inset:0; z-index:999
 #mobile-warning p{font-size:16px; line-height:1.5; color:rgba(255,255,255,.78); max-width:30ch;}
 /* prevent the scaled-down deck from being interacted with behind the notice */
 html.is-phone, html.is-phone body{overflow:hidden;}
+/* ===================== MMFM WORKSHOP POPUP (floats over About-me; opens/collapses from the MMFM pill) ===================== */
+.mmfm-pill{cursor:pointer; transition:box-shadow .2s ease, transform .2s ease;}
+.mmfm-pill:hover{box-shadow:0 5px 18px rgba(25,102,255,.22); transform:translateY(-1px);}
+/* overlay + backdrop */
+.mmfm-overlay{position:absolute; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; pointer-events:none;}
+.mmfm-overlay.open{pointer-events:auto;}
+.mmfm-backdrop{position:absolute; inset:0; background:rgba(16,18,22,.52); -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); opacity:0; transition:opacity .4s ease;}
+.mmfm-overlay.open .mmfm-backdrop{opacity:1;}
+/* the floating window (~62% of the slide); JS animates it open/collapse from the pill */
+.mmfm-zoom{position:relative; transform-origin:top left; will-change:transform,opacity; opacity:0;
+  border-radius:16px; overflow:hidden; box-shadow:0 28px 70px rgba(0,0,0,.42), 0 4px 14px rgba(0,0,0,.2);}
+.mmfm-overlay.open .mmfm-zoom{opacity:1;}
+.mmfm-card{width:800px; display:flex; flex-direction:column; background:#faf9f7; color:#1a1816;}
+.mmfm-card h1,.mmfm-card h2,.mmfm-card h4{font-family:var(--f-head); font-weight:700;}
+/* hero */
+.mmfm-hero{position:relative; padding:14px 26px 13px; overflow:hidden; color:#fff;}
+.mmfm-hero-bg{position:absolute; inset:0; background:url('assets/mmfm/audience.jpg') center 38%/cover no-repeat; filter:brightness(.5); z-index:0;}
+.mmfm-hero::after{content:''; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(to right,rgba(26,24,22,.88) 0%,rgba(26,24,22,.62) 60%,rgba(26,24,22,.42) 100%);}
+.mmfm-hero-content{position:relative; z-index:2; display:flex; justify-content:space-between; align-items:flex-end; gap:18px;}
+.mmfm-badge{display:inline-flex; align-items:center; gap:7px; padding:4px 11px; background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2); border-radius:6px; font-size:10.5px; font-weight:700;
+  text-transform:uppercase; letter-spacing:1.2px; margin-bottom:8px;}
+.mmfm-badge img{height:17px; width:auto;}
+.mmfm-badge .ed{color:#f0a030; margin-left:2px;}
+.mmfm-hero h1{font-size:27px; font-weight:800; line-height:1.04; letter-spacing:-.8px; text-shadow:0 2px 12px rgba(0,0,0,.3);}
+.mmfm-logi{flex:0 0 auto; text-align:right;}
+.mmfm-logi .row{display:flex; align-items:center; justify-content:flex-end; gap:7px; margin-bottom:5px;}
+.mmfm-logi svg{flex:0 0 auto; stroke:#f0a030;}
+.mmfm-logi .t{font-size:13px; font-weight:600; color:rgba(255,255,255,.95);}
+.mmfm-logi .s{font-size:10.5px; font-weight:500; color:rgba(255,255,255,.6);}
+.mmfm-logi .u{margin-top:2px; font-size:12.5px; font-weight:700; color:#f0a030;}
+/* speakers */
+.mmfm-speakers{padding:11px 26px 7px;}
+.mmfm-seclabel{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+.mmfm-seclabel h2{font-size:16px; letter-spacing:-.3px; color:#1a1816;}
+.mmfm-seclabel .rule{flex:1; height:2px; background:linear-gradient(to right,#e0a86b,#e8e4df); border-radius:2px;}
+.mmfm-sgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px;}
+.mmfm-spk{display:flex; flex-direction:column; align-items:center; text-align:center;}
+.mmfm-spk .time{font-family:var(--f-head); font-size:13px; font-weight:800; color:#b45309; margin-bottom:6px; letter-spacing:-.4px;}
+.mmfm-av{width:70px; height:70px; border-radius:50%; overflow:hidden; background:#faf9f7; border:2.5px solid #fff; box-shadow:0 3px 9px rgba(0,0,0,.1);}
+.mmfm-av img{width:100%; height:100%; object-fit:cover;}
+.mmfm-spk .nm{font-family:var(--f-head); font-size:12.5px; font-weight:700; line-height:1.12; margin-top:7px; color:#1a1816;}
+.mmfm-spk .af{font-size:10px; font-weight:600; color:#8a837c; margin-top:2px;}
+/* program + qr */
+.mmfm-prog{padding:11px 26px; background:#fffffe; border-top:1px solid #ece8e3; display:flex; gap:20px; align-items:stretch;}
+.mmfm-prog-main{flex:1; display:flex; flex-direction:column;}
+.mmfm-pgrid{display:grid; grid-template-columns:repeat(2,1fr); gap:7px; margin-top:2px;}
+.mmfm-pitem{display:flex; align-items:baseline; gap:9px; padding:8px 12px; background:#faf9f7; border:1px solid #ece8e3; border-radius:7px;}
+.mmfm-pitem.hl{background:rgba(180,83,9,.07);}
+.mmfm-pitem .pt{font-family:var(--f-head); font-size:13.5px; font-weight:800; color:#b45309; flex:0 0 62px; letter-spacing:-.4px;}
+.mmfm-pitem h4{font-size:13px; font-weight:700; line-height:1.18; color:#1a1816;}
+.mmfm-pitem p{font-size:10.5px; color:#8a837c; margin-top:1px;}
+.mmfm-qr{flex:0 0 104px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:7px;}
+.mmfm-qr .box{width:94px; height:94px; background:#1a1816; border-radius:9px; display:flex; align-items:center; justify-content:center;}
+.mmfm-qr .box img{width:100%; height:100%; border-radius:9px; filter:invert(1); object-fit:cover;}
+.mmfm-qr .cap{font-size:9.5px; font-weight:600; color:#8a837c; text-transform:uppercase; letter-spacing:.8px; line-height:1.3;}
+/* footer */
+.mmfm-foot{padding:7px 26px; background:#1a1816; display:flex; justify-content:space-between; align-items:center;}
+.mmfm-foot .lg{font-family:var(--f-head); font-size:13.5px; font-weight:700; color:#fff;}
+.mmfm-foot .lg span{font-family:var(--f-body); font-size:10px; font-weight:500; color:rgba(255,255,255,.5); margin-left:8px;}
+.mmfm-foot .ur{font-size:13px; font-weight:600; color:rgba(255,255,255,.7);}
+.mmfm-foot .ur strong{color:#fff; font-weight:700;}
 </style>
 </head>
 <body>
@@ -812,7 +895,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 </div>
 
 <!-- ════════════ ABOUT ME ════════════ -->
-<div class="slide">
+<div class="slide mmfm-host">
   <div class="slide-inner">
     <div class="shead"><span class="ttl">About <em>me</em></span></div>
     <div class="pbody about-body">
@@ -854,9 +937,76 @@ html.is-phone, html.is-phone body{overflow:hidden;}
           </div>
         </div>
       </div>
-      <div class="about-meta">
-        <span class="meta-mark"><img src="assets/meta_mark.svg" alt="Meta" style="height:17px; width:auto; display:block;"></span>
-        <span class="meta-txt">Leaving for a Research Internship at Meta Reality Labs &middot; Summer &amp; Fall 2026</span>
+      <div class="about-metas">
+        <div class="about-meta">
+          <span class="meta-mark"><img src="assets/meta_mark.svg" alt="Meta" style="height:17px; width:auto; display:block;"></span>
+          <span class="meta-txt">Leaving for a Research Internship at Meta Reality Labs &middot; Summer &amp; Fall 2026</span>
+        </div>
+        <div class="about-meta mmfm-pill" id="mmfm-pill" title="Next slide: workshop details">
+          <span class="cvpr-badge">CVPR&#8217;26</span>
+          <span class="meta-txt">Primary organizer of <a href="https://mmfm-workshop.github.io/" target="_blank" rel="noopener">MMFM</a> &middot; &ldquo;What is Next in Multimodal Foundation Models?&rdquo;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MMFM workshop popup (floats over this slide; opens/collapses from the MMFM pill) -->
+  <div class="mmfm-overlay" id="mmfm-overlay">
+    <div class="mmfm-backdrop"></div>
+    <div class="mmfm-zoom" id="mmfm-zoom">
+      <div class="mmfm-card">
+        <!-- HERO -->
+        <div class="mmfm-hero">
+          <div class="mmfm-hero-bg"></div>
+          <div class="mmfm-hero-content">
+            <div>
+              <div class="mmfm-badge"><img src="assets/mmfm/cvpr.svg" alt="CVPR">Workshop<span class="ed">5th Edition</span></div>
+              <h1>What is Next in<br>Multimodal Foundation Models?</h1>
+            </div>
+            <div class="mmfm-logi">
+              <div class="row">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <div><div class="t">June 3, 2026</div><div class="s">Afternoon Session · Starts 1:00 PM</div></div>
+              </div>
+              <div class="row">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <div><div class="t">Colorado Convention Center</div><div class="s">Denver, CO · Rooms 3A–3D</div></div>
+              </div>
+              <div class="u">mmfm-workshop.github.io</div>
+            </div>
+          </div>
+        </div>
+        <!-- SPEAKERS -->
+        <div class="mmfm-speakers">
+          <div class="mmfm-seclabel"><h2>Keynote Speakers</h2><div class="rule"></div></div>
+          <div class="mmfm-sgrid">
+            <div class="mmfm-spk"><div class="time">1:05 PM</div><div class="mmfm-av"><img src="assets/mmfm/speakers/serena.jpg" alt="Serena Yeung-Levy"></div><div class="nm">Serena<br>Yeung-Levy</div><div class="af">Stanford University</div></div>
+            <div class="mmfm-spk"><div class="time">1:35 PM</div><div class="mmfm-av"><img src="assets/mmfm/speakers/vincent.jpg" alt="Vincent Sitzmann"></div><div class="nm">Vincent<br>Sitzmann</div><div class="af">MIT EECS</div></div>
+            <div class="mmfm-spk"><div class="time">2:05 PM</div><div class="mmfm-av"><img src="assets/mmfm/speakers/trevor_v2.png" alt="Trevor Darrell"></div><div class="nm">Trevor<br>Darrell</div><div class="af">UC Berkeley</div></div>
+            <div class="mmfm-spk"><div class="time">4:00 PM</div><div class="mmfm-av"><img src="assets/mmfm/speakers/hadar.jpg" alt="Hadar Averbuch-Elor"></div><div class="nm">Hadar<br>Averbuch-Elor</div><div class="af">Cornell University</div></div>
+            <div class="mmfm-spk"><div class="time">4:30 PM</div><div class="mmfm-av"><img src="assets/mmfm/speakers/shuai-bai.jpg" alt="Shuai Bai"></div><div class="nm">Shuai<br>Bai</div><div class="af">Alibaba Group</div></div>
+          </div>
+        </div>
+        <!-- PROGRAM + QR -->
+        <div class="mmfm-prog">
+          <div class="mmfm-prog-main">
+            <div class="mmfm-seclabel"><h2>Program</h2><div class="rule"></div></div>
+            <div class="mmfm-pgrid">
+              <div class="mmfm-pitem"><span class="pt">1:00 PM</span><div><h4>Welcome &amp; Opening</h4><p>Introduction &amp; overview</p></div></div>
+              <div class="mmfm-pitem"><span class="pt">2:35 PM</span><div><h4>Poster Session &amp; Coffee</h4><p>Posters &amp; networking · coffee 3:00–4:00 PM</p></div></div>
+              <div class="mmfm-pitem hl"><span class="pt">5:00 PM</span><div><h4>Panel Discussion</h4><p>What is Next in Multimodal Foundation Models?</p></div></div>
+              <div class="mmfm-pitem"><span class="pt">5:55 PM</span><div><h4>Concluding Remarks</h4><p>Closing &amp; wrap-up</p></div></div>
+            </div>
+          </div>
+          <div class="mmfm-qr">
+            <div class="box"><img src="assets/mmfm/qr.png" alt="MMFM Workshop QR code"></div>
+            <div class="cap">Scan for<br>full schedule</div>
+          </div>
+        </div>
+        <!-- FOOTER -->
+        <div class="mmfm-foot">
+          <div class="lg">MMFM<span>5th Workshop on Multimodal Foundation Models</span></div>
+          <div class="ur"><strong>CVPR 2026</strong> · Denver</div>
+        </div>
       </div>
     </div>
   </div>
@@ -879,45 +1029,45 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 </div>
 
 <!-- ════════════ 01 MOTIVATION · UNDERSTANDING AV ════════════ -->
-<div class="slide understand" data-steps="6">
+<div class="slide understand" data-steps="12">
   <div class="slide-inner">
     <div class="shead"><span class="idx">01</span><span class="ttl">Understanding <em>audio-visual</em> content</span></div>
     <div class="mot">
       <div class="exrow3">
-        <div class="ex" data-reveal="1">
+        <div class="ex" data-seq="a,b,d,c">
           <div class="exfig"><img id="pic-a" src="assets/hook/picnic.png" alt="a family having a picnic in a park"></div>
           <div class="exrule"></div>
           <button class="exaudio" type="button" onclick="miniPlay(this)"><span class="ptri"></span><span class="pl">Hear: thunder + rain</span><span class="pw"><i></i><i></i><i></i><i></i></span><audio id="snd-picnic" src="assets/hook/picnic.mp3" preload="auto"></audio></button>
           <div class="exq">What is likely to happen next?</div>
           <ol class="exopts">
-            <li>They’ll stop the football game and wait for the rain.</li>
-            <li>They will praise the brilliant sunshine.</li>
-            <li class="correct" data-reveal="2">They will stop the picnic and look for shelter.</li>
-            <li>They will go flying kites.</li>
+            <li data-mod="ear">They’ll stop the football game and wait for the rain.</li>
+            <li data-mod="eye">They will praise the brilliant sunshine.</li>
+            <li class="correct" data-mod="both">They will stop the picnic and look for shelter.</li>
+            <li data-mod="none">They will go flying kites.</li>
           </ol>
         </div>
-        <div class="ex" data-reveal="3">
+        <div class="ex" data-seq="a,c,d,b">
           <div class="exfig"><img src="assets/hook/phone.png" alt="two people searching a table in a room"></div>
           <div class="exrule"></div>
           <button class="exaudio" type="button" onclick="miniPlay(this)"><span class="ptri"></span><span class="pl">Hear: a phone ringing</span><span class="pw"><i></i><i></i><i></i><i></i></span><audio src="assets/hook/phone.mp3" preload="none"></audio></button>
           <div class="exq">What are they doing?</div>
           <ol class="exopts">
-            <li>Looking for an important document on the table.</li>
-            <li class="correct" data-reveal="4">Looking for a mobile phone on the table.</li>
-            <li>Looking for a gray landline on the table.</li>
-            <li>Trying to find a ringing phone on the floor.</li>
+            <li data-mod="eye">Looking for an important document on the table.</li>
+            <li class="correct" data-mod="both">Looking for a mobile phone on the table.</li>
+            <li data-mod="eye,ear?">Looking for a gray landline on the table.</li>
+            <li data-mod="ear">Trying to find a ringing phone on the floor.</li>
           </ol>
         </div>
-        <div class="ex" data-reveal="5">
+        <div class="ex" data-seq="a,b,c,d">
           <div class="exfig"><img src="assets/hook/firework.png" alt="a woman with red wine on her face in a dim interior"></div>
           <div class="exrule"></div>
           <button class="exaudio" type="button" onclick="miniPlay(this)"><span class="ptri"></span><span class="pl">Hear: sudden fireworks</span><span class="pw"><i></i><i></i><i></i><i></i></span><audio src="assets/hook/firework.mp3" preload="none"></audio></button>
           <div class="exq">Why did the red wine spill on her face?</div>
           <ol class="exopts">
-            <li>A woman who dislikes her threw wine at her.</li>
-            <li>Her husband threw wine during a fight.</li>
-            <li>The long-haired woman was startled by a firework.</li>
-            <li class="correct" data-reveal="6">The short-haired woman was startled by a firework.</li>
+            <li data-mod="eye">A woman who dislikes her threw wine at her.</li>
+            <li data-mod="eye">Her husband threw wine during a fight.</li>
+            <li data-mod="ear">The long-haired woman was startled by a firework.</li>
+            <li class="correct" data-mod="both">The short-haired woman was startled by a firework.</li>
           </ol>
         </div>
       </div>
@@ -1173,12 +1323,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
     <div class="pbody" style="justify-content:center; gap:40px;">
       <div class="sftlead" style="text-align:center; margin:0 auto;">Plain next-token imitation of the <strong>AVRT-20K</strong> aggregated traces.</div>
       <div class="sfteqwrap">
-        <div class="sfteq">
-          <span class="lhs">&#8466;<sub>SFT</sub> =</span>
-          <span class="neg">&minus;</span>
-          <span class="sum"><span class="top">|R<sub>agg</sub>|</span><span class="sig">&sum;</span><span class="bot">t = 1</span></span>
-          <span class="logterm">log&nbsp;p<sub>&theta;</sub>( r<sub>t</sub> | X, Q, r<sub>&lt;t</sub> )<small>token-level cross-entropy on the trace</small></span>
-        </div>
+        <div class="sfteq" data-display data-tex="\mathcal{L}_{\mathrm{SFT}} = -\sum_{t=1}^{|R_{\mathrm{agg}}|} \log p_\theta\bigl(r_t \mid X,\,Q,\,r_{<t}\bigr)"></div>
         <div class="sfteqnote">
           <span><b>X</b> <i>video + audio</i></span>
           <span><b>Q</b> <i>question</i></span>
@@ -1198,12 +1343,12 @@ html.is-phone, html.is-phone body{overflow:hidden;}
     <div class="shead" style="--rule:var(--gold);"><span class="idx">08</span><span class="ttl">Stage 2: <em>GRPO</em>, what the reward optimizes</span></div>
     <div class="pbody">
       <div class="rweq">
-        <span class="lhs">R =</span>
-        <span class="term acc" data-reveal="1">R<sub>acc</sub><span class="tv">= 1</span><small>correctness</small></span>
+        <span class="lhs" data-tex="R\;="></span>
+        <span class="term acc" data-reveal="1"><span class="tlbl" data-tex="R_{\mathrm{acc}}"></span><span class="tv">= 1</span><small>correctness</small></span>
         <span class="op">+</span>
-        <span class="term fmt" data-reveal="2">R<sub>format</sub><span class="tv">= 1</span><small>structure</small></span>
+        <span class="term fmt" data-reveal="2"><span class="tlbl" data-tex="R_{\mathrm{format}}"></span><span class="tv">= 1</span><small>structure</small></span>
         <span class="op">+</span>
-        <span class="term len" data-reveal="3">R<sub>length</sub><span class="tv">≈ 1.0</span><small>concision</small></span>
+        <span class="term len" data-reveal="3"><span class="tlbl" data-tex="R_{\mathrm{length}}"></span><span class="tv">≈ 1.0</span><small>concision</small></span>
       </div>
       <div class="rewardbody">
         <div class="rwcol">
@@ -1217,8 +1362,8 @@ html.is-phone, html.is-phone body{overflow:hidden;}
           <div class="rwchip" data-reveal="3">96 words counted · lands in the sweet spot</div>
         </div>
         <div class="rwcol rwcol-plot rv" data-reveal="3">
-          <div class="rwlab">Length reward · μ = 100 · σ = 20 · bonus 100–200w</div>
-          <div class="rwformula">R<sub>length</sub> = min(1, <b>e<sup>−(w−μ)²/2σ²</sup></b> + b·[100 ≤ w ≤ 200])</div>
+          <div class="rwlab">Length reward · <span class="tlbl" data-tex="\mu = 100,\;\sigma = 20"></span></div>
+          <div class="rwformula" data-tex="R_{\mathrm{length}} = \min\bigl(1,\; \textcolor{#8a6d00}{e^{-(w-\mu)^2/2\sigma^2}} + b\cdot[\,100 \le w \le 200\,]\bigr)"></div>
           <div class="rwplot">
             <svg viewBox="0 0 430 250" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Length reward as a Gaussian over reasoning word count: peaks at the target of 100 words, plateaus across the 100 to 200 word bonus band, and is penalized when too short or too long.">
               <rect x="190.4" y="34" width="146.4" height="162" fill="rgba(138,109,0,.10)"/>
@@ -1671,6 +1816,39 @@ function applySteps(){
   slides[cur].querySelectorAll('[data-lit]').forEach(el=>{
     el.classList.toggle('unlit', el.dataset.lit !== String(curStep));
   });
+  if(slides[cur].classList.contains('understand')) applyUnderstand(slides[cur]);
+}
+/* understand slide: per-alternative moving spotlight that lands on the ground truth.
+   Each .ex has data-seq (highlight order, e.g. "a,b,d,c"); curStep walks the flat
+   timeline of (example × alternative). The active option shows its modality icons;
+   once the correct one is reached it stays resolved while later examples advance. */
+function understandTimeline(slide){
+  const tl=[];
+  slide.querySelectorAll('.ex').forEach((ex,ei)=>{
+    const opts=ex.querySelectorAll('.exopts li');
+    (ex.dataset.seq||'').split(',').map(s=>s.trim()).filter(Boolean).forEach(letter=>{
+      const li=opts[letter.toUpperCase().charCodeAt(0)-65];
+      if(li) tl.push({ex,ei,li});
+    });
+  });
+  return tl;
+}
+function applyUnderstand(slide){
+  const tl=understandTimeline(slide);
+  slide.querySelectorAll('.ex').forEach(ex=>{
+    ex.classList.remove('on');
+    ex.querySelectorAll('.exopts li').forEach(li=>li.classList.remove('opt-active','resolved'));
+  });
+  const activeEi = curStep>0 ? tl[Math.min(curStep,tl.length)-1].ei : -1;
+  slide.querySelectorAll('.ex').forEach((ex,ei)=>{
+    if(ei<=activeEi) ex.classList.add('on');               // light current + finished examples
+    if(ei<activeEi){ const c=ex.querySelector('.exopts li.correct'); if(c) c.classList.add('resolved'); }
+  });
+  if(curStep>0){
+    const t=tl[Math.min(curStep,tl.length)-1];
+    t.li.classList.add('opt-active');
+    if(t.li.classList.contains('correct')) t.li.classList.add('resolved');
+  }
 }
 function go(n, atEnd){
   if(n<0||n>=total) return;
@@ -1678,16 +1856,63 @@ function go(n, atEnd){
   const doFlip = n===prev+1 && slides[prev].classList.contains('understand') && slides[n].classList.contains('reason-intro');
   let srcRect=null;
   if(doFlip){ const s=slides[prev].querySelector('#pic-a'); if(s) srcRect=s.getBoundingClientRect(); }
+  if(slides[prev].classList.contains('mmfm-host')) mmfmReset();
   if(slides[prev].classList.contains('reason-intro') && n!==prev) fadeOutSnd();
   slides[prev].classList.remove('active');
   cur=n; slides[cur].classList.add('active');
   curStep = atEnd ? maxSteps(cur) : 0;
   applySteps();
-  document.querySelectorAll('.counter').forEach(c=>c.textContent=(cur+1)+' / '+total);
+  const idxEl=slides[cur].querySelector('.shead .idx');
+  slides[cur].querySelectorAll('.counter').forEach(c=>c.textContent=idxEl?idxEl.textContent.trim():'');
   document.querySelectorAll('.progress-bar').forEach(b=>b.style.width=((cur+1)/total*100)+'%');
   document.getElementById('hud-count').textContent=(cur+1)+' / '+total;
   clearHl(); if(magMode) refreshLens();
   if(slides[cur].classList.contains('reason-intro')) reasonIntro(srcRect);
+  if(slides[cur].classList.contains('mmfm-host') && atEnd) requestAnimationFrame(()=>requestAnimationFrame(mmfmShow));
+}
+/* ----- MMFM workshop popup: zoom open from the pill, collapse back into it ----- */
+let mmfmAnimating=false;
+function mmfmIsOpen(){ const ov=document.getElementById('mmfm-overlay'); return ov && ov.classList.contains('open'); }
+function mmfmCollapsed(){
+  const zoom=document.getElementById('mmfm-zoom'), pill=document.getElementById('mmfm-pill'), deck=document.getElementById('deck');
+  const s=deck.getBoundingClientRect().width/1280;             // deck is CSS-scaled; convert screen px -> deck-local px
+  zoom.style.transition='none'; zoom.style.transform='none';   // measure natural rect
+  const dr=zoom.getBoundingClientRect(), pr=pill.getBoundingClientRect();
+  const dx=(pr.left-dr.left)/s, dy=(pr.top-dr.top)/s, sx=pr.width/dr.width, sy=pr.height/dr.height;
+  return 'translate('+dx+'px,'+dy+'px) scale('+sx+','+sy+')';
+}
+function mmfmReset(){
+  const ov=document.getElementById('mmfm-overlay'), zoom=document.getElementById('mmfm-zoom');
+  if(!ov) return; ov.classList.remove('open');
+  zoom.style.transition='none'; zoom.style.transform=''; zoom.style.opacity=''; mmfmAnimating=false;
+}
+function mmfmShow(){
+  const ov=document.getElementById('mmfm-overlay'), zoom=document.getElementById('mmfm-zoom');
+  if(!ov || mmfmIsOpen()) return;
+  const collapsed=mmfmCollapsed();
+  zoom.style.transition='none'; zoom.style.transform=collapsed; zoom.style.opacity='0';
+  ov.classList.add('open');                                    // fade backdrop in
+  void zoom.offsetWidth;
+  zoom.style.transition='transform .5s cubic-bezier(.34,1.12,.4,1), opacity .3s ease';
+  zoom.style.transform='translate(0,0) scale(1,1)'; zoom.style.opacity='1';
+  const done=()=>{ zoom.style.transition=''; zoom.style.transform=''; };
+  zoom.addEventListener('transitionend',e=>{ if(e.propertyName==='transform') done(); },{once:true});
+}
+function mmfmHide(cb){
+  const ov=document.getElementById('mmfm-overlay'), zoom=document.getElementById('mmfm-zoom');
+  if(!ov || !mmfmIsOpen()){ if(cb) cb(); return; }
+  mmfmAnimating=true;
+  const collapsed=mmfmCollapsed();
+  zoom.style.transform='translate(0,0) scale(1,1)';            // start from open
+  void zoom.offsetWidth;
+  zoom.style.transition='transform .42s cubic-bezier(.4,0,.55,1), opacity .34s ease';
+  zoom.style.transform=collapsed; zoom.style.opacity='0';
+  ov.classList.remove('open');                                 // fade backdrop out
+  let fired=false;
+  const fin=()=>{ if(fired) return; fired=true; mmfmAnimating=false;
+    zoom.style.transition=''; zoom.style.transform=''; zoom.style.opacity=''; if(cb) cb(); };
+  zoom.addEventListener('transitionend',e=>{ if(e.propertyName==='transform') fin(); },{once:true});
+  setTimeout(fin,480);
 }
 function reasonIntro(srcRect){
   const slide=slides[cur];
@@ -1718,8 +1943,22 @@ function reasonIntro(srcRect){
 }
 function fadeOutSnd(){ document.querySelectorAll('.exaudio audio').forEach(a=>{ if(a.paused) return;
   let v=a.volume; const t=setInterval(()=>{ v-=.12; if(v<=0){ a.pause(); a.currentTime=0; a.volume=1; const b=a.closest('.exaudio'); if(b) b.classList.remove('on'); clearInterval(t); } else a.volume=v; },45); }); }
-function nextSlide(){ if(curStep < maxSteps(cur)){ curStep++; applySteps(); } else go(cur+1); }
-function prevSlide(){ if(curStep > 0){ curStep--; applySteps(); } else go(cur-1, true); }
+function nextSlide(){
+  if(slides[cur].classList.contains('mmfm-host')){
+    if(mmfmAnimating) return;
+    if(!mmfmIsOpen()){ mmfmShow(); return; }      // first advance: open the popup
+    mmfmHide(()=>go(cur+1)); return;              // next advance: collapse, then move on
+  }
+  if(curStep < maxSteps(cur)){ curStep++; applySteps(); } else go(cur+1);
+}
+function prevSlide(){
+  if(slides[cur].classList.contains('mmfm-host')){
+    if(mmfmAnimating) return;
+    if(mmfmIsOpen()){ mmfmHide(); return; }        // collapse but stay on About-me
+    go(cur-1, true); return;
+  }
+  if(curStep > 0){ curStep--; applySteps(); } else go(cur-1, true);
+}
 
 /* ===== presenter tools: highlighter (H) + magnifier (J) ===== */
 const deckEl=document.getElementById('deck');
@@ -1822,6 +2061,48 @@ jin.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ closeJump(); e.stopPropagation(); }
   if(e.key==='Enter'){ const n=parseInt(jin.value); if(n>=1&&n<=total) go(n-1); closeJump(); e.stopPropagation(); }
 });
+
+// Render the SFT loss and GRPO reward equations with KaTeX.
+function renderMath(){
+  if(!window.katex) return;
+  document.querySelectorAll('[data-tex]').forEach(el=>{
+    katex.render(el.getAttribute('data-tex'), el, {
+      displayMode: el.hasAttribute('data-display'),
+      throwOnError: false
+    });
+  });
+}
+renderMath();
+
+// MMFM popup: click the pill to open, click the backdrop to collapse it.
+(function(){
+  const pill=document.getElementById('mmfm-pill'), ov=document.getElementById('mmfm-overlay');
+  if(pill) pill.addEventListener('click', ()=>{ if(slides[cur].classList.contains('mmfm-host') && !mmfmAnimating && !mmfmIsOpen()) mmfmShow(); });
+  if(ov){ const bd=ov.querySelector('.mmfm-backdrop'); if(bd) bd.addEventListener('click', ()=>{ if(!mmfmAnimating && mmfmIsOpen()) mmfmHide(); }); }
+})();
+
+// understand slide: inject modality icons per alternative + size the step count to the timeline
+(function(){
+  const EYE='<svg class="mi mi-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const EAR='<svg class="mi mi-ear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5a6 6 0 0 1 12 0c0 3-2.2 4.2-3.6 5.2C13 14.6 12.5 15.4 12.5 17a2.5 2.5 0 0 1-5 0"/><path d="M9.6 9a2.6 2.6 0 0 1 4.9.6"/></svg>';
+  // data-mod: "none" | "eye" | "ear" | "both" | a comma list like "eye,ear?" (trailing ? = partial support)
+  const tokens=m=> m==='both'?['eye','ear'] : (!m||m==='none')?[] : m.split(/[ ,]+/).filter(Boolean);
+  document.querySelectorAll('.understand').forEach(slide=>{
+    slide.querySelectorAll('.exopts li[data-mod]').forEach(li=>{
+      const toks=tokens(li.dataset.mod); if(!toks.length) return;
+      const span=document.createElement('span'); span.className='modi';
+      toks.forEach(t=>{
+        const partial=t.endsWith('?'), base=partial?t.slice(0,-1):t;
+        const html=base==='eye'?EYE:base==='ear'?EAR:''; if(!html) return;
+        const tmp=document.createElement('span'); tmp.innerHTML=html;
+        const svg=tmp.firstChild; if(partial) svg.classList.add('partial');
+        span.appendChild(svg);
+      });
+      li.appendChild(span);
+    });
+    slide.dataset.steps=String(understandTimeline(slide).length);
+  });
+})();
 
 go(0);
 </script>
