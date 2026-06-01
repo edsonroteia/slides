@@ -391,7 +391,7 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .p3head .leg{margin-top:3px;}
 .p3lead.slim{font-size:23px; line-height:1.2;}
 .p3lead.slim em{color:var(--accent);}
-.land{flex:1; min-height:0; display:flex; flex-direction:column; gap:7px;}
+.land{position:relative; flex:1; min-height:0; display:flex; flex-direction:column; gap:7px;}
 .landgrid{flex:1; min-height:0; display:grid; grid-template-columns:1fr 1.32fr 1fr; grid-template-rows:1.12fr 1fr; gap:9px;}
 .zone{position:relative; border-radius:12px; padding:7px 9px 8px; display:flex; flex-direction:column; min-height:0;}
 .zone.za{grid-column:1; grid-row:1 / 3; background:var(--blue-l);}
@@ -403,7 +403,8 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .zone.zgap .zlab .zt{color:var(--accent);}
 .gapflag{font-size:10.5px; font-weight:800; letter-spacing:.03em; text-transform:uppercase; color:#fff; background:var(--accent); padding:3px 8px; border-radius:20px; white-space:nowrap;}
 .chips{display:flex; flex-wrap:wrap; gap:7px 8px; align-content:flex-start; min-height:0;}
-.zone.zav .chips,.zone.zgap .chips{flex:1; overflow:hidden;}
+.zone.zav .chips{flex:1; overflow:visible;}
+.zone.zgap .chips{flex:1; overflow:hidden;}
 .chip{position:relative; display:flex; flex-direction:column; padding:7px 14px; border-radius:8px; background:rgba(255,255,255,.8); border:1px solid rgba(20,24,27,.07);}
 .chip b{font-family:var(--f-head); font-size:17px; font-weight:700; color:var(--ink); line-height:1.18; white-space:nowrap; letter-spacing:-.01em;}
 .chip i{font-size:12.5px; font-style:normal; color:var(--t3); line-height:1.25; white-space:nowrap;}
@@ -426,7 +427,8 @@ ul.b li strong{color:var(--text); font-weight:600;}
   background:rgba(255,247,248,.4); border:1.5px solid rgba(117,0,20,.28); border-radius:10px;
   padding:8px 16px; box-shadow:0 6px 18px rgba(117,0,20,.08);}
 
-/* stepped focus: ① non-reasoning models ② with-reasoning groups ③ audio-visual + reasoning ④ our teachers */
+/* stepped focus: ① non-reasoning models ② with-reasoning groups ③ audio-visual + reasoning
+   ④ Qwen2.5-Omni as the base AV model ⑤ can it reason? (arrow to the gap) ⑥ our teachers feed it */
 .landgrid[data-focusgroup] .zone,
 .landgrid[data-focusgroup] .chip,
 .landgrid[data-focusgroup] .rgroup,
@@ -450,13 +452,56 @@ ul.b li strong{color:var(--text); font-weight:600;}
 .landgrid[data-focus="3"] .zone.zv{opacity:.14;}
 .landgrid[data-focus="3"] .zone.zgap{box-shadow:0 0 0 4px rgba(117,0,20,.3);}
 
-/* ④ bring up only the two teachers: AF3 + Kimi-VL-Thinking */
-.landgrid[data-focus="4"] .zone.zav,
-.landgrid[data-focus="4"] .zone.zgap{opacity:.14;}
-.landgrid[data-focus="4"] .zone.za .chip:not(.teach),
-.landgrid[data-focus="4"] .zone.zv .chip:not(.teach){opacity:.16;}
-.landgrid[data-focus="4"] .chip.teach{box-shadow:0 0 0 2.5px var(--accent); border-color:var(--accent);}
-.landgrid[data-focus="4"] .chip.teach b{color:var(--accent);}
+/* ④/⑤ pull a single base AV model out of the crowd: Qwen2.5-Omni */
+.landgrid[data-focus="4"] .zone.za,
+.landgrid[data-focus="4"] .zone.zv,
+.landgrid[data-focus="5"] .zone.za,
+.landgrid[data-focus="5"] .zone.zv{opacity:.14;}
+.landgrid[data-focus="4"] .zone.zav .chip:not(#omniChip),
+.landgrid[data-focus="5"] .zone.zav .chip:not(#omniChip){opacity:.14;}
+.landgrid[data-focus="4"] .zone.zgap .chips,
+.landgrid[data-focus="5"] .zone.zgap .chips{opacity:.14;}
+.landgrid[data-focus="4"] #omniChip,
+.landgrid[data-focus="5"] #omniChip,
+.landgrid[data-focus="6"] #omniChip{box-shadow:0 0 0 2.5px var(--blue); border-color:var(--blue);}
+.landgrid[data-focus="4"] #omniChip b,
+.landgrid[data-focus="5"] #omniChip b,
+.landgrid[data-focus="6"] #omniChip b{color:var(--blue-dk);}
+
+/* ⑥ bring up the two teachers feeding the base model: AF3 + Kimi-VL-Thinking */
+.landgrid[data-focus="6"] .zone.zav .chip:not(#omniChip),
+.landgrid[data-focus="6"] .zone.zgap{opacity:.14;}
+.landgrid[data-focus="6"] .zone.za .chip:not(.teach),
+.landgrid[data-focus="6"] .zone.zv .chip:not(.teach){opacity:.16;}
+.landgrid[data-focus="6"] .chip.teach{box-shadow:0 0 0 2.5px var(--accent); border-color:var(--accent);}
+.landgrid[data-focus="6"] .chip.teach b{color:var(--accent);}
+
+/* brain badge pinned to Qwen2.5-Omni (positioned in JS): "can it reason?" then fed by teachers */
+.qbrain{position:absolute; top:0; left:0; width:24px; height:24px; border-radius:50%; z-index:7;
+  display:flex; align-items:center; justify-content:center; background:#fff; color:var(--blue);
+  border:1.5px solid var(--blue); box-shadow:0 1px 5px rgba(0,0,0,.22);
+  opacity:0; transform:scale(.55); transition:opacity .35s ease, transform .35s ease; pointer-events:none;}
+.qbrain svg{width:14px; height:14px;}
+.qbrain .qm{position:absolute; right:-6px; bottom:-6px; width:14px; height:14px; border-radius:50%;
+  background:var(--accent); color:#fff; font-style:normal; font-weight:800; font-size:10px; line-height:14px; text-align:center;
+  box-shadow:0 1px 3px rgba(0,0,0,.25); transition:background .35s ease;}
+.qbrain.show{opacity:1; transform:none;}
+.qbrain.fed{color:var(--accent); border-color:var(--accent);}
+.qbrain.fed .qm{background:var(--blue);}
+
+/* connector arrows drawn over the landscape grid (geometry set in JS) */
+.landfx{position:absolute; inset:0; width:100%; height:100%; z-index:6; pointer-events:none; overflow:visible;}
+.landfx .fx{opacity:0; transition:opacity .4s ease;}
+.landfx .fx.show{opacity:1;}
+.landfx .fxline{fill:none; stroke-linecap:round;}
+.landfx .fx-make .fxline{stroke:var(--blue); stroke-width:2.4; stroke-dasharray:6 5;}
+.landfx .fx-teach .fxline{stroke:var(--accent); stroke-width:2.6;}
+.landfx .fxlbl{font-family:var(--f-head); font-weight:800; font-size:13.5px; text-anchor:middle; letter-spacing:.01em;}
+.landfx .fx-make .fxlbl{fill:var(--blue-dk);}
+.landfx .fx-teach .fxlbl{fill:var(--accent);}
+.landfx .fxpill{fill:#fff;}
+.landfx .p-make{stroke:rgba(25,102,255,.4); stroke-width:1.2;}
+.landfx .p-aud,.landfx .p-vis{stroke:rgba(117,0,20,.4); stroke-width:1.2;}
 
 /* 04 · solution flow, flat */
 .midea{flex:1; min-height:0; display:flex; align-items:center; justify-content:center; gap:16px;}
@@ -1118,7 +1163,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 </div>
 
 <!-- ════════════ 03 MOTIVATION · THE GAP ════════════ -->
-<div class="slide" data-steps="4">
+<div class="slide landscape" data-steps="6">
   <div class="slide-inner">
     <div class="shead"><span class="idx">03</span><span class="ttl">The landscape: reasoning everywhere <em>except across audio + video</em></span></div>
     <div class="mot">
@@ -1154,7 +1199,7 @@ html.is-phone, html.is-phone body{overflow:hidden;}
               <span class="chip" title="Aligned Better, Listen Better for Audio-Visual Large Language Models"><b>Dolphin</b><i>Guo · ICLR&#8217;25</i></span>
               <span class="chip" title="VideoLLaMA 2: Advancing Spatial-Temporal Modeling and Audio Understanding in Video-LLMs"><b>VideoLLaMA 2</b><i>Cheng · arXiv&#8217;24</i></span>
               <span class="chip" title="Gemma 3 Technical Report"><b>Gemma 3n</b><i>Gemma Team · arXiv&#8217;25</i></span>
-              <span class="chip" title="Qwen2.5-Omni Technical Report"><b>Qwen2.5-Omni</b><i>Xu · arXiv&#8217;25</i></span>
+              <span class="chip" id="omniChip" title="Qwen2.5-Omni Technical Report"><b>Qwen2.5-Omni</b><i>Xu · arXiv&#8217;25</i></span>
               <span class="chip" title="Meerkat: Audio-Visual Large Language Model for Grounding in Space and Time"><b>Meerkat</b><i>Chowdhury · ECCV&#8217;24</i></span>
               <span class="chip" title="Ola: Pushing the Frontiers of Omni-Modal Language Model with Progressive Modality Alignment"><b>Ola</b><i>Liu · arXiv&#8217;25</i></span>
               <span class="chip" title="OpenOmni: Advancing Open-Source Omnimodal Large Language Models with Progressive Multimodal Alignment and Real-Time Self-Aware Emotional Speech Synthesis"><b>OpenOmni</b><i>Luo · NeurIPS&#8217;25</i></span>
@@ -1192,6 +1237,26 @@ html.is-phone, html.is-phone body{overflow:hidden;}
             </div>
           </div>
         </div>
+        <svg class="landfx" aria-hidden="true" preserveAspectRatio="none">
+          <defs>
+            <marker id="fxhead-make" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#1966ff"/></marker>
+            <marker id="fxhead-teach" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#750014"/></marker>
+          </defs>
+          <g class="fx fx-make">
+            <path class="fxline" marker-end="url(#fxhead-make)"/>
+            <rect class="fxpill p-make"/>
+            <text class="fxlbl l-make">can it reason?</text>
+          </g>
+          <g class="fx fx-teach">
+            <path class="fxline t-aud" marker-end="url(#fxhead-teach)"/>
+            <path class="fxline t-vis" marker-end="url(#fxhead-teach)"/>
+            <rect class="fxpill p-aud"/>
+            <rect class="fxpill p-vis"/>
+            <text class="fxlbl l-aud">teach</text>
+            <text class="fxlbl l-vis">teach</text>
+          </g>
+        </svg>
+        <div class="qbrain" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.142 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.142 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/></svg><i class="qm">?</i></div>
       </div>
     </div>
   </div>
@@ -1817,6 +1882,65 @@ function applySteps(){
     el.classList.toggle('unlit', el.dataset.lit !== String(curStep));
   });
   if(slides[cur].classList.contains('understand')) applyUnderstand(slides[cur]);
+  if(slides[cur].classList.contains('landscape')) applyLandscape(slides[cur]);
+}
+/* slide 03 · draw the "can it reason?" arrow (Qwen2.5-Omni -> the gap) and the two
+   "teach" arrows (Audio Flamingo 3 + Kimi-VL-Thinking -> Qwen2.5-Omni), with geometry
+   measured from the live chip positions so it stays exact at any deck scale. */
+function landPt(el, lr, s){
+  const r=el.getBoundingClientRect();
+  return { cx:(r.left+r.width/2-lr.left)/s, cy:(r.top+r.height/2-lr.top)/s,
+           l:(r.left-lr.left)/s, rt:(r.right-lr.left)/s, t:(r.top-lr.top)/s, b:(r.bottom-lr.top)/s };
+}
+function layoutLandFx(slide){
+  const land=slide.querySelector('.land'), svg=slide.querySelector('.landfx');
+  if(!land||!svg) return;
+  const s=deckEl.getBoundingClientRect().width/1280;
+  const lr=land.getBoundingClientRect();
+  svg.setAttribute('viewBox','0 0 '+land.offsetWidth+' '+land.offsetHeight);
+  const omni=slide.querySelector('#omniChip'), gap=slide.querySelector('.zone.zgap');
+  const tAud=slide.querySelector('.zone.za .chip.teach'), tVis=slide.querySelector('.zone.zv .chip.teach');
+  if(!omni||!gap) return;
+  const o=landPt(omni,lr,s), g=landPt(gap,lr,s);
+  const pill=(rect, txt, padX, padY)=>{
+    const b=txt.getBBox(), h=b.height+2*padY;
+    rect.setAttribute('x', b.x-padX); rect.setAttribute('y', b.y-padY);
+    rect.setAttribute('width', b.width+2*padX); rect.setAttribute('height', h); rect.setAttribute('rx', h/2);
+  };
+  // make arrow: straight down from Qwen2.5-Omni into the gap zone
+  const mx=o.cx, my1=o.b+5, my2=g.t+12, mmid=(my1+my2)/2;
+  svg.querySelector('.fx-make .fxline').setAttribute('d','M '+mx+' '+my1+' L '+mx+' '+my2);
+  const ml=svg.querySelector('.l-make');
+  ml.setAttribute('x', mx); ml.setAttribute('y', mmid+5); ml.setAttribute('text-anchor','middle');
+  pill(svg.querySelector('.p-make'), ml, 11, 6);
+  // teach arrows: rise from each teacher, then enter Qwen2.5-Omni horizontally through its side
+  const teach=(chip, line, lbl, rect, toLeft)=>{
+    if(!chip) return;
+    const c=landPt(chip,lr,s);
+    const sx=c.cx, sy=c.t-5;
+    const ex=toLeft ? o.l-7 : o.rt+7, ey=o.cy;
+    const c2x=ex + (toLeft ? -50 : 50);
+    line.setAttribute('d','M '+sx+' '+sy+' C '+sx+' '+ey+', '+c2x+' '+ey+', '+ex+' '+ey);
+    lbl.setAttribute('x', (sx+c2x)/2); lbl.setAttribute('y', ey - 9); lbl.setAttribute('text-anchor','middle');
+    pill(rect, lbl, 9, 5);
+  };
+  teach(tAud, svg.querySelector('.t-aud'), svg.querySelector('.l-aud'), svg.querySelector('.p-aud'), true);
+  teach(tVis, svg.querySelector('.t-vis'), svg.querySelector('.l-vis'), svg.querySelector('.p-vis'), false);
+  const brain=slide.querySelector('.qbrain');
+  if(brain){ brain.style.left=(o.rt-12)+'px'; brain.style.top=(o.t-12)+'px'; }
+}
+function applyLandscape(slide){
+  layoutLandFx(slide);
+  const svg=slide.querySelector('.landfx');
+  if(svg){
+    svg.querySelector('.fx-make').classList.toggle('show', curStep===5);
+    svg.querySelector('.fx-teach').classList.toggle('show', curStep===6);
+  }
+  const brain=slide.querySelector('.qbrain');
+  if(brain){
+    brain.classList.toggle('show', curStep>=4);
+    brain.classList.toggle('fed', curStep===6);
+  }
 }
 /* understand slide: per-alternative moving spotlight that lands on the ground truth.
    Each .ex has data-seq (highlight order, e.g. "a,b,d,c"); curStep walks the flat
@@ -2021,6 +2145,7 @@ document.addEventListener('touchend', e=>{ const d=tx-e.changedTouches[0].client
 function scaleDeck(){
   const d=document.getElementById('deck');
   d.style.transform='scale('+Math.min(window.innerWidth/1280, window.innerHeight/720)+')';
+  if(slides[cur] && slides[cur].classList.contains('landscape')) layoutLandFx(slides[cur]);
 }
 scaleDeck(); window.addEventListener('resize', scaleDeck);
 
