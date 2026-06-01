@@ -524,19 +524,19 @@ ul.b li strong{color:var(--text); font-weight:600;}
 
 /* ===================== THANK YOU ===================== */
 .thanks .slide-inner{align-items:center; justify-content:center; text-align:center;}
-.thx-eyebrow{font-size:14px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--br); margin-bottom:16px;}
-.thx-title{font-family:var(--f-head); font-size:68px; font-weight:700; letter-spacing:-.03em; color:#fff; line-height:1;}
-.thx-sub{font-size:20px; color:rgba(255,255,255,.72); margin-top:13px;}
-.thx-qr{display:flex; align-items:center; gap:18px; margin-top:32px;}
-.thx-qr .qrbox{width:122px; height:122px;}
+.thx-eyebrow{font-size:17px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--br); margin-bottom:20px;}
+.thx-title{font-family:var(--f-head); font-size:88px; font-weight:700; letter-spacing:-.03em; color:#fff; line-height:1;}
+.thx-sub{font-size:26px; color:rgba(255,255,255,.72); margin-top:16px;}
+.thx-qr{display:flex; align-items:center; gap:22px; margin-top:40px;}
+.thx-qr .qrbox{width:158px; height:158px; border-radius:8px;}
 .thx-qrtxt{text-align:left;}
-.thx-qrtxt b{display:block; color:#fff; font-weight:700; font-size:16px; margin-bottom:3px;}
-.thx-qrtxt span{color:var(--br); font-size:15px;}
-.thx-authors{margin-top:26px; font-size:13px; color:rgba(255,255,255,.5); max-width:840px; line-height:1.55;}
-.thx-grid{display:grid; grid-template-columns:1.05fr auto; gap:46px; align-items:center; text-align:left;}
-.thx-poster{display:flex; flex-direction:column; align-items:center; gap:11px;}
-.thx-poster img{width:392px; max-width:40vw; border-radius:7px; box-shadow:0 10px 34px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.14);}
-.thx-poster .cap{font-size:14px; font-weight:700; color:var(--br); letter-spacing:.01em; text-align:center;}
+.thx-qrtxt b{display:block; color:#fff; font-weight:700; font-size:20px; margin-bottom:4px;}
+.thx-qrtxt span{color:var(--br); font-size:19px;}
+.thx-authors{margin-top:34px; font-size:16px; color:rgba(255,255,255,.5); max-width:1040px; line-height:1.55;}
+.thx-grid{display:grid; grid-template-columns:1.05fr auto; gap:58px; align-items:center; text-align:left;}
+.thx-poster{display:flex; flex-direction:column; align-items:center; gap:14px;}
+.thx-poster img{width:482px; max-width:46vw; border-radius:4px; box-shadow:0 10px 34px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.1);}
+.thx-poster .cap{font-size:17px; font-weight:700; color:var(--br); letter-spacing:.01em; text-align:center;}
 
 /* ===================== SECTION DIVIDERS ===================== */
 .slide.section{background:var(--navy);}
@@ -757,7 +757,7 @@ table.t.cmp tr.srow.on td{background:rgba(117,0,20,.07);} table.t.cmp tr.srow.on
 .figwide{width:100%; flex-shrink:0; display:flex; align-items:center; justify-content:center;}
 .figwide img{width:100%; height:auto; object-fit:contain; cursor:zoom-in; display:block;}
 .method-v .figwide img{max-height:300px;}
-.qual-v .figwide img{max-height:418px;}
+.qual-v .figwide img{max-height:100%;}
 .mrow{flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr 1.18fr; gap:30px; align-items:start; margin-top:18px;}
 .mrow .mbul{gap:11px;} .mrow .mbul li{font-size:16.5px;}
 .mrow .mdash{margin-top:0;}
@@ -1702,21 +1702,13 @@ html.is-phone, html.is-phone body{overflow:hidden;}
 </div>
 
 <!-- ════════════ 07 QUALITATIVE ════════════ -->
-<div class="slide" data-steps="5">
+<div class="slide">
   <div class="slide-inner">
     <div class="shead" style="--rule:var(--blue);"><span class="idx">14</span><span class="ttl">Qualitative: <em>cross-modal traces</em></span></div>
     <div class="pbody qual-v">
-      <div class="paperfig figwide">
+      <div class="paperfig figwide" style="flex:1;">
         <img src="assets/qualitative.svg" alt="AVRT qualitative reasoning traces on OmniBench: color-coded visual, audio, and cross-modal evidence">
       </div>
-      <div class="qcards-h">
-        <div class="qcard rv" data-step="1"><h5>Combines evidence</h5><p>Connects visual context with audio events, not each modality alone.</p></div>
-        <div class="qcard rv" data-step="2"><h5>Grounds sound in scene</h5><p>Links bass resonance to open terrain and long-distance propagation.</p></div>
-        <div class="qcard rv" data-step="3"><h5>Disambiguates with context</h5><p>The "Jenny!" cue is meaningful only with the crowded visual scene.</p></div>
-        <div class="qcard rv" data-step="4"><h5>Explains causal events</h5><p>An off-screen firework explains why the woman startles and spills her wine.</p></div>
-        <div class="qcard rv" data-step="5"><h5>Transfers to hard cases</h5><p>Generalizes from AVQA video to OmniBench image/audio reasoning.</p></div>
-      </div>
-      <div class="qtake rv" data-reveal="5"><b>Takeaway:</b> AVRT learns traces that explicitly bind auditory cues to visual evidence, and uses that binding to select the answer.</div>
     </div>
   </div>
   <div class="slide-footer"><span>Qualitative · click figure to zoom</span><span class="counter"></span></div>
@@ -2175,8 +2167,14 @@ function miniPlay(btn){ const a=btn.querySelector('audio');
 }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && ov.classList.contains('active')){ ov.classList.remove('active'); ovImg.src=''; }}, true);
 
+// Map the number printed on each slide (.shead .idx badge) to its deck position,
+// so "go to slide N" matches the visible numbering rather than DOM order — the
+// title/about/section/conclusion slides carry no badge and aren't numerically addressable.
+const idxToPos=(()=>{ const m={}; slides.forEach((s,i)=>{ const el=s.querySelector('.shead .idx'); if(!el) return;
+  const n=parseInt(el.textContent,10); if(!isNaN(n)&&!(n in m)) m[n]=i; }); return m; })();
+const maxIdx=Math.max(0,...Object.keys(idxToPos).map(Number));
 const jump=document.createElement('div'); jump.id='slide-jump';
-jump.innerHTML='<div id="slide-jump-box"><label>Go to slide</label><input id="jin" maxlength="2"><div class="hint">1–'+total+' · Enter · Esc</div></div>';
+jump.innerHTML='<div id="slide-jump-box"><label>Go to slide</label><input id="jin" maxlength="2"><div class="hint">1–'+maxIdx+' · Enter · Esc</div></div>';
 document.body.appendChild(jump);
 const jin=document.getElementById('jin');
 function openJump(){ jump.classList.add('active'); jin.value=''; jin.focus(); }
@@ -2184,7 +2182,7 @@ function closeJump(){ jump.classList.remove('active'); }
 jump.addEventListener('click', e=>{ if(e.target===jump) closeJump(); });
 jin.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ closeJump(); e.stopPropagation(); }
-  if(e.key==='Enter'){ const n=parseInt(jin.value); if(n>=1&&n<=total) go(n-1); closeJump(); e.stopPropagation(); }
+  if(e.key==='Enter'){ const n=parseInt(jin.value,10); if(n in idxToPos) go(idxToPos[n]); closeJump(); e.stopPropagation(); }
 });
 
 // Render the SFT loss and GRPO reward equations with KaTeX.
