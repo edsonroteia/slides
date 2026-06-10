@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperSAVVY: Test-Time Evidence Curation for Audio-Visual 3D Spatial Reasoning</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f2f4f8; --surface:#fff; --ink:#16181b; --text:#212326; --t2:#40464c; --t3:#626a73; --t4:#8b959e;
+  --border:#dde1e6; --border-l:#e8ebf0;
+  --accent:#750014; --blue:#1966ff; --blue-dk:#002896; --red:#9a1a1a; --green:#00752e;
+  --f:'Helvetica Neue',Helvetica,Arial,sans-serif; --mono:'SF Mono',Menlo,Consolas,monospace;
+}
+body{background:#2a2c30; font-family:var(--f); color:var(--text); overflow:hidden;
+  height:100vh; width:100vw; display:flex; align-items:center; justify-content:center;}
+.deck{width:1280px; height:720px; position:relative; transform-origin:center center;}
+.slide{position:absolute; inset:0; background:var(--bg); display:none; flex-direction:column;}
+.slide.active{display:flex;}
+.inner{flex:1; padding:46px 64px 20px; display:flex; flex-direction:column; min-height:0;}
+.footer{height:28px; padding:0 64px; display:flex; align-items:center; justify-content:space-between;
+  border-top:1px solid var(--border-l); background:var(--surface);}
+.footer span{font-size:11px; color:var(--t4);}
+.kicker{font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:8px;}
+h1{font-size:30px; font-weight:700; letter-spacing:-.015em; color:var(--ink); margin-bottom:14px;}
+.lede{font-size:15.5px; color:var(--t3); line-height:1.5; margin-bottom:18px; max-width:1060px;}
+.cols{display:flex; gap:30px; flex:1; min-height:0;}
+.col{flex:1; min-width:0;}
+h3{font-size:13.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t3); margin:14px 0 8px;}
+h3:first-child{margin-top:0;}
+p{font-size:15px; line-height:1.5; color:var(--t2); margin-bottom:8px;}
+ul{list-style:none; margin-bottom:10px;}
+ul li{font-size:15px; line-height:1.5; color:var(--t2); padding:3px 0 3px 16px; position:relative;}
+ul li::before{content:'–'; position:absolute; left:0; color:var(--t4);}
+ul li.y::before{content:'✓'; color:var(--green); font-weight:700;}
+ul li.n::before{content:'✗'; color:var(--red); font-weight:700;}
+table{width:100%; border-collapse:collapse; margin-bottom:6px;}
+th{font-size:12.5px; font-weight:700; color:var(--t3); padding:5px 8px; border-bottom:2px solid var(--border); text-align:center;}
+td{padding:5px 8px; border-bottom:1px solid var(--border-l); text-align:center; color:var(--t2);
+  font-variant-numeric:tabular-nums; font-size:14.5px;}
+td:first-child,th:first-child{text-align:left; color:var(--text);}
+.best{color:var(--accent); font-weight:700;}
+.bad{color:var(--red);}
+.good{color:var(--green); font-weight:700;}
+.mut{color:var(--t4);}
+tr.hl td{font-weight:700; background:rgba(117,0,20,.05);}
+.note{font-size:12.5px; color:var(--t4); line-height:1.45; margin-top:4px;}
+code{font-family:var(--mono); font-size:13px; background:#e8ebf0; padding:2px 7px; border-radius:5px;}
+.ladder{display:flex; flex-direction:column; gap:6px; margin-top:6px;}
+.lr{display:flex; align-items:center; gap:10px;}
+.lr .lb{width:300px; font-size:13px; color:var(--t2); text-align:right; flex-shrink:0;}
+.lr .br{height:21px; border-radius:4px; background:var(--blue); color:#fff; font-size:12px; font-weight:700;
+  display:flex; align-items:center; justify-content:flex-end; padding-right:7px; min-width:44px;}
+.lr.a .br{background:var(--accent);} .lr.d .br{background:var(--t4);} .lr.g .br{background:#8a6d00;}
+.tt{font-size:42px; font-weight:700; letter-spacing:-.02em; color:var(--ink); line-height:1.15; margin:4px 0 18px;}
+.tt em{font-style:normal; color:var(--accent);}
+.rule{width:76px; height:4px; background:var(--accent); border-radius:2px; margin-bottom:18px;}
+.byline{font-size:16px; color:var(--t2); margin-bottom:6px;}
+.aff{font-size:13.5px; color:var(--t4);}
+.kbd{position:fixed; bottom:10px; right:14px; font-size:11px; color:rgba(255,255,255,.35); font-family:var(--mono);}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1 -->
+<div class="slide">
+  <div class="inner" style="justify-content:center">
+    <div class="kicker">Research report · June 2026</div>
+    <div class="tt">SuperSAVVY: Test-Time Evidence Curation<br>for <em>Audio-Visual 3D Spatial Reasoning</em></div>
+    <div class="rule"></div>
+    <div class="byline">A frozen geometry-VLM + lightweight audio/language curators on SAVVY-Bench — no training.</div>
+    <div class="aff">SpatialStack-Qwen3.5-4B · Whisper grounding · SRP-PHAT DOA · ClipSeg retrieval · SLAM poses</div>
+    <table style="max-width:560px; margin-top:34px">
+      <tr><th></th><th>oracle timing</th><th>fully realistic</th></tr>
+      <tr><td>best single model (SpatialStack)</td><td>49.6</td><td>45.0</td></tr>
+      <tr class="hl"><td>ours (test-time collaboration)</td><td class="best">54.1</td><td class="best">51.3</td></tr>
+    </table>
+  </div>
+  <div class="footer"><span>SAVVY-Bench · 1,522 questions · Aria Everyday Activities</span><span>1 / 9</span></div>
+</div>
+
+<!-- 2 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Problem</div>
+    <h1>SAVVY-Bench: where is the sound, in 3D?</h1>
+    <div class="lede">1,522 questions over 59 egocentric clips (median 156&thinsp;s). Each question is anchored to a ~1.4&thinsp;s audio event — 1% of the clip. Overall score = unweighted mean of four task scores; random ≈ 28.6.</div>
+    <div class="cols">
+      <div class="col" style="flex:1.3">
+        <table>
+          <tr><th>task</th><th>n</th><th>answer</th><th>metric</th></tr>
+          <tr><td>direction_ego — source relative to the wearer</td><td>463</td><td>quadrant A–D</td><td>accuracy</td></tr>
+          <tr><td>direction_exo — relative to an imagined robot ("standing by X, facing Y")</td><td>602</td><td>quadrant A–D</td><td>accuracy</td></tr>
+          <tr><td>distance_ego — wearer ↔ source</td><td>177</td><td>metres</td><td>MRA 0.1–1.0&thinsp;m</td></tr>
+          <tr><td>distance_exo — named object ↔ source</td><td>280</td><td>metres</td><td>MRA 0.1–1.0&thinsp;m</td></tr>
+        </table>
+        <div class="note">Official harness passes the <b>whole clip</b> (no event localization given to models). We evaluate both oracle and realistic timing; our scorer mirrors the official one exactly (random → 28.6, validated).</div>
+      </div>
+      <div class="col">
+        <h3>Why vision-only models struggle</h3>
+        <ul>
+          <li><b>When</b> — the event is 1% of the clip</li>
+          <li><b>Behind</b> — the wearer often cannot see the source</li>
+          <li><b>Allocentric</b> — exo questions reference objects absent from the event frames</li>
+          <li><b>Metric</b> — distances need geometry, not priors</li>
+        </ul>
+        <h3>Constraint</h3>
+        <p>The only competent spatial model is <b>vision-only and frozen</b>; hardware caps it at 16 frames. All improvements must happen at test time.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Problem</span><span>2 / 9</span></div>
+</div>
+
+<!-- 3 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Finding 1</div>
+    <h1>Only inference-time geometry clears the random floor</h1>
+    <div class="lede">Five recent models, identical oracle frames, identical scoring. Audio-capable small models fail even with perfectly aligned audio.</div>
+    <div class="cols">
+      <div class="col" style="flex:1.4">
+        <table>
+          <tr><th>model (vision-only, 16f oracle)</th><th>dir_ego</th><th>dir_exo</th><th>dist_ego</th><th>dist_exo</th><th>overall</th></tr>
+          <tr class="hl"><td>SpatialStack-Qwen3.5-4B (internal VGGT-1B)</td><td>.739</td><td>.362</td><td>.580</td><td>.302</td><td class="best">49.6</td></tr>
+          <tr><td>Gemma-4-E4B-it</td><td>.531</td><td>.248</td><td>.197</td><td>.065</td><td class="bad">26.0</td></tr>
+          <tr><td>Gemma-4-E2B-it</td><td>.300</td><td>.272</td><td>.300</td><td>.146</td><td class="bad">25.5</td></tr>
+          <tr><td>4DThinker-3B (RL checkpoint)</td><td>.361</td><td>.286</td><td>.258</td><td>.071</td><td class="bad">24.4</td></tr>
+          <tr><td>3DThinker-Mindcube (stage-1)</td><td>.313</td><td>.267</td><td>.155</td><td>.153</td><td class="bad">22.2</td></tr>
+          <tr><td class="mut">random</td><td colspan="4"></td><td class="mut">28.6</td></tr>
+        </table>
+        <div class="note">Audio-visual variants: Gemma-E2B 26.9, Gemma-E4B 26.2, Qwen2.5-Omni-3B 26.7 — all ≈ chance, even with oracle-aligned audio.</div>
+      </div>
+      <div class="col">
+        <h3>Failure modes</h3>
+        <ul>
+          <li>3DThinker: MCQ-bound — invents letter options for numeric questions; A-biased → <i>below</i> random</li>
+          <li>4DThinker: distances quantized to {0, 1}&thinsp;m</li>
+          <li>Gemma / Omni: no geometric grounding; audio shuffles errors without adding spatial skill</li>
+          <li>SpatialStack: VGGT stream → 2–4× everyone on metric distance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Finding 1 · model zoo</span><span>3 / 9</span></div>
+</div>
+
+<!-- 4 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Finding 2</div>
+    <h1>Temporal localization is worth +4.6 — frames can't buy it back</h1>
+    <div class="cols">
+      <div class="col" style="flex:1.25">
+        <table>
+          <tr><th>timing (SpatialStack, 16f)</th><th>dir_ego</th><th>dir_exo</th><th>dist_ego</th><th>dist_exo</th><th>overall</th></tr>
+          <tr><td>oracle event window</td><td>.739</td><td>.362</td><td class="best">.580</td><td>.302</td><td class="best">49.6</td></tr>
+          <tr><td>Whisper-grounded (realistic)</td><td>.711</td><td>.382</td><td>.514</td><td>.304</td><td>47.8</td></tr>
+          <tr><td>none (full clip = official protocol)</td><td>.676</td><td>.400</td><td class="bad">.402</td><td>.322</td><td>45.0</td></tr>
+        </table>
+        <ul style="margin-top:10px">
+          <li>The oracle gain is almost entirely <b>egocentric distance</b>: the person must be ranged at the event moment</li>
+          <li><b>32 frames ≈ 16 frames</b> in both conditions — more views never find the 1.4&thinsp;s moment</li>
+          <li>Exocentric tasks slightly <i>prefer</i> whole-clip context</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Grounders compared (vs GT event centre)</h3>
+        <table>
+          <tr><th>grounder</th><th>&lt;2s</th><th>median err</th></tr>
+          <tr><td>Whisper-v3 + embedding match</td><td class="good">45%</td><td>2.7&thinsp;s</td></tr>
+          <tr><td>Qwen2.5-Omni-3B (audio LLM)</td><td class="bad">2%</td><td class="bad">31.3&thinsp;s</td></tr>
+        </table>
+        <p style="margin-top:8px">The audio LLM emits round numbers (10.0, 100.0): its ~30&thinsp;s audio context cannot cover a 156&thinsp;s clip. <b>ASR + matching is the right tool.</b></p>
+        <p>45%-accurate grounding recovers <b>60% of the oracle gain</b> — good guesses ≈ oracle frames, bad guesses ≈ full-clip frames; never worse.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Finding 2 · temporal localization</span><span>4 / 9</span></div>
+</div>
+
+<!-- 5 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Finding 3</div>
+    <h1>Vision never says "behind" — classical audio corrects it</h1>
+    <div class="lede">SpatialStack answers back-left/back-right once in 463 direction_ego questions (0/77 correct on back-source cases): event frames cannot see behind the wearer. An SRP-PHAT DOA expert on the 7-mic array hears it.</div>
+    <div class="cols">
+      <div class="col" style="flex:1.2">
+        <table>
+          <tr><th>direction_ego</th><th>SpatialStack</th><th>DOA expert</th><th>either correct</th></tr>
+          <tr><td>all questions</td><td>.739</td><td>.665</td><td class="best">.847</td></tr>
+          <tr><td>77 back-source questions</td><td class="bad">.000</td><td class="good">.286</td><td></td></tr>
+          <tr><td>false-"back" rate (front sources)</td><td></td><td class="good">3.6%</td><td></td></tr>
+        </table>
+        <h3 style="margin-top:14px">Two mechanisms → +2.8 overall</h3>
+        <ul>
+          <li class="y"><b>Back-override</b>: trust DOA when it says back (fires on 40/463; 22 correct) → dir_ego .739 → <b>.771</b></li>
+          <li class="y"><b>Estimator fusion</b>: mean(SS, DOA acoustic range, 2nd SS pass) → dist_ego .580 → <b>.663</b></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>What did not work (root-caused)</h3>
+        <ul>
+          <li class="n">Confidence routing — DOA confidence does not track its correctness</li>
+          <li class="n">Text hints in the prompt — the model ignores prose</li>
+          <li class="n">Multi-model voting — weak models drag the strong one down</li>
+          <li class="n">Range calibration — acoustic range is per-question noise (0.65 vs 1.05&thinsp;m GT median)</li>
+        </ul>
+        <p style="margin-top:8px">DOA alone scores <b>42.3</b> overall — a parameter-free classical pipeline within 7 points of a 4B geometry-VLM.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Finding 3 · audio corrects structural blindness</span><span>5 / 9</span></div>
+</div>
+
+<!-- 6 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Finding 4</div>
+    <h1>The model wasn't failing to reason — it was reasoning blind</h1>
+    <div class="lede">Exocentric questions reference scene objects ("the armchair … facing the fireplace") that are usually <b>not in any event frame</b>. Curation: ClipSeg retrieves the timestamps where each anchor is visible (median top score 0.86); the model gets 5 + 5 anchor frames + 6 event frames. Same model, same prompt — only the evidence changes.</div>
+    <div class="cols">
+      <div class="col">
+        <table>
+          <tr><th>exo task</th><th>event frames</th><th>curated evidence</th></tr>
+          <tr><td>direction_exo</td><td>.362</td><td class="best">.407</td></tr>
+          <tr><td>distance_exo</td><td>.302</td><td class="best">.324</td></tr>
+        </table>
+        <div class="note">distance_exo uses the mean over two retrieval mixes. Letter-voting across mixes does not help.</div>
+      </div>
+      <div class="col">
+        <h3>Side effect worth noting</h3>
+        <p>Relational references ("the armchair <i>closer to</i> the wall painting") defeat geometric grounding — ClipSeg grounds both armchairs 0.05&thinsp;m apart. With curation they resolve <b>visually</b>: both chairs and the painting are simply in frame, and the VLM disambiguates linguistically.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Finding 4 · evidence curation</span><span>6 / 9</span></div>
+</div>
+
+<!-- 7 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Finding 5</div>
+    <h1>The binding boundary: what a frozen spatial VLM can consume</h1>
+    <div class="lede">Seven controlled interventions on the same model. The boundary is sharp and, we argue, defines the interface future spatial models should be trained to expose.</div>
+    <div class="cols">
+      <div class="col">
+        <h3 style="color:var(--green)">Self-explanatory evidence — works</h3>
+        <ul>
+          <li class="y">Queried objects visible in frame → dir_exo +.045</li>
+          <li class="y">Independent estimators to average → dist_ego +.083</li>
+          <li class="y">Structural override where vision is blind → dir_ego +.032</li>
+        </ul>
+        <h3 style="color:var(--red); margin-top:16px">Meta-referential evidence — fails</h3>
+        <ul>
+          <li class="n">Text hints (DOA direction + distance in prompt): ignored</li>
+          <li class="n">"These frames show what is behind you" (pose-selected): no gain</li>
+          <li class="n">"Frame 0 is your viewpoint": .225 vs .339 baseline</li>
+          <li class="n">… with explicit Frame-i index tokens: .238 — still fails</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>The experiment that hurt</h3>
+        <p><b>Viewpoint retrieval.</b> The wearer literally walks through the queried robot pose (median match 0.87&thinsp;m / 22°; 57% of exo questions covered). Making that frame the reference should convert allocentric → egocentric, the model's strong regime (.74 vs .36).</p>
+        <p>It scores <b class="bad">.225</b> — worse than not trying, in both prompt variants. The model cannot adopt a designated frame as its reference viewpoint.</p>
+        <p style="margin-top:10px"><b>Implication:</b> frame-referential binding is a trainable interface, not an emergent one. Adding it (light fine-tune) projects this system to ≈57.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Finding 5 · capability boundary</span><span>7 / 9</span></div>
+</div>
+
+<!-- 8 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Results</div>
+    <h1>49.6 → 54.1, every step mechanistic</h1>
+    <div class="cols">
+      <div class="col" style="flex:1.35">
+        <div class="ladder">
+          <div class="lr d"><div class="lb">random</div><div class="br" style="width:24%">28.6</div></div>
+          <div class="lr d"><div class="lb">best audio-capable small model</div><div class="br" style="width:22%">26.9</div></div>
+          <div class="lr g"><div class="lb">DOA expert alone (classical)</div><div class="br" style="width:47%">42.3</div></div>
+          <div class="lr"><div class="lb">SpatialStack alone</div><div class="br" style="width:60%">49.6</div></div>
+          <div class="lr"><div class="lb">+ DOA back-override</div><div class="br" style="width:62%">50.4</div></div>
+          <div class="lr"><div class="lb">+ distance fusion</div><div class="br" style="width:66%">52.4</div></div>
+          <div class="lr"><div class="lb">+ curated exo evidence</div><div class="br" style="width:70%">53.9</div></div>
+          <div class="lr a"><div class="lb">full system (oracle)</div><div class="br" style="width:71%">54.1</div></div>
+        </div>
+        <div class="note" style="margin-top:8px">Final per-task: .771 / .407 / .663 / .324 · hard 49.8, simple 59.1 · 1,522/1,522 answered.</div>
+      </div>
+      <div class="col">
+        <h3>Fully realistic (no GT timing anywhere)</h3>
+        <table>
+          <tr><td>official protocol (full clip)</td><td class="mut">45.0</td></tr>
+          <tr><td>+ Whisper grounding</td><td>47.8</td></tr>
+          <tr><td>+ DOA collaboration</td><td>50.1</td></tr>
+          <tr class="hl"><td>+ curated exo — full system</td><td class="best">51.3</td></tr>
+        </table>
+        <p style="margin-top:8px">The realistic end-to-end system (51.3) <b>beats oracle SpatialStack</b> (49.6) by +1.7: the collaboration more than pays for imperfect timing. Per-task: .706 / .397 / .614 / .336.</p>
+        <h3 style="margin-top:14px">Packaging</h3>
+        <p>One entry point (<code>savvy_e2e.py</code>): prep → infer → fuse, idempotent stages, oracle mode reproduces 54.12 exactly.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Results</span><span>8 / 9</span></div>
+</div>
+
+<!-- 9 -->
+<div class="slide">
+  <div class="inner">
+    <div class="kicker">Directions</div>
+    <h1>What 58+ needs</h1>
+    <div class="cols">
+      <div class="col">
+        <ul>
+          <li><b>Instruction-bindable spatial model.</b> Light fine-tuning for frame-referential binding ("frame 0 is your viewpoint") unlocks viewpoint retrieval — 57% coverage at ego-level accuracy projects ≈57 overall. The natural full-paper contribution; everything here becomes its motivation and ablation suite.</li>
+          <li><b>Official 32-frame configuration.</b> Needs an 80&thinsp;GB GPU (OOMs on 46/40&thinsp;GB with SDPA and sharding); VSI-Bench numbers suggest real headroom.</li>
+          <li><b>Instance-level relational grounding.</b> Detector + SAM-quality masks instead of ClipSeg blobs would revive the fully geometric exo path (its bottleneck is isolated to anchor noise).</li>
+          <li><b>Person tracking for source ranging.</b> Naive person grounding fails in egocentric video — the wearer's own hands hijack the masks.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Claims to take away</h3>
+        <ul>
+          <li><b>Curation beats scaling</b> at test time: +4.6 from showing a frozen model the right evidence; frame count alone adds nothing</li>
+          <li><b>Audio is a corrector, not a solver</b>: AV models ≈ chance, yet parameter-free DOA fixes vision's one structural blind spot</li>
+          <li><b>The binding boundary</b> is the actionable interface gap for spatial VLMs</li>
+        </ul>
+        <h3 style="margin-top:14px">Artifacts</h3>
+        <p>Full study (method, ablations, 12 root-caused negatives): <code>savvy_full/REPORT.md</code> · end-to-end pipeline: <code>eval_vision/savvy_e2e.py</code></p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Directions</span><span>9 / 9</span></div>
+</div>
+
+</div>
+<div class="kbd">← → · space · click</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function go(n){
+  cur=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur));
+  location.hash='#'+(cur+1);
+}
+function fit(){
+  document.getElementById('deck').style.transform=
+    `scale(${Math.min(innerWidth/1280,innerHeight/720)*0.985})`;
+}
+addEventListener('resize',fit); fit();
+addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1);}
+  if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(cur-1);}
+  if(e.key==='Home')go(0); if(e.key==='End')go(slides.length-1);
+});
+addEventListener('click',()=>{}); // reserve clicks for selection; use keys
+addEventListener('click',e=>{ if(e.detail===1){ if(e.clientX>innerWidth*0.6)go(cur+1); else if(e.clientX<innerWidth*0.4)go(cur-1);} });
+go(parseInt(location.hash.slice(1))-1||0);
+</script>
+</body>
+</html>
